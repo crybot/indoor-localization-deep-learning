@@ -1,0 +1,144 @@
+% !TeX spellcheck = it_IT
+%Carattere dimensione 12
+\documentclass[12pt]{report}
+
+%Margini e interlinea
+\usepackage[top=1in, bottom=1in, left=1.2in, right=1in]{geometry}
+\pagestyle{plain}
+\linespread{1.5}
+
+%Librerie utili
+\usepackage[italian]{babel} % conversione in italiano
+\usepackage[utf8]{inputenc}
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{floatflt}
+\usepackage{blindtext}
+\usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{subfig}
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{minibox}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage[strict]{changepage}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\pgfplotsset{width=11cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\begin{document}
+
+\begin{titlepage}
+\begin{figure}[t]
+    %\centering\includegraphics[width=0.9\textwidth]{marchio-unipi.eps}
+	\centering\includegraphics[width=0.9\textwidth]{logo.eps}
+	\vspace{1cm}
+    \centering\includegraphics[width=0.4\textwidth]{cherubino.eps}
+\end{figure}
+
+\begin{center}
+	\textbf{ Dipartimento di Informatica\\ Corso di Laurea in Informatica\\}
+	\vspace{15mm}
+    {\LARGE{\bf Geolocalizzazione Indoor Basata su Beacon Bluetooth a Bassa Potenza:}}\\
+	\vspace{3mm}
+	{\LARGE{\bf Metodi e Modelli del Deep Learning}}\\
+	{{\bf un progetto realizzato per Consorzio Metis e ASL Toscana}} \\
+\end{center}
+
+\vspace{20mm}
+
+\begin{minipage}[t]{0.47\textwidth}
+	{\large{\bf Relatori:\\ Prof. Gianluigi Ferrari 
+	% \\ Prof. Alessio Micheli
+	}}
+\end{minipage}\hfill\begin{minipage}[t]{0.47\textwidth}\raggedleft
+	{\large{\bf Presentata da: \\ Marco Pampaloni \\ }}
+\end{minipage}
+
+\vspace{18mm}
+
+\centering{\large{\bf Sessione Estiva \\ Anno Accademico 2019/2020 }}
+
+\end{titlepage}
+
+\tableofcontents
+
+\begin{abstract}
+
+\end{abstract}
+
+\chapter{Introduzione}
+
+\chapter{Geolocalizzazione Indoor}
+\section{Introduzione al problema}
+\section{Possibili soluzioni}
+\section{Beacon BLE}
+\section{RSSI e propagazione del segnale}
+\section{Variabilità e rumore di fondo: requisiti di usabilità}
+
+\chapter{Deep Learning}
+\section{Neurone Artificiale: Perceptron}
+\section{Multi Layer Perceptron}
+\section{Attivazione: ReLU e Funzioni Sigmoidee}
+\section{Apprendimento: Metodo del Gradiente e BackPropagation}
+\section{Reti Neurali Convoluzionali}
+\section{Regolarizzazione}
+\subsection{Overfitting e Underfitting}
+\subsection{Regolarizzazione L2}
+\subsection{Dropout}
+\section{Dataset Augmentation e Preprocessing}
+\subsection{Jittering}
+\subsection{Ridimensionamento (Scaling)}
+\subsection{Magnitude Warping}
+\subsection{Permutazione di Sottoinsiemi (Subset Shuffling)}
+\subsection{Deattivazione Selettiva}
+
+
+\chapter{Architettura Software}
+\section{TensorFlow}
+\section{Keras}
+\section{Google Colab}
+\section{Weights \& Biases}
+\section{Modello di Apprendimento}
+\subsection{Input del modello}
+\subsection{Blocco Convoluzionale}
+\subsection{Uso della Bussola e Output Ausiliario}
+\subsection{Coefficiente di Memoria Residua e Input Ausiliario}
+\subsection{Output del modello}
+\section{Addestramento del Modello}
+\section{Ensembling}
+\section{Compilazione e Deploy del modello}
+
+\chapter{Applicazione Mobile}
+\section{Flutter}
+\section{Planimetrie e Poligoni}
+\section{Backend TensorFlow}
+\subsection{TensorFlow Lite}
+\subsection{Implementazione del Bridge di Comunicazione}
+
+\chapter{Conclusioni}
+\section{Risultati Sperimentali}
+\subsection{Metriche di Errore: MSE, MAE, MaxAE}
+
+\section{Lavori futuri}
+\subsection{Input a Lunghezza Variabile}
+\subsection{Reti Neurali Residuali}
+\subsection{Variational Autoencoder: Generazione di nuovi dati}
+\subsection{Transfer Learning}
+\subsection{Input Masking e Ricostruzione dei Segnali}
+\subsection{Transformers per Problemi di Regressione}
+\subsection{Simulatore BLE}
+
+\appendix
+
+\bibliography{references}
+\bibliographystyle{plain}
+
+\end{document}
