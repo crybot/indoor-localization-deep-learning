@@ -49,7 +49,7 @@
         
         
         \tikzstyle{captionlabel}=[text width=15*\LastEastx/\scale,text centered]       
-        \path (\LastEastx/2,-\y/2,+\z/2) + (0,-25pt) coordinate (cap) 
+        \path (\LastEastx/2,-\y/2,+\z/2) + (0,-\captiongap) coordinate (cap) 
         edge ["\textcolor{black}{ \bf \caption}"',captionlabel](cap) ; %Block caption/pic object label
          
         %Define nodes to be used outside on the pic object
@@ -93,6 +93,7 @@
     ylabel/.store       in=\ylabel,
     zlabel/.store       in=\zlabel,
     caption/.store      in=\caption,
+    captiongap/.store   in=\captiongap,
     name/.store         in=\name,
     fill/.store         in=\fill,
     opacity/.store      in=\opacity,
@@ -106,5 +107,6 @@
     ylabel=,
     zlabel=,
     caption=,
+    captiongap=25pt,
     name=,
 }

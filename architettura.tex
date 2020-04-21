@@ -65,25 +65,41 @@
 
 %%%%% AUX-INPUT-1 %%%%%
 \pic[shift={(-0.5,0,6)}] at (cr4-east) {Box={name=auxin1, caption=aux1,%
+        captiongap=20pt,%
+        xlabel={{"1", ""}}, zlabel=1,%
         fill=\InputColor,opacity=0.5,height=2,width=2,depth=2}};
 
 
 %%% AUX OUTPUT FULLY CONNECTED LAYERS %%%
+% \pic[shift={(2 + \fcsep,0,0)}] at (p4-east) {RightBandedBox={name=fc1, caption=fc1,%
+%         xlabel=1, zlabel=64,fill=\FcColor, bandfill=\FcReluColor, opacity=0.5,%
+%         height=2, width=2, depth=100}};
+% \pic[shift={(\fcsep,0,0)}] at (fc1-east) {RightBandedBox={name=fc2, caption=fc2,%
+%         xlabel=1, zlabel=128,fill=\FcColor, bandfill=\FcReluColor,opacity=0.5,%
+%         height=2, width=2, depth=120}};
+% \pic[shift={(\fcsep,0,0)}] at (fc2-east) {Box={name=fc3, caption=aux\_output,%
+%         xlabel=1, zlabel=2,fill=\FcColor, opacity=0.5,%
+%         height=2, width=2, depth=6}};
 \pic[shift={(2 + \fcsep,0,0)}] at (p4-east) {RightBandedBox={name=fc1, caption=fc1,%
         xlabel=1, zlabel=64,fill=\FcColor, bandfill=\FcReluColor, opacity=0.5,%
         height=2, width=2, depth=100}};
-\pic[shift={(\fcsep,0,0)}] at (fc1-east) {RightBandedBox={name=fc2, caption=fc2,%
-        xlabel=1, zlabel=128,fill=\FcColor, bandfill=\FcReluColor,opacity=0.5,%
-        height=2, width=2, depth=120}};
-\pic[shift={(\fcsep,0,0)}] at (fc2-east) {Box={name=fc3, caption=aux\_output,%
+% \pic[shift={(\fcsep,0,0)}] at (fc1-east) {RightBandedBox={name=fc2, caption=fc2,%
+%         xlabel=1, zlabel=128,fill=\FcColor, bandfill=\FcReluColor,opacity=0.5,%
+%         height=2, width=2, depth=120}};
+\pic[shift={(\fcsep,0,0)}] at (fc1-east) {Box={name=fc3, caption=aux\_output,%
+        captiongap=20pt,%
         xlabel=1, zlabel=2,fill=\FcColor, opacity=0.5,%
         height=2, width=2, depth=6}};
 
 %%%%% AUX-INPUT-2 %%%%%
 \pic[shift={(0,0,5)}] at (fc3-east) {Box={name=auxin2, caption=aux2,%
+        captiongap=20pt,%
+        xlabel={{"1", ""}}, zlabel=2,%
         fill=\InputColor,opacity=0.5,height=2,width=2,depth=6}};
 %%%%% MEMORY COEFFICIENT %%%%%
 \pic[shift={(0,0,4)}] at (auxin2-west) {Box={name=mem, caption=memory,%
+        captiongap=20pt,%
+        xlabel={{"1", ""}}, zlabel=1,%
         fill=\InputColor,opacity=0.5,height=2,width=2,depth=2}};
 
 %%% MAIN OUTPUT FULLY CONNECTED LAYERS %%%
@@ -109,8 +125,9 @@
 %\draw [connection]  (cr4-east)    -- node {\midarrow} (p4-west);
 \draw [connection]  (p4-east)    -- node {\midarrow} (fc1-west);
 % \draw [connection]  (p3-east)    -- node {\midarrow} (cr4-west);
-\draw [connection]  (fc1-east)    -- node {\midarrow} (fc2-west);
-\draw [connection]  (fc2-east)    -- node {\midarrow} (fc3-west);
+
+\draw [connection]  (fc1-east)    -- node {\midarrow} (fc3-west);
+% \draw [connection]  (fc2-east)    -- node {\midarrow} (fc3-west);
 
 %AUX1 TO FC1 Connection
 \path (p4-east) -- (fc1-west) coordinate[pos=0.4] (after1);
