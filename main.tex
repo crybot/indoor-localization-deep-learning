@@ -27,11 +27,16 @@
 \usepackage{longtable}
 \usepackage[strict]{changepage}
 \usepackage{pgfplots}
+\usepackage[utf8]{inputenc}
+
 \usepackage{tikz}
-\usetikzlibrary{matrix}
+\usetikzlibrary{positioning}
+
 \pgfplotsset{width=11cm,compat=1.9}
 \usepgfplotslibrary{external}
 \tikzexternalize
+
+\usepackage{standalone}
 
 \begin{document}
 
@@ -47,9 +52,10 @@
   \begin{center}
     \textbf{ Dipartimento di Informatica\\ Corso di Laurea Triennale in Informatica\\}
     \vspace{15mm}
-    {\LARGE{\bf Geolocalizzazione Indoor Basata su Beacon Bluetooth a Bassa Potenza:}}\\
-    \vspace{3mm}
-    {\LARGE{\bf Metodi e Modelli del Deep Learning}}\\
+    {\LARGE{\bf Localizzazione Indoor Basata su Beacon Bluetooth a Bassa Potenza
+    Attraverso Tecniche di Deep Learning}}\\
+    % \vspace{3mm}
+    % {\LARGE{\bf Attraverso Tecniche di Deep Learning}}\\
     {{\bf un progetto realizzato per Consorzio Metis e ASL Toscana}} \\
   \end{center}
 
@@ -72,12 +78,11 @@
 \tableofcontents
 
 \begin{abstract}
-
 \end{abstract}
 
 \chapter{Introduzione}
 
-\chapter{Geolocalizzazione Indoor}
+\chapter{Localizzazione Indoor}
 \section{Introduzione al problema}
 \section{Possibili soluzioni}
 \section{Beacon BLE}
@@ -109,14 +114,14 @@
 \section{Google Colab}
 \section{Weights \& Biases}
 \section{Modello di Apprendimento}
-\subsection{Input del modello}
+\subsection{Input del Modello}
 \subsection{Blocco Convoluzionale}
 \subsection{Uso della Bussola e Output Ausiliario}
 \subsection{Coefficiente di Memoria Residua e Input Ausiliario}
-\subsection{Output del modello}
+\subsection{Output del Modello}
 \section{Addestramento del Modello}
 \section{Ensembling}
-\section{Compilazione e Deploy del modello}
+\section{Compilazione e Deploy del Modello}
 
 \chapter{Applicazione Mobile}
 \section{Flutter}
@@ -124,8 +129,8 @@
 \section{Backend TensorFlow}
 \subsection{TensorFlow Lite}
 \subsection{Implementazione del Bridge di Comunicazione}
-\section{Stabilizzazione del modello}
-\subsection{Utilizzo dell'Accelerometro}
+\section{Stabilizzazione del Modello}
+\subsection{Utilizzo di Sensori Inerziali}
 \subsection{Filtro di Kalman}
 
 \chapter{Conclusioni}
@@ -140,6 +145,7 @@
 \subsection{Input Masking e Ricostruzione dei Segnali}
 \subsection{Transformers per Problemi di Regressione}
 \subsection{Simulatore BLE}
+\subsection{Posizionamento Magnetico}
 
 \appendix
 
