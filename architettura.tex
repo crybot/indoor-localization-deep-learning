@@ -3,6 +3,7 @@
 \subimport{./layers/}{init}
 \usetikzlibrary{positioning}
 
+\def\InputColor{rgb:green,3;black,2;white,1}
 \def\FcColor{rgb:blue,5;red,2.5;white,5}
 \def\FcReluColor{rgb:blue,5;red,5;white,4}
 \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
@@ -18,19 +19,23 @@
 \def\FlattenColor{rgb:black,0.5}
 
 
-
 \begin{document}
 \begin{tikzpicture}
 
 %%% REDEFINING CONNECTION ARROW STYLE AND WIDTH (./layers/init.tex) %%%
 \def\edgecolor{rgb:black,1}
 \newcommand{\midarrow}{\tikz \draw[-Stealth,line width =0.3mm,draw=\edgecolor] (-0.3,0) -- ++(0.3,0);}
+
+%%% INVERTED MIDARROW %%%
+\newcommand{\invmidarrow}{\tikz \draw[rotate=180,-Stealth,line width =0.3mm,draw=\edgecolor] %
+  (-0.3,0) -- ++(0.3,0);}
+
 \tikzstyle{connection}=[thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.6]
 
 
 %%% CONVOLUTIONAL BLOCKS %%%
-\pic[shift={(0,0,0)}] at (0,0,0) {RightBandedBox={name=in1, caption=input,%
-        xlabel={{"15","15"}},zlabel=20,fill=\ConvColor,bandfill=\ConvReluColor,%
+\pic[shift={(0,0,0)}] at (0,0,0) {Box={name=in1, caption=input,%
+        xlabel={{"15","15"}},zlabel=20,fill=\InputColor,%
         height=2, width=2, depth=20}};
 
 \pic[shift={(1,0,0)}] at (0,0,0) {RightBandedBox={name=cr1, caption=conv1, %
@@ -58,29 +63,37 @@
 \pic[shift={(0,0,0)}] at (cr4-east) {Box={name=p4,%
         fill=\AvgPoolColor,opacity=0.5,height=2,width=\poolwidth,depth=1}};
 
+%%%%% AUX-INPUT-1 %%%%%
+\pic[shift={(-0.5,0,6)}] at (cr4-east) {Box={name=auxin1, caption=aux1,%
+        fill=\InputColor,opacity=0.5,height=2,width=2,depth=2}};
 
-%%% FULLY CONNECTED LAYERS %%%
-\pic[shift={(\fcsep,0,0)}] at (p4-east) {RightBandedBox={name=fc1, caption=fc1,%
+
+%%% AUX OUTPUT FULLY CONNECTED LAYERS %%%
+\pic[shift={(2 + \fcsep,0,0)}] at (p4-east) {RightBandedBox={name=fc1, caption=fc1,%
         xlabel=1, zlabel=64,fill=\FcColor, bandfill=\FcReluColor, opacity=0.5,%
         height=2, width=2, depth=100}};
 \pic[shift={(\fcsep,0,0)}] at (fc1-east) {RightBandedBox={name=fc2, caption=fc2,%
         xlabel=1, zlabel=128,fill=\FcColor, bandfill=\FcReluColor,opacity=0.5,%
         height=2, width=2, depth=120}};
-\pic[shift={(\fcsep,0,0)}] at (fc2-east) {Box={name=fc3, caption=output,%
+\pic[shift={(\fcsep,0,0)}] at (fc2-east) {Box={name=fc3, caption=aux\_output,%
         xlabel=1, zlabel=2,fill=\FcColor, opacity=0.5,%
         height=2, width=2, depth=6}};
 
-%%% FLATTENING LINES TO FC LAYER %%%
-\foreach \x in {5,10,...,50}
-  \draw[dashed, opacity=0.3]
-    (fc1-west)++(0, 1.0*.2, \x*.2) -- (p4-neareast)
-    (fc1-west)++(0, 1.0*.2, -\x*.2) -- (p4-fareast);
+%%%%% AUX-INPUT-2 %%%%%
+\pic[shift={(0,0,5)}] at (fc3-east) {Box={name=auxin2, caption=aux2,%
+        fill=\InputColor,opacity=0.5,height=2,width=2,depth=6}};
+%%%%% MEMORY COEFFICIENT %%%%%
+\pic[shift={(0,0,4)}] at (auxin2-west) {Box={name=mem, caption=memory,%
+        fill=\InputColor,opacity=0.5,height=2,width=2,depth=2}};
 
-% %%% FLATTENING LINES TO FC LAYER %%%
-% \foreach \x in {5,10,...,60}
-%   \draw[dashed, opacity=0.3]
-%     (fc2-west)++(0, 1.0*.2, \x*.2) -- (fc1-southwest)
-%     (fc2-west)++(0, 1.0*.2, -\x*.2) -- (fc1-southwest);
+%%% MAIN OUTPUT FULLY CONNECTED LAYERS %%%
+\pic[shift={(3.5,0,0)}] at (fc3-east) {RightBandedBox={name=fc4, caption=fc4,%
+        xlabel=1, zlabel=128,fill=\FcColor, bandfill=\FcReluColor,opacity=0.5,%
+        height=2, width=2, depth=120}};
+\pic[shift={(\fcsep,0,0)}] at (fc4-east) {Box={name=fc5, caption=output,%
+        xlabel=1, zlabel=2,fill=\FcColor, opacity=0.5,%
+        height=2, width=2, depth=6}};
+
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%% Draw connections
@@ -92,13 +105,55 @@
 \draw [connection]  (p2-east)    -- node {\midarrow} (cr3-west);
 %\draw [connection]  (cr3-east)    -- node {\midarrow} (p3-west);
 
-%%% SECOND LINE CONNECTIONS %%%
 \draw [connection]  (p3-east)    -- node {\midarrow} (cr4-west);
 %\draw [connection]  (cr4-east)    -- node {\midarrow} (p4-west);
- \draw [connection]  (p4-east)    -- node {\midarrow} (fc1-west);
+\draw [connection]  (p4-east)    -- node {\midarrow} (fc1-west);
 % \draw [connection]  (p3-east)    -- node {\midarrow} (cr4-west);
- \draw [connection]  (fc1-east)    -- node {\midarrow} (fc2-west);
- \draw [connection]  (fc2-east)    -- node {\midarrow} (fc3-west);
+\draw [connection]  (fc1-east)    -- node {\midarrow} (fc2-west);
+\draw [connection]  (fc2-east)    -- node {\midarrow} (fc3-west);
+
+%AUX1 TO FC1 Connection
+\path (p4-east) -- (fc1-west) coordinate[pos=0.4] (after1);
+\draw [connection]  (after1)    -- node {\invmidarrow} ++(0,0,6) -- node {\invmidarrow} (auxin1-east);
+
+% AUX_OUT TO FC4 CONNECTION
+\draw [connection] (fc3-east)    -- node {\midarrow} (fc4-west);
+\path (fc3-east) -- (fc4-west) coordinate[pos=0.4] (after2);
+
+% TODO: Add multiplication between memory and auxin2
+% AUX_IN2 TO FC4 CONNECTION
+\draw [connection]  (after2)    -- node {\invmidarrow} ++(0,0,5) -- node {\invmidarrow} (auxin2-east);
+
+
+% MEMORY_COEFFICIENT TO FC4 CONNECTION
+\draw [connection]  (after2)    -- ++(0,0,9) -- node {\invmidarrow} (mem-east);
+
+% MULTIPLICATION INTERSECTION NODE
+\filldraw [white, thick] (0,0,5)++(after2) circle (5pt);
+\draw [black, thick] (0,0,5)++(after2) circle (5pt);
+\draw [black, thick] (0,0,5)++(after2) node {$\times$} (5pt);
+
+% FC4 TO MAIN_OUTPUT CONNECTION
+\draw [connection] (fc4-east)         -- node {\midarrow} (fc5-west);
+
+
+%%% AUX DASHED LINES TO FC LAYER %%%
+% \foreach \x in {5,10,...,50}
+%   \draw[dashed, opacity=0.3]
+%     (fc1-west)++(0, 1.0*.2, \x*.2) -- (auxin1-east);
+
+%%% CNN DASHED LINES TO FC LAYER %%%
+\foreach \x in {5,10,...,50}
+  \draw[dashed, opacity=0.3]
+    (fc1-west)++(0, 1.0*.2, \x*.2) -- (after1)
+    (fc1-west)++(0, 1.0*.2, -\x*.2) -- (after1);
+
+%%% AUXIN2 DASHED LINES TO FC LAYER %%%
+\foreach \x in {5,10,...,60}
+  \draw[dashed, opacity=0.3]
+    (fc4-west)++(0, 1.0*.2, \x*.2) -- (after2)
+    (fc4-west)++(0, 1.0*.2, -\x*.2) -- (after2);
+
 
 \end{tikzpicture}
 \end{document}\grid
