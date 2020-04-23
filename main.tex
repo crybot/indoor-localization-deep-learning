@@ -3,41 +3,42 @@
 \documentclass[12pt]{report}
 
 %Margini e interlinea
-\usepackage[top=1in, bottom=1in, left=1.2in, right=1in]{geometry}
-\pagestyle{plain}
-\linespread{1.5}
+% \linespread{1.5}
 
 %Librerie utili
 \usepackage[italian]{babel} % conversione in italiano
-\usepackage[utf8]{inputenc}
+
 \usepackage{libertine}
 \usepackage{graphicx}
-\usepackage{floatflt}
-\usepackage{blindtext}
-\usepackage{enumitem}
-\usepackage{amsthm}
-\usepackage{subfig}
-\usepackage{listings}
-\usepackage{listingsutf8}
 \usepackage{amsmath}
-\usepackage{framed}
-\usepackage{minibox}
-\usepackage{float}
-\usepackage{wrapfig}
-\usepackage{longtable}
-\usepackage[strict]{changepage}
 \usepackage{pgfplots}
-\usepackage[utf8]{inputenc}
+% \usepackage[strict]{changepage}
+% \usepackage[utf8]{inputenc}
+
+% \usepackage{floatflt}
+% \usepackage{blindtext}
+% \usepackage{enumitem}
+% \usepackage{amsthm}
+% \usepackage{subfig}
+% \usepackage{listings}
+% \usepackage{listingsutf8}
+% \usepackage{framed}
+% \usepackage{minibox}
+% \usepackage{float}
+% \usepackage{wrapfig}
+% \usepackage{longtable}
+
+\usepackage{standalone}
 
 
 \pgfplotsset{width=11cm,compat=1.9}
 \usepgfplotslibrary{external}
-
-% \tikzexternalize
-% \usetikzlibrary{positioning}
-
-\usepackage{standalone}
 \usetikzlibrary{positioning}
+
+
+\usepackage[top=1in, bottom=1in, left=1.2in, right=1in]{geometry}
+\pagestyle{plain}
+\linespread{1.5}
 
 \begin{document}
 
@@ -45,6 +46,7 @@
   \begin{figure}[t]
     %\centering\includegraphics[width=0.9\textwidth]{marchio-unipi.eps}
     \centering\includegraphics[width=0.9\textwidth]{./img/logo.eps}
+    
     \vspace{1cm}
     
     \centering\includegraphics[width=0.4\textwidth]{./img/cherubino.eps}
@@ -57,7 +59,7 @@
     Attraverso Tecniche di Deep Learning}}\\
     % \vspace{3mm}
     % {\LARGE{\bf Attraverso Tecniche di Deep Learning}}\\
-    {{\bf un progetto realizzato per Consorzio Metis e ASL Toscana}} \\
+    {\large{\bf un progetto realizzato per Consorzio Metis e ASL Toscana}} \\
   \end{center}
 
   \vspace{20mm}
@@ -66,25 +68,29 @@
     {\large{\bf Relatori:\\ Prof. Gianluigi Ferrari 
     % \\ Prof. Alessio Micheli
     }}
-  \end{minipage}\hfill\begin{minipage}[t]{0.47\textwidth}\raggedleft
-    {\large{\bf Presentata da: \\ Marco Pampaloni \\ }}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.47\textwidth}\raggedleft
+    {\large{\bf Presentata da: \\ Marco Pampaloni}}
   \end{minipage}
 
-  \vspace{18mm}
+  \vfill
 
-  \centering{\large{\bf Sessione Estiva \\ Anno Accademico 2019/2020 }}
+
+  \centering{\large{\bf Anno Accademico 2019/2020 }}
 
 \end{titlepage}
 
-\tableofcontents
+
 
 \begin{abstract}
-  \begin{figure}
-    \includegraphics[width=\textwidth]{./img/architettura.pdf}
-    \caption{Architettura Neurale}
-  \end{figure}
+  % \begin{figure}
+  %   \includegraphics[width=\textwidth]{./img/architettura.pdf}
+  %   \caption{Architettura Neurale}
+  % \end{figure}
   \input{./latex/abstract}
 \end{abstract}
+
+\tableofcontents
 
 \chapter{Introduzione}
 

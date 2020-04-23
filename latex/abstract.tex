@@ -1,4 +1,33 @@
-\documentclass{standalone}
+\documentclass{standalone} 
 \begin{document}
-  prova abstract
+% \section{Background}
+Il problema della Localizzazione Indoor si è rivelato di particolare interesse
+pratico negli ultimi anni. Questa tesi mostra come moderne tecniche di Deep
+Learning possano risultare determinanti nella corretta risoluzione di tale
+problema.
+% \section{Methods}
+L'approccio analizzato sfrutta una rete neurale convoluzionale (CNN) profonda.
+L'input del modello è caratterizzato da una serie temporale di segnali
+broadcast \emph{Bluetooth Low Energy} (BLE) emessi da un insieme di Beacon
+disposti all'interno dell'edificio adibito alla Localizzazione Indoor, mentre
+l'output è una coppia di coordinate relative alla posizione all'interno
+dell'edificio stesso. Sono state inoltre utilizzate varie tecniche di
+\emph{data augmentation} per produrre un dataset di grandi dimensioni sulla
+base dei campionamenti dei segnali effettuati in loco.
+% \section{Results}
+A seguito dell'addestramento, il modello utilizzato ha mostrato un errore medio
+assoluto (MAE) sul dataset di test pari a \emph{30cm}, esibendo una discreta
+affidabilità anche rispetto a variazioni significative dei segnali dovute al
+rumore ambientale. Un ensemble di modelli, ognuno addestrato con diversi
+iperparametri, ha permesso di ridurre l'errore medio fino a circa \emph{26cm}.
+Il modello risultante permette la sua esecuzione in tempo reale su dispositivi
+mobile con ridotte capacità computazionali, rendendolo particolarmente adatto
+alla 
+% \section{Conclusion}
+così detta navigazione \emph{``blue-dot``} all'interno di contesti Indoor.
+Tuttavia si evidenzia come la variazione dell'output del modello possa
+risultare in una navigazione poco fluida. Per arginare questo problema viene
+applicato un filtro di Kalman al modello e viene sfruttato il sensore inerziale
+dello smartphone per produrre un'euristica utile a individuare i movimenti
+dell'utente.  
 \end{document}
