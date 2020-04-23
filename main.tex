@@ -29,24 +29,25 @@
 \usepackage{pgfplots}
 \usepackage[utf8]{inputenc}
 
-\usepackage{tikz}
-\usetikzlibrary{positioning}
 
 \pgfplotsset{width=11cm,compat=1.9}
 \usepgfplotslibrary{external}
-\tikzexternalize
+
+% \tikzexternalize
+% \usetikzlibrary{positioning}
 
 \usepackage{standalone}
+\usetikzlibrary{positioning}
 
 \begin{document}
 
 \begin{titlepage}
   \begin{figure}[t]
     %\centering\includegraphics[width=0.9\textwidth]{marchio-unipi.eps}
-    \centering\includegraphics[width=0.9\textwidth]{resources/logo.eps}
+    \centering\includegraphics[width=0.9\textwidth]{./img/logo.eps}
     \vspace{1cm}
     
-    \centering\includegraphics[width=0.4\textwidth]{resources/cherubino.eps}
+    \centering\includegraphics[width=0.4\textwidth]{./img/cherubino.eps}
   \end{figure}
 
   \begin{center}
@@ -78,6 +79,11 @@
 \tableofcontents
 
 \begin{abstract}
+  \begin{figure}
+    \includegraphics[width=\textwidth]{./img/architettura.pdf}
+    \caption{Architettura Neurale}
+  \end{figure}
+  \input{./latex/abstract}
 \end{abstract}
 
 \chapter{Introduzione}

@@ -495,7 +495,7 @@
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph2-15" x="462.432" y="316.761"/>
   <use xlink:href="#glyph2-6" x="465.932858" y="316.761"/>
-  <use xlink:href="#glyph2-12" x="471.024742" y="316.761"/>
+  <use xlink:href="#glyph2-11" x="471.024742" y="316.761"/>
 </g>
 <path style="fill-rule:nonzero;fill:rgb(59.999084%,39.99939%,79.998779%);fill-opacity:0.5;stroke-width:0.3985;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 569.454281 -0.879438 L 558.114438 -0.879438 L 558.114438 -12.215375 L 569.454281 -12.215375 Z M 569.454281 -0.879438 L 558.114438 -0.879438 L 571.212094 12.218219 L 582.548031 12.218219 Z M 569.454281 -0.879438 " transform="matrix(1,0,0,-1,69.909,151.769)"/>
 <path style="fill:none;stroke-width:0.3985;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:0.7;stroke-dasharray:2.98883,1.99255;stroke-miterlimit:10;" d="M 582.548031 0.878375 L 571.212094 0.878375 " transform="matrix(1,0,0,-1,69.909,151.769)"/>
