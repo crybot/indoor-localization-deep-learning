@@ -9,7 +9,7 @@
 \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
 \def\ConvReluColor{rgb:yellow,5;red,5;white,5}
 \def\PoolColor{rgb:red,1;black,0.3}
-\def\AvgPoolColor{rgb:red,1;black,0.5}
+\def\AvgPoolColor{rgb:blue,1.0;green,0.2;white,0.45}
 \def\DcnvColor{rgb:blue,5;green,2.5;white,5}
 \def\SoftmaxColor{rgb:magenta,5;black,7}
 \def\SumColor{rgb:blue,5;green,15}
@@ -32,35 +32,43 @@
 
 \tikzstyle{connection}=[thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.6]
 
+\def\zinput{N}
+
 
 %%% CONVOLUTIONAL BLOCKS %%%
 \pic[shift={(0,0,0)}] at (0,0,0) {Box={name=in1, caption=input,%
-        xlabel={{"15","15"}},zlabel=20,fill=\InputColor,%
+        xlabel={{"15","15"}},zlabel=\zinput, depthpos=0.3,%
+        fill=\InputColor,%
         height=2, width=2, depth=20}};
 
 \pic[shift={(1,0,0)}] at (0,0,0) {RightBandedBox={name=cr1, caption=conv1, %
-        xlabel={{"115","115"}},zlabel=20,fill=\ConvColor,bandfill=\ConvReluColor,%
+        xlabel={{"115","115"}},zlabel=\zinput, depthpos=0.3, %
+        fill=\ConvColor,bandfill=\ConvReluColor,%
         height=2, width={3,3}, depth=20}};
 \pic[shift={(0,0,0)}] at (cr1-east) {Box={name=p1,%
         fill=\PoolColor,opacity=0.5,height=2,width=\poolwidth,depth=10}};
 
 \pic[shift={(\poolsep,0,0)}] at (p1-east) {RightBandedBox={name=cr2, caption=conv2,%
-        xlabel={{"230","230"}},zlabel=10,fill=\ConvColor,bandfill=\ConvReluColor,%
+        xlabel={{"230","230"}},zlabel=\zinput/2, depthpos=0.9,%
+        fill=\ConvColor,bandfill=\ConvReluColor,%
         height=2, width=4, depth=10}};
 \pic[shift={(0,0,0)}] at (cr2-east) {Box={name=p2,%
         fill=\PoolColor,opacity=0.5,height=2,width=\poolwidth,depth=5}};
 
 \pic[shift={(\poolsep,0,0)}] at (p2-east) {RightBandedBox={name=cr3, caption=conv3,%
-        xlabel={{"460","460"}},zlabel=5,fill=\ConvColor,bandfill=\ConvReluColor,%
+        xlabel={{"460","460"}},zlabel=\zinput/4, depthpos=1.8, %
+        fill=\ConvColor,bandfill=\ConvReluColor,%
         height=2, width=5, depth=5}};
 \pic[shift={(0,0,0)}] at (cr3-east) {Box={name=p3,%
         fill=\PoolColor,opacity=0.5,height=2,width=\poolwidth,depth=2}};
 
 %%%%% NON-POOLING LAYERS %%%%%
 \pic[shift={(\poolsep,0,0)}] at (p3-east) {RightBandedBox={name=cr4, caption=conv4,%
-        xlabel={{"460","460","460","920"}},zlabel=2,fill=\ConvColor,bandfill=\ConvReluColor,%
+        xlabel={{"460","460","460","920"}},zlabel=\zinput/8, depthpos=0.5,%
+        fill=\ConvColor,bandfill=\ConvReluColor,%
         height=2, width={5,5,5,7}, depth=2}};
-\pic[shift={(0,0,0)}] at (cr4-east) {Box={name=p4,%
+    \pic[shift={(0,0,0)}] at (cr4-east) {Box={name=p4, %
+        caption={Global \\ pooling}, captiongap=40pt, captionpos=1, %
         fill=\AvgPoolColor,opacity=0.5,height=2,width=\poolwidth,depth=1}};
 
 %%%%% AUX-INPUT-1 %%%%%

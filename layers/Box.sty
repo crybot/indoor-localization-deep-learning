@@ -42,14 +42,15 @@
         
         \coordinate (a1) at (0 , \y/2 , \z/2);
         \coordinate (b1) at (0 ,-\y/2 , \z/2);
-        \tikzstyle{depthlabel}=[pos=0,text width=14*\z,text centered,sloped]       
+        % \tikzstyle{depthlabel}=[pos=0,text width=14*\z,text centered,sloped]       
+        \tikzstyle{depthlabel}=[pos=\scale*\depthpos,text width=14*\z,text centered,sloped]       
         
         \path (c) edge ["\small\zlabel"',depthlabel](f); %depth label
         \path (b1) edge ["\ylabel",midway] (a1);  %height label
         
         
         \tikzstyle{captionlabel}=[text width=15*\LastEastx/\scale,text centered]       
-        \path (\LastEastx/2,-\y/2,+\z/2) + (0,-\captiongap) coordinate (cap) 
+        \path (\LastEastx/2,-\y/2,+\z/2) + (0,\captionpos*\captiongap) coordinate (cap) 
         edge ["\textcolor{black}{ \bf \caption}"',captionlabel](cap) ; %Block caption/pic object label
          
         %Define nodes to be used outside on the pic object
@@ -88,12 +89,14 @@
     width/.store        in=\cubex,
     height/.store       in=\cubey,
     depth/.store        in=\cubez,
+    depthpos/.store     in=\depthpos,
     scale/.store        in=\scale,
     xlabel/.store       in=\boxlabels,
     ylabel/.store       in=\ylabel,
     zlabel/.store       in=\zlabel,
     caption/.store      in=\caption,
     captiongap/.store   in=\captiongap,
+    captionpos/.store   in=\captionpos,
     name/.store         in=\name,
     fill/.store         in=\fill,
     opacity/.store      in=\opacity,
@@ -102,11 +105,13 @@
     width=2,
     height=13,
     depth=15,
+    depthpos=0.9,
     scale=.2,
     xlabel={{"","","","","","","","","",""}},
     ylabel=,
     zlabel=,
     caption=,
     captiongap=25pt,
+    captionpos=-1,
     name=,
 }

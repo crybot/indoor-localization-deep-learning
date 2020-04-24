@@ -60,7 +60,7 @@
         
         \coordinate (a1) at (0 , \y/2 , \z/2);
         \coordinate (b1) at (0 ,-\y/2 , \z/2);
-        \tikzstyle{depthlabel}=[pos=0,text width=14*\z,text centered,sloped]       
+        \tikzstyle{depthlabel}=[pos=\scale*\depthpos,text width=14*\z,text centered,sloped]       
         
         \path (c) edge ["\small\zlabels"',depthlabel](f); %depth label
         \path (b1) edge ["\ylabel",midway] (a1);  %height label 	  
@@ -104,6 +104,7 @@
     width/.store        in=\cubex,
     height/.store       in=\cubey,
     depth/.store        in=\cubez,
+    depthpos/.store     in=\depthpos,
     scale/.store        in=\scale,
     xlabel/.store       in=\boxlabels,
     ylabel/.store       in=\ylabel,
@@ -121,6 +122,7 @@
     width=2,
     height=13,
     depth=15,
+    depthpos=0.1,
     scale=.2,
     xlabel={{"","","","","","","","","",""}},
     ylabel=,
