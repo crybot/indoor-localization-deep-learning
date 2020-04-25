@@ -42,6 +42,10 @@
 \pagestyle{plain}
 \linespread{1.5}
 
+\usepackage[backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+
 \begin{document}
 
 \begin{titlepage}
@@ -166,7 +170,6 @@
 
 \appendix
 
-\bibliography{references}
-\bibliographystyle{plain}
+\printbibliography
 
 \end{document}

@@ -8,7 +8,7 @@ all: $(OBJECTS)
 
 $(OBJECTS): $(SOURCES)
 	# -cd change to directory of source file when processing it 
-	latexmk -pdf -cd img/architettura.tex
+	latexmk -bibtex -pdf -cd img/architettura.tex
 	# convert pdf file to vectorized image
 	pdf2svg img/architettura.pdf img/architettura.svg
 
