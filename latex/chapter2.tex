@@ -1,0 +1,97 @@
+\documentclass{standalone}
+
+\begin{document}
+In questo capitolo saranno introdotti i concetti fondamentali alla base delle
+moderne tecniche di Deep Learning e le strutture matematiche necessarie alla
+loro comprensione. \\
+
+\section{Machine Learning}
+Il \emph{Machine Learning}, o apprendimento automatico, è un insieme di
+tecniche e algoritmi che consentono a dei programmi di ``imparare'' a svolgere
+un determinato compito sulla base di esperienze pregresse, senza bisogno da
+parte del programmatore di specificare come eseguire tale mansione. 
+\subsection{Regressione Lineare}
+Un esempio classico di algoritmo di machine learning è quello della regressione
+lineare. Scopo dell'algoritmo è quello di predire l'output di una determinata
+funzione.  Si consideri quindi un vettore $ \bm x \in \mathbb{R}^n $, e
+un valore scalare $\hat{y} = \bm \theta^\intercal \bm x$. il
+vettore $\bm \theta$ introduce i parametri del modello, mentre
+$\hat{y}$ ne rappresenta l'output, che è una funzione lineare di $\bm
+x$. Siano quindi $ \bm x_1, \bm x_2, \dotsc, \bm x_m $ dei vettori in
+$\mathbb{R}^n$ e  $ y_1, y_2, \dotsc, y_m $ i corrispettivi valori della
+funzione $f(\bm x_i)$ che stiamo cercando di approssimare.
+
+Perchè la funzione $\hat{y}(\bm x)$ approssimi $f(\bm x)$ è necessario che i
+parametri $\bm \theta$ del modello si adattino in modo da minimizzare la differenza
+tra l'output prodotto dal modello e la cosiddetta \emph{ground truth}: $y =
+f(\bm x)$. A questo scopo si definisce una metrica di errore propria del
+processo di apprendimento: l'errore quadratico medio (MSE dall'inglese) 
+$$MSE = \frac{1}{m} \sum_{i=1}^m{(\hat{y} - y_i)^2}$$
+
+Per minimizzare l'errore sul nostro dataset di test è sufficiente porre a zero
+la derivata, rispetto a $\bm \theta$, della nostra funzione di costo. Nel caso
+della regressione lineare è possibile risolvere l'equazione risultante
+ottenendo un sistema di equazioni che prende il nome di 
+\emph{normal equations}.
+Esistono tuttavia metodi numerici iterativi che si basano sulle informazioni
+fornite dal gradiente della funzione di costo che permettono di aggiornare i
+parametri del modello cercando di ridurne l'errore, anche nel caso di modelli
+non lineari. L'algoritmo su cui si basano molti dei moderni metodi di
+apprendimento del Deep Learning è il \emph{gradient descent} o metodo del
+gradiente.
+
+Il metodo del gradiente aggiorna i parametri $\bm \theta$ del modello secondo
+la seguente regola: 
+$$ \bm \theta' = \bm \theta - \eta \nabla_{\bm \theta} J(\bm \theta) $$
+dove $J(\bm \theta)$ rappresenta la funzione di costo associata al modello,
+mentre $\eta$ è un coefficiente chiamato \emph{learning rate}.
+%Intuizione gradient descent
+Un'interpretazione dell'algoritmo è data dalle informazioni sulla monotonia
+ottenute dal gradiente della funzione di costo: per $\eta$ abbastanzza piccolo
+risulta $J(\bm \theta') \leq J(\bm \theta)$ poichè il gradiente negativo di $J$
+determina la direzione di massima decrescita della funzione\cite{goodfellow}.
+Ne consegue che applicando ricorsivamente la regola di aggiornamento del metodo
+del gradiente, la nostra funzione $\hat{y}$ tenderà ad avvicinarsi alla
+funzione originale $y$, minimizzando la funzione di costo.
+Possiamo intepretare il coefficiente $\eta$ come la velocità con cui seguire la
+pendenza della funzione di errore.
+
+%Gradient descent con MSE e modello lineare
+Nel caso di un modello di regressione lineare che usa l'MSE come funzione di
+costo, risulta: 
+\begin{align*}
+  &\forall j \in {1, \dotsc, n}: \\
+  %
+  \frac{\partial}{\partial\theta_j} MSE
+  &= 
+  \frac{\partial}{\partial\theta_j} \frac{1}{m} \sum_{i=1}^m{(\hat{y}_i -
+    y_i)^2} \\ 
+  %
+  &= \frac{\partial}{\partial\theta_j} \frac{1}{m}
+  \sum_{i=1}^m{(\bm \theta^\intercal \bm x_i - y_i)^2} \\
+  %
+  &= \frac{1}{m}
+  \sum_{i=1}^m{\frac{\partial}{\partial\theta_j}(\bm \theta^\intercal \bm x_i -
+    y_i)^2} \\
+  %
+  &= \frac{2}{m}
+  \sum_{i=1}^m{(\bm \theta^\intercal \bm x_i - y_i)x_i^{(j)}}
+\end{align*}
+%
+Ovvero abbiamo che la regola di aggiornamento è:
+$$ \theta'_j = \theta_j - \eta \frac{\partial}{\partial\theta_j} J(\bm \theta)
+             = \theta_j - \eta (\frac{2}{m} 
+             \sum_{i=1}^m{(\bm \theta^\intercal \bm x_i - y_i)x_i^{(j)}}),
+             \quad \forall j \in \{1, \dotsc, n\}
+$$
+
+
+
+
+\section{Multi Layer Perceptron}
+
+
+
+
+\end{document}
+
