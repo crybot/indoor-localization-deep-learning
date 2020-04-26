@@ -7,26 +7,27 @@ loro comprensione. \\
 
 \section{Machine Learning}
 Il \emph{Machine Learning}, o apprendimento automatico, è un insieme di
-tecniche e algoritmi che consentono a dei programmi di ``imparare'' a svolgere
+tecniche e algoritmi che consente a dei programmi di ``imparare'' a svolgere
 un determinato compito sulla base di esperienze pregresse, senza bisogno da
-parte del programmatore di specificare come eseguire tale mansione. 
+parte del programmatore di specificare come eseguire tali mansioni. 
 \subsection{Regressione Lineare}
-Un esempio classico di algoritmo di machine learning è quello della regressione
-lineare. Scopo dell'algoritmo è quello di predire l'output di una determinata
-funzione.  Si consideri quindi un vettore $ \bm x \in \mathbb{R}^n $, e
-un valore scalare $\hat{y} = \bm \theta^\intercal \bm x$. il
-vettore $\bm \theta$ introduce i parametri del modello, mentre
-$\hat{y}$ ne rappresenta l'output, che è una funzione lineare di $\bm
-x$. Siano quindi $ \bm x_1, \bm x_2, \dotsc, \bm x_m $ dei vettori in
-$\mathbb{R}^n$ e  $ y_1, y_2, \dotsc, y_m $ i corrispettivi valori della
-funzione $f(\bm x_i)$ che stiamo cercando di approssimare.
+Un classico esempio di algoritmo di machine learning è quello della regressione
+lineare. Scopo dell'algoritmo è predire l'output di una determinata funzione.
+Si consideri quindi un vettore $ \bm x \in \mathbb{R}^n $, e un valore scalare
+$\hat{y} = \bm \theta^\intercal \bm x$. il vettore $\bm \theta$ introduce i
+parametri del modello, mentre $\hat{y}$ ne rappresenta l'output, che è una
+funzione lineare di $\bm x$. Siano quindi $ \bm x_1, \bm x_2, \dotsc, \bm x_m $
+dei vettori in $\mathbb{R}^n$ e  $ y_1, y_2, \dotsc, y_m $ i corrispettivi
+valori della funzione $f(\bm x_i)$ che stiamo cercando di approssimare.
 
 Perchè la funzione $\hat{y}(\bm x)$ approssimi $f(\bm x)$ è necessario che i
 parametri $\bm \theta$ del modello si adattino in modo da minimizzare la differenza
 tra l'output prodotto dal modello e la cosiddetta \emph{ground truth}: $y =
 f(\bm x)$. A questo scopo si definisce una metrica di errore propria del
 processo di apprendimento: l'errore quadratico medio (MSE dall'inglese) 
-$$MSE = \frac{1}{m} \sum_{i=1}^m{(\hat{y} - y_i)^2}$$
+\begin{equation} \label{eq:mse}
+  MSE = \frac{1}{m} \sum_{i=1}^m{(\hat{y} - y_i)^2} 
+\end{equation}
 
 Per minimizzare l'errore sul nostro dataset di test è sufficiente porre a zero
 la derivata, rispetto a $\bm \theta$, della nostra funzione di costo. Nel caso
@@ -42,28 +43,30 @@ gradiente.
 
 Il metodo del gradiente aggiorna i parametri $\bm \theta$ del modello secondo
 la seguente regola: 
-$$ \bm \theta' = \bm \theta - \eta \nabla_{\bm \theta} J(\bm \theta) $$
+\begin{equation} \label{eq:grad-up}
+  \bm \theta' = \bm \theta - \eta \nabla_{\bm \theta} J(\bm \theta) 
+\end{equation}
 dove $J(\bm \theta)$ rappresenta la funzione di costo associata al modello,
 mentre $\eta$ è un coefficiente chiamato \emph{learning rate}.
 %Intuizione gradient descent
 Un'interpretazione dell'algoritmo è data dalle informazioni sulla monotonia
-ottenute dal gradiente della funzione di costo: per $\eta$ abbastanzza piccolo
+ottenute dal gradiente della funzione di costo: per $\eta$ abbastanza piccolo
 risulta $J(\bm \theta') \leq J(\bm \theta)$ poichè il gradiente negativo di $J$
 determina la direzione di massima decrescita della funzione\cite{goodfellow}.
 Ne consegue che applicando ricorsivamente la regola di aggiornamento del metodo
 del gradiente, la nostra funzione $\hat{y}$ tenderà ad avvicinarsi alla
 funzione originale $y$, minimizzando la funzione di costo.
 Possiamo intepretare il coefficiente $\eta$ come la velocità con cui seguire la
-pendenza della funzione di errore.
+pendenza della funzione di errore. \\
+{\large TODO: Inserire un'immagine che fornisca un'intuizione del
+  funzionamento del gradient descent}
 
 %Gradient descent con MSE e modello lineare
 Nel caso di un modello di regressione lineare che usa l'MSE come funzione di
 costo, risulta: 
 \begin{align*}
-  &\forall j \in {1, \dotsc, n}: \\
-  %
-  \frac{\partial}{\partial\theta_j} MSE
-  &= 
+  & \forall j \in {1, \dotsc, n}: \\
+  \frac{\partial}{\partial\theta_j} MSE &= 
   \frac{\partial}{\partial\theta_j} \frac{1}{m} \sum_{i=1}^m{(\hat{y}_i -
     y_i)^2} \\ 
   %
@@ -85,9 +88,31 @@ $$ \theta'_j = \theta_j - \eta \frac{\partial}{\partial\theta_j} J(\bm \theta)
              \quad \forall j \in \{1, \dotsc, n\}
 $$
 
+\section{Perceptron}
+Il \emph{Perceptron} è il modello che ha posto le basi per le moderne reti
+neurali artificiali e il deep learning. Esso prende spunto dalla neurologia,
+cercando di imitare il comportamento dei neuroni del cervello umano, con ovvie
+limitazioni e senza presunzione di volerne fornire una simulazione accurata del
+funzionamento. Una schematizzazione del modello è descritta in Figura
+\ref{fig:perceptron}
+\input{./img/perceptron}
 
-% \section{Multi Layer Perceptron}
+Il perceptron è molto simile al modello di regressione lineare descritto
+precedentemente, ma si distingue per un fattore fondamentale: la non linearità.
+L'output del perceptron è infatti definito come:
+$$\hat{y}(\bm x) = g(\bm \theta^\intercal \bm x)$$
+dove $g$ è una funzione non lineare che, in questo caso, è una funzione
+\emph{sigmoidea}, cioè una funzione che ha un andamento a ``S'', con due
+asintoti orizzontali come in Figura \ref{fig:sigmoid}: di solito è utilizzata
+la funzione $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$.
 
+Malgrado la nonlinearità del modello, il perceptron non è in grado di
+approssimare molte classi di funzioni. È famoso l'esempio della funzione XOR,
+la quale non può essere imparata dal perceptron. Per questo motivo è stata
+sviluppata un'estensione del modello che prende il nome di \emph{Multi Layer
+  Perceptron}.
+
+\input{./img/sigmoid}
 
 \end{document}
 

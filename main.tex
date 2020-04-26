@@ -14,8 +14,9 @@
 \usepackage{pgfplots}
 \usepackage{amssymb}
 \usepackage{bm}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
 % \usepackage[strict]{changepage}
-% \usepackage[utf8]{inputenc}
 
 % \usepackage{floatflt}
 % \usepackage{blindtext}
@@ -26,16 +27,21 @@
 % \usepackage{listingsutf8}
 % \usepackage{framed}
 % \usepackage{minibox}
-% \usepackage{float}
 % \usepackage{wrapfig}
 % \usepackage{longtable}
 
 \usepackage{standalone}
+\usepackage{tikz}
+% \usepackage{csquotes}
 
 
 \pgfplotsset{width=11cm,compat=1.9}
 \usepgfplotslibrary{external}
+\usetikzlibrary{external}
 \usetikzlibrary{positioning}
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+\tikzexternalize
 
 
 \usepackage[top=1in, bottom=1in, left=1.2in, right=1in]{geometry}
@@ -44,6 +50,8 @@
 
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
+
+\definecolor{funcolor}{HTML}{ef8a62} %TODO: externalize styles
 
 
 \begin{document}
@@ -100,11 +108,6 @@
 
 \chapter{Introduzione}
 \input{./latex/introduction/introduzione}
-
-\chapter{Localizzazione Indoor}
-\section{Introduzione al problema}
-\section{Possibili soluzioni}
-\section{Beacon BLE}
 \section{RSSI e propagazione del segnale}
 \section{Variabilità e rumore di fondo: requisiti di usabilità}
 \section{Installazione dei Beacon e Acquisizione dei Dati}
@@ -112,10 +115,9 @@
 \chapter{Deep Learning}
 \input{./latex/chapter2}
 
-\section{Neurone Artificiale: Perceptron}
 \section{Multi Layer Perceptron}
-\section{Attivazione: ReLU e Funzioni Sigmoidee}
-\section{Apprendimento: Metodo del Gradiente e BackPropagation}
+\section{Attivazione: ReLU}
+\section{BackPropagation}
 \section{Reti Neurali Convoluzionali}
 \section{Regolarizzazione}
 \subsection{Overfitting e Underfitting}
