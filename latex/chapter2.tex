@@ -147,7 +147,7 @@ rappresenti il coefficiente relativo alla connessione tra il neurone $i$-esimo
 del livello $\ell$ e il neurone $j$-esimo del livello $\ell-1$. Questa
 configurazione della matrice dei coefficienti, nonostante sia poco intuitiva,
 permette di esprimere l'insieme di valori uscenti da un generico livello $\ell$
-sotto forma di prodotto: $ \bm h^\ell = \bm \Theta^{\ell-1} \bm h^{\ell-1}$. Se
+sotto forma di prodotto: $ \bm h^\ell = \bm \Theta^\ell \bm h^{\ell-1}$. Se
 $L$ è il numero di livelli intermedi della rete neurale, risulta:
 \begin{align*}
 o(\bm x) &= \bm \Theta^{L+1} \bm h^L \\
@@ -167,14 +167,41 @@ al BackPropagation come un modo per propagare all'indietro le informazioni
 relative all'errore commesso dai nodi di output rispetto ai target del dataset
 di addestramento.
 
-L'algoritmo calcola il gradiente della funzione di costo
-in modo automatico applicando ricorsivamente lungo il grafo di computazione di
-$J(\bm \Theta)$
-la ``regola della catena'', ovvero la regola di derivazione per le funzioni
+L'algoritmo calcola il gradiente della funzione di costo in modo automatico
+applicando ricorsivamente lungo il grafo di computazione di $J(\bm \Theta)$ la
+``regola della catena'', ovvero la regola di derivazione per le funzioni
 composte: $ (f \circ g)' = (f' \circ g)\cdot g' $. Esso sfrutta la tecnica
-della programmazione dinamica per evitare di ricalcolare
-più volte la derivata di branch comuni dell'albero di computazione, rendendolo
-di fatto un metodo molto efficiente.
+della programmazione dinamica per evitare di ricalcolare più volte la derivata
+di branch comuni dell'albero di computazione, rendendolo di fatto un metodo
+molto efficiente.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Attivazione: ReLU}
+Come descritto, la funzione di attivazione conferisce al modello la
+nonlinearità. Ciò è fondamentale perchè l'MLP riesca ad approssimare funzioni
+continue arbitrarie. Se non ci fosse alcuna funzione di attivazione o se questa
+fosse lineare rispetto ai parametri del modello, l'output della rete si
+potrebbe esprimere come una semplice applicazione lineare, rendendolo di fatto
+equivalente a un semplice modello di regressione lineare.
+
+Con l'avvento delle reti neurali profonde e di nuove architetture più
+complesse, l'utilizzo delle funzioni di attivazioni logistiche è andato
+calando. Una delle cause è il cosiddetto "vanishing gradient", un problema che
+insorge nel calcolare numericamente il gradiente della funzione di costo di una
+rete neurale con molti livelli. In questo caso l'uso della funzione sigmoidea è
+in generale sconsigliato poichè il suo valore ``satura'' a causa dei suoi
+asintoti e questo rende la sua derivata prossima a zero. Il metodo del
+gradiente risulta quindi poco efficace nell'aggiornare i parametri del modello.
+Per questo motivo è stata introdotta la funzione ReLU (dall'inglese
+\emph{rectified linear unit}) definita nel modo seguente: 
+$g(x) = max\{0, x\}$. L'operazione di rettificazione è mostrata in
+Figura \ref{fig:relu}.
+\input{./img/relu}
+
+L'output del rettificatore, essendo esso quasi una funzione lineare, mantiene
+le informazioni del gradiente in modo migliore rispetto al sigmoide,
+rendendo la convergenza del metodo del gradiente più veloce.
+
 
 
 \end{document}
