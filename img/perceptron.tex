@@ -1,51 +1,42 @@
-\documentclass{standalone}
+\def\nodesize{1.0cm}
+\tikzstyle{neuron}=[circle, draw=black, minimum size=\nodesize]
+\tikzstyle{dots}=[draw=none, scale=2, text height=0.333cm, execute at end node=$\vdots$]
+\centering
+\begin{tikzpicture}[x=1.5cm, y=1.5cm, >=stealth] % >=stealth arrow style
+  % input nodes
+  \foreach \m [count=\y] in {1,2,3,dots,n} 
+  {
+    \ifnum\y=4
+    \node [\m/.try] at (0,-\y) {};
+    \else
+    \node [neuron] (input-\m) at (0,-\y) {$x_\m$};
+    \fi
+  }
+  % middle node
+  \node [neuron] (middle) at (1.5, -3) {\LARGE $\Sigma$};
 
-\begin{document}
-  \def\nodesize{1.0cm}
-  \tikzstyle{neuron}=[circle, draw=black, minimum size=\nodesize]
-  \tikzstyle{dots}=[draw=none, scale=2, text height=0.333cm, execute at end node=$\vdots$]
+  % activation function
+  \node [neuron] (activation) at (3.0, -3) {$g$};
 
-  \begin{figure}[!htp] %place it here (h)
-    \centering
-    \begin{tikzpicture}[x=1.5cm, y=1.5cm, >=stealth] % >=stealth arrow style
-      % input nodes
-      \foreach \m [count=\y] in {1,2,3,dots,n} 
-      {
-        \ifnum\y=4
-          \node [\m/.try] at (0,-\y) {};
-        \else
-          \node [neuron] (input-\m) at (0,-\y) {$x_\m$};
-        \fi
-      }
-      % middle node
-      \node [neuron] (middle) at (1.5, -3) {\LARGE $\Sigma$};
+  % connections
+  \foreach \m [count=\y] in {1,2,3,n}
+  % above moves the text higher depending on the orientation of the line
+  \draw [thick, ->] (input-\m) -- (middle) 
+  node[above=4pt*abs(3 - \y), pos=0.45, scale=0.9] {$\theta_\m$};
 
-      % activation function
-      \node [neuron] (activation) at (3.0, -3) {$g$};
-
-      % connections
-      \foreach \m [count=\y] in {1,2,3,n}
-        % above moves the text higher depending on the orientation of the line
-        \draw [thick, ->] (input-\m) -- (middle) 
-              node[above=4pt*abs(3 - \y), pos=0.45, scale=0.9] {$\theta_\m$};
-
-      % middle point between (middle) and (activation) nodes
-      \path [thick, ->, draw] (middle) -- (activation) coordinate[pos=0.5] (activation-path);
+  % middle point between (middle) and (activation) nodes
+  \path [thick, ->, draw] (middle) -- (activation) coordinate[pos=0.5] (activation-path);
 
 
-      % draw sigmoid symbol betwwen (middle) and (activation)
-      \draw [thick, scale=0.3, color=funcolor, x=5, y=70, 
-            domain=-6:6, yrange=-1:1, 
-            shift={($ (activation-path) - (0, 0.5) $) }] % calc library 
-              plot (\x, {1/(exp(-\x)+1)});
+  % draw sigmoid symbol betwwen (middle) and (activation)
+  \draw [thick, scale=0.3, color=funcolor, x=5, y=70, 
+  domain=-6:6, yrange=-1:1, 
+  shift={($ (activation-path) - (0, 0.5) $) }] % calc library 
+  plot (\x, {1/(exp(-\x)+1)});
 
-      % alternative representation of the sigmoid symbol using an integral
-      % \draw [thick, ->] (middle) -- (activation) node[midway, above] {
-      %   $\displaystyle \int$
-      % };
+  % alternative representation of the sigmoid symbol using an integral
+  % \draw [thick, ->] (middle) -- (activation) node[midway, above] {
+  %   $\displaystyle \int$
+  % };
 
-    \end{tikzpicture}
-    \caption{Schematizzazione del Perceptron}
-    \label{fig:perceptron}
-  \end{figure}
-\end{document}
+\end{tikzpicture}
