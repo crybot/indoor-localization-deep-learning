@@ -2,12 +2,7 @@
 %Carattere dimensione 12
 \documentclass[12pt]{report}
 
-%Margini e interlinea
-% \linespread{1.5}
-
-%Librerie utili
 \usepackage[italian]{babel} % conversione in italiano
-
 \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -35,7 +30,9 @@
 \usepackage{tikz}
 \usepackage{caption, setspace}
 \usepackage{hyperref}
-\hypersetup{
+\usepackage{import}
+
+\hypersetup{ % enable hyperlinks
     colorlinks,
     citecolor=black,
     filecolor=black,
@@ -51,7 +48,7 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{arrows}
 \usetikzlibrary{calc}
-\tikzexternalize
+\tikzexternalize%
 
 
 \usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
@@ -66,10 +63,12 @@
 % \definecolor{funcolor}{HTML}{ef8a62} %TODO: externalize styles
 \definecolor{funcolor}{HTML}{427ef5} %TODO: externalize styles
 
-\newcommand{\includetikz}[2]{ %
-  \centering %
-  \scalebox{#1}{\input{#2}} %
+\newcommand{\includetikz}[2]{%
+  \centering%
+  \scalebox{#1}{\input{#2}}%
 }
+
+\subimport{./layers/}{init}
 
 \begin{document}
 

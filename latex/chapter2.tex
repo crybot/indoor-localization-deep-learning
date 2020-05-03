@@ -1,5 +1,3 @@
-\, stretch=1.0documentclass{standalone}
-
 \begin{document}
 In questo capitolo saranno introdotti i concetti fondamentali alla base delle
 moderne tecniche di Deep Learning e le strutture matematiche necessarie alla
@@ -14,7 +12,7 @@ parte del programmatore di specificare come eseguire tali mansioni.
 Un classico esempio di algoritmo di machine learning è quello della regressione
 lineare. Scopo dell'algoritmo è predire l'output di una determinata funzione.
 Si consideri quindi un vettore $ \bm x \in \mathbb{R}^n $, e un valore scalare
-$\hat{y} = \bm \theta^\intercal \bm x$. il vettore $\bm \theta$ introduce i
+$\hat{y} = \bm \theta^\intercal \bm x$. Il vettore $\bm \theta$ introduce i
 parametri del modello, mentre $\hat{y}$ ne rappresenta l'output, che è una
 funzione lineare di $\bm x$. Siano quindi $ \bm x_1, \bm x_2, \dotsc, \bm x_m $
 dei vettori in $\mathbb{R}^n$ e  $ y_1, y_2, \dotsc, y_m $ i corrispettivi
@@ -26,7 +24,7 @@ tra l'output prodotto dal modello e la cosiddetta \emph{ground truth}: $y =
 f(\bm x)$. A questo scopo si definisce una metrica di errore propria del
 processo di apprendimento: l'errore quadratico medio (MSE dall'inglese) 
 \begin{equation} \label{eq:mse}
-  MSE = \frac{1}{m} \sum_{i=1}^m{(\hat{y} - y_i)^2} 
+  MSE = \frac{1}{m} \sum_{i=1}^m{{(\hat{y} - y_i)}^2} 
 \end{equation}
 
 Per minimizzare l'errore sul nostro dataset di test è sufficiente porre a zero
@@ -58,8 +56,9 @@ del gradiente, la nostra funzione $\hat{y}$ tenderà ad avvicinarsi alla
 funzione originale $y$, minimizzando la funzione di costo.
 Possiamo intepretare il coefficiente $\eta$ come la velocità con cui seguire la
 pendenza della funzione di errore. \\
-{\large TODO: Inserire un'immagine che fornisca un'intuizione del
-  funzionamento del gradient descent}
+{\large TODO: Inserire un'immagine che fornisca un'intuizione del% 
+  funzionamento%
+  del gradient descent}
 
 %Gradient descent con MSE e modello lineare
 Nel caso di un modello di regressione lineare che usa l'MSE come funzione di
@@ -67,26 +66,26 @@ costo, risulta:
 \begin{align*}
   & \forall j \in {1, \dotsc, n}: \\
   \frac{\partial}{\partial\theta_j} MSE &= 
-  \frac{\partial}{\partial\theta_j} \frac{1}{m} \sum_{i=1}^m{(\hat{y}_i -
-    y_i)^2} \\ 
+  \frac{\partial}{\partial\theta_j} \frac{1}{m} \sum_{i=1}^m{{(\hat{y}_i -
+    y_i)}^2} \\ 
   %
   &= \frac{\partial}{\partial\theta_j} \frac{1}{m}
-  \sum_{i=1}^m{(\bm \theta^\intercal \bm x_i - y_i)^2} \\
+  \sum_{i=1}^m{{(\bm \theta^\intercal \bm x_i - y_i)}^2} \\
   %
   &= \frac{1}{m}
-  \sum_{i=1}^m{\frac{\partial}{\partial\theta_j}(\bm \theta^\intercal \bm x_i -
-    y_i)^2} \\
+  \sum_{i=1}^m{\frac{\partial}{\partial\theta_j}{(\bm \theta^\intercal \bm x_i -
+    y_i)}^2} \\
   %
   &= \frac{2}{m}
   \sum_{i=1}^m{(\bm \theta^\intercal \bm x_i - y_i)x_i^{(j)}}
 \end{align*}
 %
 Ovvero abbiamo che la regola di aggiornamento è:
-$$ \theta'_j = \theta_j - \eta \frac{\partial}{\partial\theta_j} J(\bm \theta)
+\[ \theta'_j = \theta_j - \eta \frac{\partial}{\partial\theta_j} J(\bm \theta)
              = \theta_j - \eta (\frac{2}{m} 
              \sum_{i=1}^m{(\bm \theta^\intercal \bm x_i - y_i)x_i^{(j)}}),
              \quad \forall j \in \{1, \dotsc, n\}
-$$
+           \]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,24 +94,24 @@ Il \emph{Perceptron} è il modello che ha posto le basi per le moderne reti
 neurali artificiali e il deep learning. Esso prende spunto dalla neurologia,
 cercando di imitare il comportamento dei neuroni del cervello umano, con ovvie
 limitazioni e senza presunzione di volerne fornire una simulazione accurata del
-funzionamento. Una schematizzazione del modello è descritta in Figura
-\ref{fig:perceptron}
+funzionamento. Una schematizzazione del modello è descritta in Figura%
+~\ref{fig:perceptron}
 \begin{figure}[H]
   \includetikz{0.9}{./img/perceptron}
-  \caption{Schematizzazione del Perceptron}
+  \caption{Schematizzazione del Perceptron}%
   \label{fig:perceptron}
 \end{figure}
 
 Il perceptron è molto simile al modello di regressione lineare descritto
 precedentemente, ma si distingue per un fattore fondamentale: la non linearità.
 L'output del perceptron è infatti definito come:
-$$\hat{y}(\bm x) = g(\bm \theta^\intercal \bm x)$$
+\[\hat{y}(\bm x) = g(\bm \theta^\intercal \bm x)\]
 dove $g$ è una funzione \emph{sigmoidea}, cioè una funzione che ha un andamento
-a ``S'', con due asintoti orizzontali come in Figura \ref{fig:sigmoid}: di
+a ``S'', con due asintoti orizzontali come in Figura~\ref{fig:sigmoid}: di
 solito è utilizzata la funzione logistica $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$.
 \begin{figure}[H]
   \includetikz{0.8}{./img/sigmoid}
-  \caption{Funzione sigmoidea $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$ }
+  \caption{Funzione sigmoidea $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$ }%
   \label{fig:sigmoid}
 \end{figure}
 
@@ -134,7 +133,7 @@ funzione di attivazione sia non polinomiale\cite{universal-approximator}.
 L'MLP è un modello di machine learning che fa parte della categoria delle reti
 neurali, in quanto è composto da un insieme di neuroni artificiali
 (perceptron) disposti su più livelli e interconnessi tra di loro. Una
-schematizzazione del modello è fornita in Figura \ref{fig:mlp}.
+schematizzazione del modello è fornita in Figura~\ref{fig:mlp}.
 \begin{figure}[H]
   \includetikz{0.9}{./img/mlp}
   \caption{Schematizzazione del Multi Layer Perceptron: in Figura è mostrata
@@ -142,7 +141,8 @@ schematizzazione del modello è fornita in Figura \ref{fig:mlp}.
     neuroni e un solo output. Si noti che non si è limitati ad usare un solo
     neurone di output. Sono omessi per chiarezza i parametri del modello e le
     funzioni di attivazione, riassunte in questo caso all'interno di ogni
-    neurone.}
+    neurone.%
+  }%
   \label{fig:mlp}
 \end{figure}
 Nello specifico, l'MLP presenta un primo livello $N$-dimensionale che coincide con il
@@ -203,19 +203,19 @@ equivalente a un semplice modello di regressione lineare.
 
 Con l'avvento delle reti neurali profonde e di nuove architetture più
 complesse, l'utilizzo delle funzioni di attivazioni logistiche è andato
-calando. Una delle cause è il cosiddetto "vanishing gradient", un problema che
-insorge nel calcolare numericamente il gradiente della funzione di costo di una
-rete neurale con molti livelli. In questo caso l'uso della funzione sigmoidea è
-in generale sconsigliato poichè il suo valore ``satura'' a causa dei suoi
-asintoti e questo rende la sua derivata prossima a zero. Il metodo del
+calando. Una delle cause è il cosiddetto ``vanishing gradient'', un problema
+che insorge nel calcolare numericamente il gradiente della funzione di costo di
+una rete neurale con molti livelli. In questo caso l'uso della funzione
+sigmoidea è in generale sconsigliato poichè il suo valore ``satura'' a causa
+dei suoi asintoti e questo rende la sua derivata prossima a zero. Il metodo del
 gradiente risulta quindi poco efficace nell'aggiornare i parametri del modello.
 Per questo motivo è stata introdotta la funzione ReLU (dall'inglese
 \emph{rectified linear unit}) definita nel modo seguente: 
-$g(x) = max\{0, x\}$. L'operazione di rettificazione è mostrata in Figura
+$g(x) = \max\{0, x\}$. L'operazione di rettificazione è mostrata in Figura~%
 \ref{fig:relu}.
 \begin{figure}[H]
   \includetikz{0.9}{./img/relu}
-  \caption{La funzione di attivazione ReLU}
+  \caption{La funzione di attivazione ReLU}%
   \label{fig:relu}
 \end{figure}
 
@@ -233,13 +233,13 @@ moltiplicazione matriciale.
 
 L'operazione di convoluzione, usualmente indicata con un asterisco $*$, è
 definita per due funzioni continue come:
-$$
+\[
 (f * g)(t) = \int_{-\infty}^\infty{f(x)k(t - x)dx}
-$$
+\]
 Nel caso discreto, è invece definita nel seguente modo:
-$$
+\[
 (f * g)(t) = \sum_{x = -\infty}^\infty{f(x)k(t - x)}
-$$
+\]
 Poichè in una rete neurale le funzioni $f$ e $g$ sono rappresentate
 generalmente da tensori, l'operazione può essere limitata ai soli elementi di
 tali insiemi di valori, con l'assunzione che le due funzioni siano nulle
@@ -250,24 +250,47 @@ bidimensionali, come è quello delle immagini, si ha quindi:
              &= \sum_m{\sum_n{X(i - m, j - n) K(m, n)}}
 \end{align*}
 in cui $X$ rappresenta l'input dell'operazione, mentre $K$ è chiamato
-\emph{kernel}, o filtro e costituisce i parametri adattivi della CNN. Nella
+\emph{kernel}, o filtro e costituisce i parametri adattivi della CNN\@. Nella
 pratica è tuttavia più comune utilizzare l'operazione di
 \emph{cross-correlation}, definita come
-$$ (K * X)(i, j) \sum_m{\sum_n{X(i + m, j + n) K(m, n)}} $$
+\[ (K * X)(i, j) \sum_m{\sum_n{X(i + m, j + n) K(m, n)}} \]
 Tale operazione è equivalente a spostare il filtro $K$ lungo le due dimensioni
 dell'input $X$ eseguendo un moltiplicazione elemento per elemento, sommandone i
-risultati. Un esempio è illustrato in Figura \ref{fig:conv}.
+risultati. Un esempio è illustrato in Figura~\ref{fig:conv}.
 \begin{figure}[!htp]
   \includetikz{1.0}{./img/conv}
-  \caption{ %
-    Spostamento di un filtro 3x3 lungo una matrice di dimensioni 4x4. Nel
-    primo e secondo riquadro il filtro rientra completamente nelle dimensioni
-    della matrice, mentre nel terzo caso una colonna risulta al di fuori. Gli
-    elementi del filtro che vengono proiettati esternamente alla matrice
-    vengono moltiplicati con valori nulli e non contribuiscono al valore finale
-    della convoluzione.
-  }
+  \caption{%
+    Spostamento di un filtro $3\times3$ lungo una matrice di dimensioni
+    $4\times4$. Nel primo e secondo riquadro il filtro rientra completamente
+    nelle dimensioni della matrice, mentre nel terzo caso una colonna risulta
+    al di fuori. Gli elementi del filtro che vengono proiettati esternamente
+    alla matrice vengono moltiplicati con valori nulli e non contribuiscono al
+    valore finale della convoluzione.
+  }%
   \label{fig:conv}
+\end{figure}
+\subsection{Pooling}
+L'output della convoluzione è chiamato \emph{feature map} e generalmente ne
+vengono calcolate svariate decine per ogni livello, ognuna attraverso
+l'applicazione di un filtro diverso. L'aumento del numero di feature map
+attraverso i livelli della rete neurale si verifica spesso anche per far fronte
+alla riduzione dimensionale causata dai livelli di \emph{pooling}. Questi
+ultimi hanno lo scopo di rendere il modello parzialmente invariante rispetto a
+piccole traslazioni o disturbi nell'input.  Ciò avviene applicando
+un'operazione di sottocampionamento (\emph{subsampling}), come nelle
+convoluzioni, a sottoinsiemi disgiunti dell'input del livello. Tale operazione
+può prevedere la selezione del massimo del sottoinsieme, oppure della media
+aritmetica. L'operazione di pooling è illustrata in Figura~\ref{fig:pooling}.
+\begin{figure}[!htp]
+  \includetikz{1.0}{./img/pooling}
+  \caption{%
+    Schematizzazione di un semplice blocco convoluzionale a cui è applicata
+    l'operazione di pooling. L'input è bidimensionale e con un solo canale (per
+    esempio l'itensità dei pixel di un'immagine in bianco e nero) e vengono
+    prodotte \(K\) feature map. Il livello di pooling dimezza le dimensioni
+    dell'input.
+  }%
+  \label{fig:pooling}
 \end{figure}
 
 %Ispirazione neurologia
