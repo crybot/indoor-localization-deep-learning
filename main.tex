@@ -16,6 +16,7 @@
 \usepackage{bm} % fornisce il comando \bm per il testo in grassetto
 \usepackage[utf8]{inputenc}
 \usepackage{float} % aggiunge l'opzione H alle "floating figures"
+\usepackage{alphalph} % permette di generare lettere dato un indice numerico
 
 % \usepackage[strict]{changepage}
 % \usepackage{floatflt}
@@ -32,6 +33,7 @@
 
 \usepackage{standalone}
 \usepackage{tikz}
+\usepackage{caption, setspace}
 % \usepackage{csquotes}
 
 
@@ -47,6 +49,8 @@
 \usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
 \pagestyle{plain}
 \linespread{1.5}
+\captionsetup{margin=10pt,font={small},labelfont=bf} % caption styling
+
 
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
@@ -120,7 +124,6 @@
 \chapter{Deep Learning}
 \input{./latex/chapter2}
 
-\section{Reti Neurali Convoluzionali}
 \section{Regolarizzazione}
 \subsection{Overfitting e Underfitting}
 \subsection{Regolarizzazione L2}

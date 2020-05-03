@@ -1,16 +1,11 @@
-% \begin{figure}[!htp] % place it here (h)
-  % \centering
-  \begin{tikzpicture}
-    \begin{axis}[
-      grid=both,
-      grid style={line width=.1pt, draw=gray!30},
-      xlabel=$x$, ylabel={$g(x)$},
-      xmin=-7, xmax=7,
-      height=0.35\textheight,
-      ]
-      \addplot[very thick, color=funcolor, domain=-7:7]{1/(1 + exp(x)^(-1))};
-    \end{axis}
-  \end{tikzpicture}
-  % \caption{Funzione sigmoidea $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$ }
-  % \label{fig:sigmoid}
-% \end{figure}
+\begin{tikzpicture}
+  \begin{axis}[
+    grid=both,
+    grid style={line width=.1pt, draw=gray!30},
+    xlabel=$x$, ylabel={$g(x)$},
+    xmin=-7, xmax=7,
+    height=0.35\textheight,
+    ]
+    \addplot[very thick, color=funcolor, domain=-7:7]{1/(1 + exp(x)^(-1))};
+  \end{axis}
+\end{tikzpicture}

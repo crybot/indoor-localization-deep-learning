@@ -13,7 +13,7 @@ $(OBJECTS): $(SOURCES)
 	pdf2svg img/architettura.pdf img/architettura.svg
 
 continuous:
-	latexmk -pdf -pvc -shell-escape main.tex 
+	latexmk -pdf -pvc -interaction=batchmode -shell-escape main.tex 
 
 clean:
 	# clean all aux files (including pdf, dvi, etc.)

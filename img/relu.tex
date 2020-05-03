@@ -1,16 +1,11 @@
-% \begin{figure}[!htp]
-  % \centering
-  \begin{tikzpicture}
-    \begin{axis}[
-      grid=both,
-      grid style={line width=.1pt, draw=gray!30},
-      xlabel=$x$, ylabel={$g(x) = max\{0, x\}$},
-      height=0.32\textheight,
-      xmin = -7, xmax = 7
-      ]
-      \addplot[very thick, color=funcolor, domain=-7:7]{max(0, x)};
-    \end{axis}
-  \end{tikzpicture}
-  % \caption{La funzione di attivazione ReLU}
-  % \label{fig:relu}
-% \end{figure}
+\begin{tikzpicture}
+  \begin{axis}[
+    grid=both,
+    grid style={line width=.1pt, draw=gray!30},
+    xlabel=$x$, ylabel={$g(x) = max\{0, x\}$},
+    height=0.32\textheight,
+    xmin = -7, xmax = 7
+    ]
+    \addplot[very thick, color=funcolor, domain=-7:7]{max(0, x)};
+  \end{axis}
+\end{tikzpicture}
