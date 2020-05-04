@@ -227,16 +227,16 @@ rendendo la convergenza del metodo del gradiente più veloce.
 \section{Reti Neurali Convoluzionali}
 Una particolare categoria di reti feed forward è quella delle reti neurali
 convoluzionali, o \emph{convolutional neural networks} (CNN) in inglese. Una
-CNN non è altro che una rete neurale che utilizza l'operazione di
+CNN non è altro che una rete neurale che adotta l'operazione di
 \emph{convoluzione} in almeno uno dei suoi layer, al posto della più comune
 moltiplicazione matriciale.
 
-L'operazione di convoluzione, usualmente indicata con un asterisco $*$, è
-definita per due funzioni continue come:
+L'operazione di convoluzione, usualmente indicata con il simbolo $*$, è
+definita per due funzioni continue $f$ e $g$ come:
 \[
 (f * g)(t) = \int_{-\infty}^\infty{f(x)k(t - x)dx}
 \]
-Nel caso discreto, è invece definita nel seguente modo:
+mentre, nel caso discreto, è invece definita nel seguente modo:
 \[
 (f * g)(t) = \sum_{x = -\infty}^\infty{f(x)k(t - x)}
 \]
@@ -254,9 +254,10 @@ in cui $X$ rappresenta l'input dell'operazione, mentre $K$ è chiamato
 pratica è tuttavia più comune utilizzare l'operazione di
 \emph{cross-correlation}, definita come
 \[ (K * X)(i, j) \sum_m{\sum_n{X(i + m, j + n) K(m, n)}} \]
-Tale operazione è equivalente a spostare il filtro $K$ lungo le due dimensioni
-dell'input $X$ eseguendo un moltiplicazione elemento per elemento, sommandone i
-risultati. Un esempio è illustrato in Figura~\ref{fig:conv}.
+Tale operazione equivale a spostare il filtro $K$ lungo le due dimensioni
+dell'input $X$, eseguendo una moltiplicazione elemento per elemento tra i due
+tensori e sommandone i risultati. Un esempio è illustrato in
+Figura~\ref{fig:conv}.
 \begin{figure}[!htp]
   \includetikz{1.0}{./img/conv}
   \caption{%
@@ -272,14 +273,14 @@ risultati. Un esempio è illustrato in Figura~\ref{fig:conv}.
 \subsection{Pooling}
 L'output della convoluzione è chiamato \emph{feature map} e generalmente ne
 vengono calcolate svariate decine per ogni livello, ognuna attraverso
-l'applicazione di un filtro diverso. L'aumento del numero di feature map
-attraverso i livelli della rete neurale si verifica spesso anche per far fronte
-alla riduzione dimensionale causata dai livelli di \emph{pooling}. Questi
-ultimi hanno lo scopo di rendere il modello parzialmente invariante rispetto a
-piccole traslazioni o disturbi nell'input.  Ciò avviene applicando
-un'operazione di sottocampionamento (\emph{subsampling}), come nelle
-convoluzioni, a sottoinsiemi disgiunti dell'input del livello. Tale operazione
-può prevedere la selezione del massimo del sottoinsieme, oppure della media
+l'applicazione di un filtro diverso sullo stesso input. Il numero di feature
+map aumenta generalmente con il crescere della profondità della rete. Questo
+accade per far fronte alla riduzione dimensionale causata dai livelli di
+\emph{pooling}. Questi ultimi hanno lo scopo di rendere il modello parzialmente
+invariante rispetto a piccole traslazioni o disturbi nell'input. Ciò avviene
+applicando un'operazione di sottocampionamento (\emph{subsampling}) a
+sottoinsiemi, disgiunti o no, dell'input del livello. Tale operazione può prevedere la
+selezione del massimo degli elementi del sottoinsieme, oppure della loro media
 aritmetica. L'operazione di pooling è illustrata in Figura~\ref{fig:pooling}.
 \begin{figure}[!htp]
   \includetikz{1.0}{./img/pooling}

@@ -1,4 +1,5 @@
 \begin{tikzpicture}
+  % \selectcolormodel{gray}
   %%TODO: move definitions and style into dedicated file
   \def\InputColor{rgb:green,3;black,2.1;white,1}
   \def\FcColor{rgb:blue,5;red,2.5;white,5}
@@ -28,8 +29,8 @@
       xlabel={{"K",""}},zlabel={$N$}, depthpos=0.3, %
       fill=\ConvColor,bandfill=\ConvReluColor,%
       height=20, width=3, depth=20}};
-  \pic[shift={(1.5,0,0)}] at (cr1-east) {Box={name=p1, caption=pooling,%
-      fill=\PoolColor,opacity=0.5,zlabel={$N/2$},height=10,width=1,depth=10}};
+  \pic[shift={(1.5,0,0)}] at (cr1-east) {Box={name=p1, caption=pool,%
+      fill=\PoolColor,opacity=0.5,zlabel={$N/2$},height=11,width=1,depth=11}};
   \draw [connection]  (in1-east)    -- node {\midarrow} (cr1-west);
   \draw [connection]  (cr1-east)    -- node {\midarrow} (p1-west);
 \end{tikzpicture}
