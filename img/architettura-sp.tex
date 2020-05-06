@@ -1,0 +1,36 @@
+\documentclass[border=15pt]{standalone}
+
+\usepackage[italian]{babel} % conversione in italiano
+\usepackage{libertine}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepackage{amssymb}
+\usepackage{bm} % fornisce il comando \bm per il testo in grassetto
+\usepackage[utf8]{inputenc}
+\usepackage{float} % aggiunge l'opzione H alle "floating figures"
+\usepackage{alphalph} % permette di generare lettere dato un indice numerico
+\usepackage{standalone}
+\usepackage{tikz}
+\usepackage{caption, setspace}
+\usepackage{hyperref}
+\usepackage{import}
+
+\pgfplotsset{width=11cm,compat=1.9}
+\usepgfplotslibrary{external}
+\usetikzlibrary{external}
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+\tikzexternalize%
+
+\usepackage[backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+\subimport{../layers/}{init}
+
+
+\begin{document}
+\input{./architettura}
+\end{document}
+

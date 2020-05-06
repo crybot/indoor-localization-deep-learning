@@ -1,16 +1,16 @@
-OBJECTS=img/architettura.pdf
-SOURCES=img/architettura.tex
+# OBJECTS=img/architettura-sp.pdf
+# SOURCES=img/architettura.tex img/architettura-sp.tex
 
 default: all
 
-all: $(OBJECTS)
+all:
 	latexmk -pdf -shell-escape main.tex
-
-$(OBJECTS): $(SOURCES)
 	# -cd change to directory of source file when processing it 
-	latexmk -bibtex -pdf -cd -shell-escape img/architettura.tex
+	latexmk -pdf -cd -shell-escape img/architettura-sp.tex
 	# convert pdf file to vectorized image
-	pdf2svg img/architettura.pdf img/architettura.svg
+	pdf2svg img/architettura-sp.pdf img/architettura-sp.svg
+
+# $(OBJECTS): $(SOURCES)
 
 continuous:
 	latexmk -pdf -pvc -interaction=batchmode -shell-escape main.tex 

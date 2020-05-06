@@ -1,5 +1,5 @@
 # Tesi
-<img src="./img/architettura.svg">
+<img src="./img/architettura-sp.svg">
 
 
 ## Compile
