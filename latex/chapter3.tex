@@ -12,7 +12,7 @@
 In questo capitolo è descritta nel dettaglio l'architettura software sviluppata
 per il progetto di locallizazione indoor, inclusa la rete neurale, le librerie
 utilizzate, gli ambienti di sviluppo e gli strumenti che hanno coadiuvato il
-testing e la sperimentazione del prototipo.
+testing e la sperimentazione del prototipo realizzato.
 \section{TensorFlow}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Keras}
@@ -30,15 +30,16 @@ beacon, anche due input ausiliari che non sono processati dalla sezione
 convoluzionale della rete.
 \subsection{Input del Modello}
 L'input principale del modello è composto da una serie temporale di valori RSSI
-di 15 beacon disposti lungo il perimetro dell'edificio dell'ASL, nel quale si
-sono svolte le sperimentazioni del prototipo. La dimensione temporale
-dell'input può essere arbitrariamente lunga, poichè una sua variazione
-determina solamente una differente dimensione dell'asse temporale dell'output
-della CNN\@. La sezione convoluzionale della rete si conclude infatti con un
-livello di pooling globale che consiste nell'estrarre, per ogni feature map
-prodotta, la media aritmetica dei valori di input lungo la dimensione del
-tempo. Come si vede in Figura~\ref{fig:crynet}, infatti, la dimensione
-dell'output di tale livello è sempre costante e risulta essere $920\times1$.
+relativi ai segnali emessi da 15 beacon disposti lungo il perimetro
+dell'edificio dell'ASL, nel quale si sono svolte le sperimentazioni del
+prototipo. La dimensione temporale dell'input può essere arbitrariamente lunga,
+poichè una sua variazione determina solamente una differente dimensione
+dell'asse temporale dell'output della CNN\@. La sezione convoluzionale della
+rete si conclude infatti con un livello di pooling globale che consiste
+nell'estrazione, per ogni feature map prodotta, della media aritmetica dei valori di
+input lungo la dimensione del tempo. Come si vede in Figura~\ref{fig:crynet},
+infatti, la dimensione dell'output di tale livello è sempre costante e risulta
+essere $920\times1$.
 
 A completare l'input del modello sono il valore emesso, nel momento
 dell'utilizzo del modello, dal sensore magnetico dello smartphone e
@@ -46,8 +47,8 @@ l'ultima posizione nota dell'utente all'interno dell'edificio. Il valore della
 bussola è utile per determinare l'orientamento della persona nello spazio,
 rendendo la rete neurale capace di considerare le variazioni dei segnali BLE
 dovuti all'assorbimento da parte del corpo dell'utilizzatore dello smartphone.
-Il secondo input ausiliario è invece utilizzato per correggere eventuali grandi
-scostamenti dell'output della CNN rispetto alla posizione precedente
+Il secondo input ausiliario è invece utilizzato per correggere eventuali
+scostamenti rilevanti dell'output della CNN, rispetto alla posizione precedente
 dell'utente. Ci si aspetterebbe infatti che tale posizione non variasse di
 molto in un lasso di tempo sufficientemente breve.
 
@@ -61,9 +62,79 @@ massima riduzione della correzione dell'output della CNN da parte dei livelli
 successivi, mentre \(\mu = 1 \) associa il massimo peso su tale ipotesi. Il
 coefficiente di memoria residua è esso stesso input del livello successivo
 della rete, il quale riceve anche i valori dell'output ausiliario e di \( \mu
-  \cdot \bm y'\), dove con \(\bm y'\) si indica la posizione precedente dell'utente.
+  \cdot \bm y'\), dove con \(\bm y'\) si indica la posizione precedente
+dell'utente.
+
+Il valore della bussola è input del primo livello completamente connesso,
+insieme all'output della CNN\@.
 \subsection{Blocco Convoluzionale}
+La prima parte del modello è una semplice rete neurale convoluzionale
+unidimensionale. Sebbene sia composto da due dimensioni, quella temporale e
+quella dei beacon, quest'ultima può essere interpretata come l'insieme dei
+canali della prima, come nel caso dei canali \emph{r}, \emph{g}, \emph{b} di
+un'immagine a colori. Ciò permette di applicare l'operazione di convoluzione
+soltanto lungo l'asse temporale.
+La CNN proposta è composta da otto blocchi convoluzionali consecutivi così
+strutturati:
+\begin{itemize}
+    \item Operazione di convoluzione sull'output del livello precedente
+    \item Funzione di attivazione ReLU sull'output della convoluzione
+    \item Livello di batch normalization
+\end{itemize}
+In Figura~\ref{fig:crynet} sono mostrati anche i livelli di pooling,
+rappresentati da una superficie rossa apposta accanto i blocchi
+convoluzionali.
+
+L'output del secondo, terzo e quarto blocco convoluzionale sono sottoposti
+ciascuno all'applicazione di un particolare metodo di dropout chiamato
+\emph{dropout gaussiano}. Esso consiste nell'applicare del rumore
+moltiplicativo, con distribuzione gaussiana di media unitaria, all'output del
+blocco convoluzionale. Lo scopo è quello di simulare una corruzione casuale dei
+dati di addestramento del modello, con l'obiettivo di regolarizzare
+quest'ultimo. Applicare il rumore all'output dei livelli intermedi della rete,
+piuttosto che al dataset iniziale, consente di manipolare più profondamente la
+rappresentazione dei dati imparata dal modello, rendendolo conseguentemente più
+robusto rispetto alle variazioni dei segnali di input.
+
+L'output dell'ultimo blocco convoluzionale è infine seguito da un livello di
+pooling globale e dall'applicazione del dropout.
+
+{\large TODO\@: addestrare un modello senza dropout gaussiano e confrontare i %
+  risultati}
 \subsection{Uso della Bussola e Output Ausiliario}
+L'utilizzo dei valori forniti dal sensore magnetico dello smartphone sono
+giustificati dal voler mitigare il cosiddetto effetto del \emph{body
+  shadowing}.  Tale fenomeno si verifica quando un segnale wireless si propaga
+in un ambiente e collide contro un corpo umano. Tale collisione provoca un
+decadimento del segnale, il quale arriva disturbato al punto di ricezione. Ciò
+influisce sulla precisione dei sistemi di localizzazione indoor basati sui
+valori RSSI dei segnali wireless in modo considerevole, poichè è sufficiente che
+l'utente volti le spalle a un sottoinsieme dei beacon attivi per introdurre
+rumore all'interno del sistema. Utilizzando il valore emesso dalla bussola
+dello smartphone, è possibile rendere il modello consapevole dell'orientamento
+dell'utente e attenuare il rumore introdotto dal \emph{body shadowing}.
+
+L'input corrispondente al sensore magnetico è un valore scalare \(\alpha \in
+  \mathbb{R}, \) con \(0 \leq \alpha \leq 360\), in cui il
+valore \(0\) indica il nord. Tale dato è fornito, come mostrato in
+Figura~\ref{fig:crynet}, al primo livello completamente connesso della rete,
+insieme all'output della CNN\@.  Questo livello produce un vettore di 64
+elementi, il quale diventa input del secondo livello completamente connesse del
+modello. L'output di quest'ultimo livello è una coppia di coordinate reali che
+indica la posizione dell'utente all'interno dell'edificio. Tale previsione è
+soltanto parziale, in quanto non tiene conto dell'ultima posizione nota
+dell'utente, ma è utile per guidare l'addestramento del modello verso una
+soluzione meno dipendente da tale input. Se questo output ausiliario fosse
+infatti funzione anche della precedente posizione dell'utente, qualora la
+distanza tra questo dato e la ground truth fosse minore della precisione
+ottenibile dal modello attraverso il dataset di addestramento fornito, i
+parametri della rete convergerebbero verso una soluzione che ignorerebbe
+completamente i segnali dei beacon in input. Il tal caso, utilizzando
+direttamente \(\bm y'\) come output, l'errore commesso dal modello sarebbe
+inferiore rispetto all'errore derivante dall'esprimere l'output come funzione
+dei segnali RSSI\@.
+
+{\large TODO\@: Addestrare un modello senza bussola in input e confrontare i risultati}
 \subsection{Coefficiente di Memoria Residua e Input Ausiliario}
 \subsection{Output del Modello}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
