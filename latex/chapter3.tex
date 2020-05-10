@@ -1,14 +1,7 @@
 \begin{document}
-\begin{figure}[H]
-  % \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{./img/architettura.pdf}}%
-  \makebox[\textwidth][c]{%
-    \includetikz{0.75}{./img/architettura}%
-  }%
-  % \includegraphics[width=1.3\textwidth]{./img/architettura.pdf}
-  % \includetikz{0.8}{./img/architettura.tex}
-  \caption{Architettura della rete neurale}%
-  \label{fig:crynet}%
-\end{figure}
+\newcommand{\yhatone}{\bm\hat{\bm y}_1}
+\newcommand{\yhattwo}{\bm\hat{\bm y}_2}
+\newcommand{\yold}{\bm y_{\mathit{old}}}
 In questo capitolo è descritta nel dettaglio l'architettura software sviluppata
 per il progetto di locallizazione indoor, inclusa la rete neurale, le librerie
 utilizzate, gli ambienti di sviluppo e gli strumenti che hanno coadiuvato il
@@ -22,6 +15,16 @@ testing e la sperimentazione del prototipo realizzato.
 \section{Weights \& Biases}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rete Neurale Utilizzata}
+\begin{figure}[H]
+  % \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{./img/architettura.pdf}}%
+  \makebox[\textwidth][c]{%
+    \includetikz{0.75}{./img/architettura}%
+  }%
+  % \includegraphics[width=1.3\textwidth]{./img/architettura.pdf}
+  % \includetikz{0.8}{./img/architettura.tex}
+  \caption{Architettura della rete neurale}%
+  \label{fig:crynet}%
+\end{figure}
 La rete neurale sviluppata per il problema di localizzazione indoor è
 illustrata schematicamente in Figura~\ref{fig:crynet}. Essa consiste in una
 serie di blocchi convoluzionali seguiti da alcuni livelli di neuroni
@@ -31,39 +34,38 @@ convoluzionale della rete.
 \subsection{Input del Modello}
 L'input principale del modello è composto da una serie temporale di valori RSSI
 relativi ai segnali emessi da 15 beacon disposti lungo il perimetro
-dell'edificio dell'ASL, nel quale si sono svolte le sperimentazioni del
-prototipo. La dimensione temporale dell'input può essere arbitrariamente lunga,
-poichè una sua variazione determina solamente una differente dimensione
-dell'asse temporale dell'output della CNN\@. La sezione convoluzionale della
-rete si conclude infatti con un livello di pooling globale che consiste
-nell'estrazione, per ogni feature map prodotta, della media aritmetica dei valori di
-input lungo la dimensione del tempo. Come si vede in Figura~\ref{fig:crynet},
-infatti, la dimensione dell'output di tale livello è sempre costante e risulta
-essere $920\times1$.
+dell'edificio nel quale si sono svolte le sperimentazioni del prototipo. La
+dimensione temporale dell'input può essere arbitrariamente lunga, poichè una
+sua variazione determina solamente una differente dimensione dell'asse
+temporale dell'output della CNN\@. La sezione convoluzionale della rete si
+conclude infatti con un livello di pooling globale che consiste
+nell'estrazione, per ogni feature map prodotta, della media aritmetica dei
+valori di input lungo la dimensione del tempo. Come si vede in
+Figura~\ref{fig:crynet}, infatti, la dimensione dell'output di tale livello è
+sempre costante e risulta essere $920\times1$.
 
-A completare l'input del modello sono il valore emesso, nel momento
-dell'utilizzo del modello, dal sensore magnetico dello smartphone e
-l'ultima posizione nota dell'utente all'interno dell'edificio. Il valore della
-bussola è utile per determinare l'orientamento della persona nello spazio,
-rendendo la rete neurale capace di considerare le variazioni dei segnali BLE
-dovuti all'assorbimento da parte del corpo dell'utilizzatore dello smartphone.
-Il secondo input ausiliario è invece utilizzato per correggere eventuali
-scostamenti rilevanti dell'output della CNN, rispetto alla posizione precedente
-dell'utente. Ci si aspetterebbe infatti che tale posizione non variasse di
-molto in un lasso di tempo sufficientemente breve.
+A completare l'input del modello sono il valore emesso dal sensore magnetico
+dello smartphone e l'ultima posizione nota dell'utente all'interno
+dell'edificio, indicati rispettivamente con \(\alpha\) e \( \yold \). Il
+valore della bussola è utile per determinare l'orientamento della persona nello
+spazio, rendendo la rete neurale capace di considerare le variazioni dei
+segnali BLE dovuti all'assorbimento da parte del corpo dell'utilizzatore dello
+smartphone. Il secondo input ausiliario è invece utilizzato per correggere
+eventuali scostamenti rilevanti dell'output della CNN rispetto alla posizione
+precedente dell'utente. Ci si aspetterebbe infatti che tale posizione non
+variasse di molto in un lasso di tempo breve.
 
 L'ultima posizione nota dell'utente viene pesata da un coefficiente, anche esso
 input del modello, che in Figura~\ref{fig:crynet} è indicato con la lettera
-greca \(\mu\). Tale valore, a cui possiamo riferirci con il termine
+greca \(\mu\). Tale valore, cui possiamo riferirci con il termine
 \emph{coefficiente di memoria residua}, è compreso tra zero e uno, e determina
 il peso che si vuole dare all'ipotesi di continuità della posizione dell'utente
 nel tempo.  \(\mu = 0\) indica l'assenza di tale assunzione, con la conseguente
 massima riduzione della correzione dell'output della CNN da parte dei livelli
 successivi, mentre \(\mu = 1 \) associa il massimo peso su tale ipotesi. Il
 coefficiente di memoria residua è esso stesso input del livello successivo
-della rete, il quale riceve anche i valori dell'output ausiliario e di \( \mu
-  \cdot \bm y'\), dove con \(\bm y'\) si indica la posizione precedente
-dell'utente.
+della rete, il quale riceve anche i valori dell'output ausiliario e di 
+\(\mu \cdot \yold\).
 
 Il valore della bussola è input del primo livello completamente connesso,
 insieme all'output della CNN\@.
@@ -81,9 +83,21 @@ strutturati:
     \item Funzione di attivazione ReLU sull'output della convoluzione
     \item Livello di batch normalization
 \end{itemize}
-In Figura~\ref{fig:crynet} sono mostrati anche i livelli di pooling,
-rappresentati da una superficie rossa apposta accanto i blocchi
-convoluzionali.
+Un esempio di blocco convoluzionale è illustrato in Figura~\ref{fig:cnnblock},
+mentre in Figura~\ref{fig:crynet} sono mostrati anche i livelli di pooling,
+rappresentati da una superficie rossa apposta accanto i blocchi convoluzionali.
+\begin{figure}[!htp]
+  \makebox[\textwidth][c]{%
+    \includetikz{0.75}{./img/cnnblock}%
+  }%
+  \caption{Singolo blocco convoluzionale: la parte chiara indica l'operazione
+    di convoluzione, mentre l'ombreggiatura sulla destra illustra la funzione
+    di attivazione ReLU. \(K\) è il numero di filtri utilizzati e di
+    conseguenza equivale al numero di feature map prodotte, mentre \(N\) è la
+    lunghezza della serie temporale. Il processo di Batch normalization è
+    omesso dalla schematizzazione.}%
+  \label{fig:cnnblock}%
+\end{figure}
 
 L'output del secondo, terzo e quarto blocco convoluzionale sono sottoposti
 ciascuno all'applicazione di un particolare metodo di dropout chiamato
@@ -115,27 +129,55 @@ dello smartphone, è possibile rendere il modello consapevole dell'orientamento
 dell'utente e attenuare il rumore introdotto dal \emph{body shadowing}.
 
 L'input corrispondente al sensore magnetico è un valore scalare \(\alpha \in
-  \mathbb{R}, \) con \(0 \leq \alpha \leq 360\), in cui il
-valore \(0\) indica il nord. Tale dato è fornito, come mostrato in
-Figura~\ref{fig:crynet}, al primo livello completamente connesso della rete,
-insieme all'output della CNN\@.  Questo livello produce un vettore di 64
-elementi, il quale diventa input del secondo livello completamente connesse del
-modello. L'output di quest'ultimo livello è una coppia di coordinate reali che
-indica la posizione dell'utente all'interno dell'edificio. Tale previsione è
-soltanto parziale, in quanto non tiene conto dell'ultima posizione nota
-dell'utente, ma è utile per guidare l'addestramento del modello verso una
-soluzione meno dipendente da tale input. Se questo output ausiliario fosse
-infatti funzione anche della precedente posizione dell'utente, qualora la
-distanza tra questo dato e la ground truth fosse minore della precisione
-ottenibile dal modello attraverso il dataset di addestramento fornito, i
-parametri della rete convergerebbero verso una soluzione che ignorerebbe
-completamente i segnali dei beacon in input. Il tal caso, utilizzando
-direttamente \(\bm y'\) come output, l'errore commesso dal modello sarebbe
-inferiore rispetto all'errore derivante dall'esprimere l'output come funzione
-dei segnali RSSI\@.
+  \mathbb{R}, \) con \(0 \leq \alpha \leq 360\), in cui il valore \(0\) indica
+il nord. Tale dato è fornito, come mostrato in Figura~\ref{fig:crynet}, al
+primo livello completamente connesso della rete, insieme all'output della
+CNN\@.  Questo livello produce un vettore di 64 elementi, il quale diventa
+input del secondo livello completamente connesso del modello. L'output di
+quest'ultimo livello, indicato in figura come \(\yhatone\), è una coppia
+di coordinate reali che indica la posizione dell'utente all'interno
+dell'edificio.  Tale previsione è soltanto parziale, in quanto non tiene conto
+dell'ultima posizione nota dell'utente, ma risulta utile per guidare
+l'addestramento del modello verso una soluzione meno dipendente da tale input.
+A questo scopo \(\yhatone\) è interpretrato dal modello come output
+ausiliario.
+
+A ogni output ausiliario è associata una funzione di costo, il cui valore va
+poi integrato additivamente con quello della funzione di costo dell'output
+principale. Nel caso della rete neurale in esame si ha:
+\begin{align*}
+  &J_1(\bm \Theta) =  \frac{1}{m} \sum_{i=1}^m{\| {{}\yhatone}_{i} - \bm y_i\|^2_2} \\
+  &J_2(\bm \Theta) =  \frac{1}{m} \sum_{i=1}^m{\| {{}\yhattwo}_{i} - \bm y_i\|^2_2} \\
+  &J(\bm \Theta) = c_1 J_1(\bm \Theta) + c_2 J_2(\bm \Theta)
+\end{align*}
+in cui la scelta dei parametri \(c_1\) e \(c_2\) determina il peso di ciascuna
+funzione di costo nel bilancio dell'errore totale: il modello implementato
+assegna ai coefficienti i valori \( c_1 = \frac{1}{2}, c_2 = 1 \). Si noti che
+tali valori sono completamente arbitrari e rappresentano due iperparametri del
+modello.
+
+Se l'output \(\yhatone\) non pesasse direttamente nella funzione di costo
+del modello (cioè se fosse \(c_1 = 0\)), l'output della rete sarebbe troppo
+condizionato dal valore dell'input ausiliario \(\yold\). Poichè in fase di
+raccolta dei dati, la posizione precedente dell'utente non è nota, si assume
+che tale variabile aleatoria sia distribuita secondo una distribuzione normale
+centrata nella posizione del campionamento e con deviazione standard \(\sigma\)
+pari a una piccola costante, indicativa della variabilità relativa al moto di
+una persona mentre cammina (per esempio \( \sigma = 1 \)). Ciò implica che,
+qualora fosse \(\displaystyle \sum_i\| {\yold}_i - \bm y_i \|^2_2 < \sum_i \|
+  {{}\yhattwo}_{i} - \bm y_i\|^2_2 \), cioè se la distanza media tra l'ultima
+posizione nota e l'effettiva posizione dell'utente durante il campionamento dei
+segnali, fosse minore della precisione media ottenibile dal modello, i
+parametri della rete convergerebbero verso dei valori che tenderebbero a
+ignorare l'input dei beacon. L'utilizzo della sola posizione precedente
+dell'utente per esprimere l'output del modello, garantirebbe infatti un errore
+inferiore rispetto al considerare anche i valori RSSI dei segnali.
+
+Utilizzando l'output ausiliario descritto, pesato con un coefficiente non
+nullo, vienete garantito che lo scenario appena descritto non si verifichi, a patto
+che il coefficiente selezionato sia sufficientemente grande.
 
 {\large TODO\@: Addestrare un modello senza bussola in input e confrontare i risultati}
-\subsection{Coefficiente di Memoria Residua e Input Ausiliario}
 \subsection{Output del Modello}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Dataset Augmentation e Preprocessing}

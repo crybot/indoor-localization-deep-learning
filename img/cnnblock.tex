@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+  %%% REDEFINING CONNECTION ARROW STYLE AND WIDTH (./layers/init.tex) %%%
+  \def\InputColor{rgb:green,3;black,2.1;white,1}
+  \def\FcColor{rgb:blue,5;red,2.5;white,5}
+  \def\FcReluColor{rgb:blue,5;red,5;white,4}
+  \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+  \def\ConvReluColor{rgb:yellow,5;red,5;white,5}
+  \def\PoolColor{rgb:red,1;black,0.3}
+  \def\AvgPoolColor{rgb:red,1;black,0.3}
+  % \def\AvgPoolColor{rgb:blue,5;green,2.5;white,5}
+  \def\DcnvColor{rgb:blue,5;green,2.5;white,5}
+  \def\SoftmaxColor{rgb:magenta,5;black,7}
+  \def\SumColor{rgb:blue,5;green,15}
+  \def\poolsep{0.5}
+  \def\poolwidth{0.4}
+  \def\fcsep{1}
+  \def\FlattenColor{rgb:black,0.5}
+  \def\edgecolor{rgb:black,1}
+  \renewcommand{\midarrow}{\tikz \draw[-Stealth,line width =0.3mm,draw=\edgecolor] (-0.3,0) -- ++(0.3,0);}
+  %%% INVERTED MIDARROW %%%
+  \newcommand{\invmidarrow}{\tikz \draw[rotate=180,-Stealth,line width =0.3mm,draw=\edgecolor] %
+    (-0.3,0) -- ++(0.3,0);}
+  \tikzstyle{connection}=[thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.6]
+  \def\zinput{N}
+  \pic[shift={(1,0,0)}] at (0,0,0) {RightBandedBox={name=cr1, caption=conv1, %
+      xlabel={{"K", ""}},zlabel=\zinput, depthpos=0.3, %
+      fill=\ConvColor,bandfill=\ConvReluColor,%
+      height=2, width=3, depth=20}};
+
+  % (+) means: 1.5 cm before the previously defined coordinate (cr1-west)
+  \draw[connection] (cr1-west) + (-1.5, 0, 0) -- node {\midarrow} (cr1-west);
+  \draw[connection] (cr1-east) -- node {\midarrow} +(1.5, 0, 0);
+\end{tikzpicture}
