@@ -14,7 +14,7 @@ testing e la sperimentazione del prototipo realizzato.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Weights \& Biases}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Rete Neurale Utilizzata}
+\section{Architettura della Rete Neurale}
 \begin{figure}[H]
   % \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{./img/architettura.pdf}}%
   \makebox[\textwidth][c]{%
@@ -179,9 +179,58 @@ che il coefficiente selezionato sia sufficientemente grande.
 
 {\large TODO\@: Addestrare un modello senza bussola in input e confrontare i risultati}
 \subsection{Output del Modello}
+L'output del modello, indicato in Figura~\ref{fig:crynet} come \(\yhattwo\),
+consiste in una coppia di coordinate reali che indica la posizione prevista
+dell'utente all'interno dell'edificio, dopo essere stata opportunamente
+corretta in base alle conoscenze relative alla precedente locazione
+dell'utilizzatore.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Dataset Augmentation e Preprocessing}
+Poichè il processo di raccolta dei dati è particolarmente dispendioso, sono
+state impiegate tecniche di \emph{data augmentation} al fine di arricchire il
+dataset di addestramento. Un insieme di dati più grande corrisponde spesso a
+una maggiore precisione del modello e consente di utilizzare architetture più
+profonde. Il problema dell'over fitting descresce infatti di intensità con il
+tendere della cardinalità del dataset di addestramento a infinito.
+
+Le tecniche di data augmentation possono essere interpretate come dei metodi
+per regolarizzare il modello: esse si basano infatti sull'idea di introdurre rumore
+all'interno dei dati e rendere quindi la rete neurale più robusta alla
+corruzione delle informazioni di input. Modellare in qualche modo questo tipo
+di rumore casuale all'interno del modello permette di limitare la dipendenza
+dell'output da eventuali variabili latenti non osservate.
 \subsection{Jittering}
+Si può assumere che l'errore intrinseco della raccolta dei dati, dovuto a
+limiti tecnologici o a fenomeni non osservati, segua una distribuzione
+gaussiana a media nulla. Risulta quindi possibile alterare l'input del
+modello sommandolo con un cosiddetto rumore bianco, ottenendo così un dataset
+di dimensione doppia rispetto all'originale. 
+
+Sia \(D = \{\bm x_1, \dotsc, \bm x_m\}\) il dataset di addestramento, con 
+\(\bm x_i \in \mathbb{R}^n \). Siano poi \(\bm z_1,
+  \dotsc, \bm z_m \) variabili aleatorie con distribuzione normale
+multidimensionale tali che: 
+\begin{align*}
+& \bm z_i \in \mathbb{R}^n, \\ 
+& \bm z_i \sim \mathcal{N}(0, \Sigma).
+\end{align*}
+La matrice \(\Sigma\), detta di covarianza, determina la varianza della
+distribuzione lungo ciascuna dimensione dello spazio. In questo contesto si
+assume \(\Sigma=\sigma^2I\). Applicando il rumore gaussiano ad ogni input
+iniziale si ottiene \(D' = \{\bm x_1 + \bm z_1, \dotsc, \bm x_m + \bm z_m\}\).
+Il dataset finale consiste nell'unione dei due insiemi \( D \cup D'\).
+
+Un esempio illustrativo del jittering è mostrato in Figura~\ref{fig:jitter}.
+\begin{figure}[!htp]
+  \includegraphics{./img/jittering.eps}
+  \caption{Jittering applicato ai segnali emessi da un beacon in un intervallo
+    di tempo limitato. L'asse \(x\) descrive il tempo, mentre l'asse \(y\)
+    indica la potenza del segnale ricevuto, in dB, al momento \(t\).}% 
+  \label{fig:jitter}%
+\end{figure}
+
+
+
 \subsection{Ridimensionamento (Scaling)}
 \subsection{Magnitude Warping}
 \subsection{Permutazione di Sottoinsiemi (Subset Shuffling)}
