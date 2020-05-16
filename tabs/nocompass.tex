@@ -1,0 +1,17 @@
+\begin{table}[htp]
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    Modello & Loss & MAE & RMSE & MaxAE \\
+    \midrule
+    Baseline      & 0.7796 & 0.307 & 0.6716 & 3.001 \\
+    Senza Bussola & 1.619 & 0.447 & 0.9784 & 4.5 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Varie metriche a confronto per i due modelli in esame:
+    \emph{Baseline} è il modello finale, mentre il secondo differisce dal primo
+    soltanto dall'uso dei valori della bussola, che vengono semplicemente
+    scartati. Le metriche si riferiscono al dataset di \emph{test}, ovvero al
+    processo di valutazione successivo alla fase di addestramento.}%
+  \label{tab:nocompass}%
+\end{table}

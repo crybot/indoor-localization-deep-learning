@@ -126,7 +126,11 @@ valori RSSI dei segnali wireless in modo considerevole, poichè è sufficiente c
 l'utente volti le spalle a un sottoinsieme dei beacon attivi per introdurre
 rumore all'interno del sistema. Utilizzando il valore emesso dalla bussola
 dello smartphone, è possibile rendere il modello consapevole dell'orientamento
-dell'utente e attenuare il rumore introdotto dal \emph{body shadowing}.
+dell'utente e attenuare il rumore introdotto dal \emph{body shadowing}. I
+risultati ottenuti dall'utilizzo di questo input sono illustrati in
+Tabella~\ref{tab:nocompass}, la quale mette in relazione il modello finale con
+uno che non considera l'input della bussola.
+\input{./tabs/nocompass}
 
 L'input corrispondente al sensore magnetico è un valore scalare \(\alpha \in
   \mathbb{R}, \) con \(0 \leq \alpha \leq 360\), in cui il valore \(0\) indica
@@ -177,7 +181,7 @@ Utilizzando l'output ausiliario descritto, pesato con un coefficiente non
 nullo, vienete garantito che lo scenario appena descritto non si verifichi, a patto
 che il coefficiente selezionato sia sufficientemente grande.
 
-{\large TODO\@: Addestrare un modello senza bussola in input e confrontare i risultati}
+
 \subsection{Output del Modello}
 L'output del modello, indicato in Figura~\ref{fig:crynet} come \(\yhattwo\),
 consiste in una coppia di coordinate reali che indica la posizione prevista
@@ -222,13 +226,12 @@ Il dataset finale consiste nell'unione dei due insiemi \( D \cup D'\).
 
 Un esempio illustrativo del jittering è mostrato in Figura~\ref{fig:jitter}.
 \begin{figure}[!htp]
-  \includegraphics{./img/jittering.eps}
+  \centering\includegraphics[width=0.9\textwidth]{./img/jittering.eps}
   \caption{Jittering applicato ai segnali emessi da un beacon in un intervallo
     di tempo limitato. L'asse \(x\) descrive il tempo, mentre l'asse \(y\)
     indica la potenza del segnale ricevuto, in dB, al momento \(t\).}% 
   \label{fig:jitter}%
 \end{figure}
-
 
 
 \subsection{Ridimensionamento (Scaling)}
