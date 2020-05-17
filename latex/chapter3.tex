@@ -86,7 +86,7 @@ strutturati:
 Un esempio di blocco convoluzionale è illustrato in Figura~\ref{fig:cnnblock},
 mentre in Figura~\ref{fig:crynet} sono mostrati anche i livelli di pooling,
 rappresentati da una superficie rossa apposta accanto i blocchi convoluzionali.
-\begin{figure}[!htp]
+\begin{figure}
   \makebox[\textwidth][c]{%
     \includetikz{0.75}{./img/cnnblock}%
   }%
@@ -108,13 +108,12 @@ dati di addestramento del modello, con l'obiettivo di regolarizzare
 quest'ultimo. Applicare il rumore all'output dei livelli intermedi della rete,
 piuttosto che al dataset iniziale, consente di manipolare più profondamente la
 rappresentazione dei dati imparata dal modello, rendendolo conseguentemente più
-robusto rispetto alle variazioni dei segnali di input.
+robusto rispetto alle variazioni dei segnali di input. Gli effetti
+dell'utilizzo del dropout gaussiano sono illustrati in
+Tabella~\ref{tab:nogaussdrop}. \input{./tabs/nogaussdrop}
 
 L'output dell'ultimo blocco convoluzionale è infine seguito da un livello di
 pooling globale e dall'applicazione del dropout.
-
-{\large TODO\@: addestrare un modello senza dropout gaussiano e confrontare i %
-  risultati}
 \subsection{Uso della Bussola e Output Ausiliario}
 L'utilizzo dei valori forniti dal sensore magnetico dello smartphone sono
 giustificati dal voler mitigare il cosiddetto effetto del \emph{body
