@@ -1,0 +1,21 @@
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    Modello         &  Loss  &  MAE   &  RMSE  & MaxAE \\
+    \midrule
+    No Augmentation & 1.2090 & 0.4072 & 0.7947 & 3.481 \\
+    Replicazione Dataset & 1.076 & 0.3168 & 0.8344 & 3.958 \\
+    Baseline        & 0.7796 & 0.3070 & 0.6716 & 3.001 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Metriche di errore ottenute dal dataset di \emph{test} per tre
+    modelli diversi: il primo non processa in alcun modo i dati originali,
+    il secondo replica il dataset più volte e l'ultimo è il modello finale
+    comprensivo di data augmentation. Come si può notare, l'ultimo modello è il
+    migliore per tutte le metriche esaminate, ma è molto vicino al secondo per
+    quanto riguarda il MAE\@. Tuttavia la differenza è notevole in termini di
+    RMSE, indicando una varianza più alta nel modello privo di data
+    augmentation.}%
+  \label{tab:noaugment}%
+\end{table}

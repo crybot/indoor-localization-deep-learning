@@ -193,7 +193,7 @@ Poichè il processo di raccolta dei dati è particolarmente dispendioso, sono
 state impiegate tecniche di \emph{data augmentation} al fine di arricchire il
 dataset di addestramento. Un insieme di dati più grande corrisponde spesso a
 una maggiore precisione del modello e consente di utilizzare architetture più
-profonde. Il problema dell'over fitting descresce infatti di intensità con il
+profonde. Il problema dell'overfitting descresce infatti di intensità con il
 tendere della cardinalità del dataset di addestramento a infinito.
 
 Le tecniche di data augmentation possono essere interpretate come dei metodi
@@ -202,6 +202,11 @@ all'interno dei dati e rendere quindi la rete neurale più robusta alla
 corruzione delle informazioni di input. Modellare in qualche modo questo tipo
 di rumore casuale all'interno del modello permette di limitare la dipendenza
 dell'output da eventuali variabili latenti non osservate.
+
+In Tabella~\ref{tab:noaugment} sono mostrati i risultati sperimentali ottenuti
+dall'utilizzo delle tecniche di data augmentation descritte nel seguito.
+\input{./tabs/noaugment}
+
 \subsection{Jittering}
 Si può assumere che l'errore intrinseco della raccolta dei dati, dovuto a
 limiti tecnologici o a fenomeni non osservati, segua una distribuzione
@@ -232,8 +237,29 @@ Un esempio illustrativo del jittering è mostrato in Figura~\ref{fig:jitter}.
   \label{fig:jitter}%
 \end{figure}
 
-
 \subsection{Ridimensionamento (Scaling)}
+La tecnica del ridimensionamento consiste nell'applicare del rumore
+moltiplicativo costante al segnale di ingresso, mantenendone quindi intatta la
+struttura, ma modificandone l'ampiezza. L'utilizzo dello \emph{scaling} è
+giustificato dall'assunzione che, per lo scopo della localizzazione indoor,
+l'informazione contenuta in una serie temporale di segnali è invariante
+rispetto a piccole variazioni dell'ampiezza dei segnali, poichè queste
+potrebbero essere causate da fenomeni esterni non osservati.
+
+Utilizzando la stessa notazione della sezione precedente, definiamo una
+variabile aleatoria \(c \sim \mathcal{N}(1, \sigma^2)\) con distribuzione
+gaussiana a media unitaria e varianza \(\sigma^2\). Il singolo elemento del
+dataset a cui è applicato il ridimensionamento è quindi definito come:
+\[ \bm x' = c \bm x \] 
+Un esempio di scaling applicato ai segnali emessi da un beacon è illustrato in
+Figura~\ref{fig:scaling}.
+\begin{figure}[!htp]
+  \centering\includegraphics[width=0.9\textwidth]{./img/scaling.eps}
+  \caption{Illustrazione grafica del ridimensionamento di un segnale.}% 
+  \label{fig:scaling}%
+\end{figure}
+
+
 \subsection{Magnitude Warping}
 \subsection{Permutazione di Sottoinsiemi (Subset Shuffling)}
 \subsection{Deattivazione Selettiva}
