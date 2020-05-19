@@ -165,9 +165,9 @@ condizionato dal valore dell'input ausiliario \(\yold\). Poichè in fase di
 raccolta dei dati, la posizione precedente dell'utente non è nota, si assume
 che tale variabile aleatoria sia distribuita secondo una distribuzione normale
 centrata nella posizione del campionamento e con deviazione standard \(\sigma\)
-pari a una piccola costante, indicativa della variabilità relativa al moto di
-una persona mentre cammina (per esempio \( \sigma = 1 \)). Ciò implica che,
-qualora fosse \(\displaystyle \sum_i\| {\yold}_i - \bm y_i \|^2_2 < \sum_i \|
+pari a una piccola costante, indicativa della variabilità del moto di una
+persona mentre cammina (per esempio \( \sigma = 1 \)). Ciò implica che, qualora
+fosse \(\displaystyle \sum_i\| {\yold}_i - \bm y_i \|^2_2 < \sum_i \|
   {{}\yhattwo}_{i} - \bm y_i\|^2_2 \), cioè se la distanza media tra l'ultima
 posizione nota e l'effettiva posizione dell'utente durante il campionamento dei
 segnali, fosse minore della precisione media ottenibile dal modello, i
@@ -177,8 +177,13 @@ dell'utente per esprimere l'output del modello, garantirebbe infatti un errore
 inferiore rispetto al considerare anche i valori RSSI dei segnali.
 
 Utilizzando l'output ausiliario descritto, pesato con un coefficiente non
-nullo, vienete garantito che lo scenario appena descritto non si verifichi, a patto
-che il coefficiente selezionato sia sufficientemente grande.
+nullo, viene garantito che lo scenario appena descritto non si verifichi, a
+patto che il coefficiente selezionato sia sufficientemente grande. In
+Figura~\ref{fig:noauxcompare} il modello descritto è messo a confronto con uno
+in cui l'output ausiliario non ha peso all'interno della funzione di costo
+(\(c_1 = 0\)).
+
+\input{./img/noauxcompare}
 
 
 \subsection{Output del Modello}
@@ -230,7 +235,7 @@ Il dataset finale consiste nell'unione dei due insiemi \( D \cup D'\).
 
 Un esempio illustrativo del jittering è mostrato in Figura~\ref{fig:jitter}.
 \begin{figure}[!htp]
-  \centering\includegraphics[width=0.9\textwidth]{./img/jittering.eps}
+  \centering\includegraphics[width=0.7\textwidth]{./img/jittering.eps}
   \caption{Jittering applicato ai segnali emessi da un beacon in un intervallo
     di tempo limitato. L'asse \(x\) descrive il tempo, mentre l'asse \(y\)
     indica la potenza del segnale ricevuto, in dB, al momento \(t\).}% 
@@ -254,7 +259,7 @@ dataset a cui è applicato il ridimensionamento è quindi definito come:
 Un esempio di scaling applicato ai segnali emessi da un beacon è illustrato in
 Figura~\ref{fig:scaling}.
 \begin{figure}[!htp]
-  \centering\includegraphics[width=0.9\textwidth]{./img/scaling.eps}
+  \centering\includegraphics[width=0.7\textwidth]{./img/scaling.eps}
   \caption{Illustrazione grafica del ridimensionamento di un segnale.}% 
   \label{fig:scaling}%
 \end{figure}
