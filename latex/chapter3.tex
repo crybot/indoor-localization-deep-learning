@@ -15,7 +15,7 @@ testing e la sperimentazione del prototipo realizzato.
 \section{Weights \& Biases}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Architettura della Rete Neurale}
-\begin{figure}[H]
+\begin{figure}[!htp]
   % \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{./img/architettura.pdf}}%
   \makebox[\textwidth][c]{%
     \includetikz{0.75}{./img/architettura}%
@@ -108,9 +108,10 @@ dati di addestramento del modello, con l'obiettivo di regolarizzare
 quest'ultimo. Applicare il rumore all'output dei livelli intermedi della rete,
 piuttosto che al dataset iniziale, consente di manipolare più profondamente la
 rappresentazione dei dati imparata dal modello, rendendolo conseguentemente più
-robusto rispetto alle variazioni dei segnali di input. Gli effetti
-dell'utilizzo del dropout gaussiano sono illustrati in
-Tabella~\ref{tab:nogaussdrop}. \input{./tabs/nogaussdrop}
+robusto rispetto alle variazioni dei segnali di
+input\cite{noise-hidden-layers}. Gli effetti dell'utilizzo del dropout
+gaussiano sono illustrati in Tabella~\ref{tab:nogaussdrop}.
+\input{./tabs/nogaussdrop}
 
 L'output dell'ultimo blocco convoluzionale è infine seguito da un livello di
 pooling globale e dall'applicazione del dropout.
@@ -264,8 +265,45 @@ Figura~\ref{fig:scaling}.
   \label{fig:scaling}%
 \end{figure}
 
-
 \subsection{Magnitude Warping}
+Data la natura delle perturbazioni a cui sono soggetti i segnali dei beacon nel
+contesto della localizzazione indoor, è lecito pensare che tali distorsioni
+possano verificarsi anche in periodi particolarmente limitati del tempo e con
+una intensità relativamente elevata. Tale assunzione permette di sviluppare una
+tecnica di data augmentation a cui possiamo dare il nome di \emph{magnitude
+  warping}, la quale prevede di deformare l'intensità del segnale in punti
+limitati della serie temporale, applicando del rumore moltiplicativo a una
+porzione di sottosequenze, non necessariamente disgiunte, del segnale di input.
+In Figura~\ref{fig:warping} è mostrato graficamente l'utilizzo di tale tecnica.
+Il Listato~\ref{alg:warping} descrive invece i dettagli implementativi del
+magnitude warping.
+\begin{algorithm}%
+  \begin{algorithmic}
+    \Function{MagnitudeWarping}{$\bm v,\, \sigma^2,\, \mathit{MaxLength},\, \mathit{MaxPeaks}$}
+      \State $\bm v' \gets \bm v$
+      \State $n \sim U(1,\, \mathit{MaxPeaks})$
+      \For {$\mathit{peak} \gets 0 \dotsc n$}
+        \State $\ell \sim U(1,\, \mathit{MaxLength})$
+        \State $p \sim U(0,\, length(\bm v) - \ell)$
+        \State $m \sim \mathcal{N}(1, \sigma^2)$
+        \For {$i \gets p \dotsc p + \ell $}
+        \State $\bm v'[i] \gets m \cdot \bm v'[i]$
+        \EndFor
+      \EndFor
+    \EndFunction
+  \end{algorithmic}
+  \caption{Descrizione algoritmica del funzionamento del magnitude warping}
+  \label{alg:warping}
+\end{algorithm}
+
+\begin{figure}[!tp]
+  \centering
+  \includegraphics[width=0.60\textwidth]{./img/warping.eps}
+  \includegraphics[width=0.60\textwidth]{./img/warping2.eps}
+  \caption{Esempi grafici di magnitude warping applicato a un segnale.}% 
+  \label{fig:warping}%
+\end{figure}
+
 \subsection{Permutazione di Sottoinsiemi (Subset Shuffling)}
 \subsection{Deattivazione Selettiva}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
