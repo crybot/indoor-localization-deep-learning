@@ -305,6 +305,18 @@ magnitude warping.
 \end{figure}
 
 \subsection{Permutazione di Sottoinsiemi (Subset Shuffling)}
+Un'altra assunzione che è possibile fare riguardo l'input del problema è che
+l'ordine con cui si verificano variazioni all'interno della serie temporale non
+dovrebbe avere peso nell'estrazione di informazioni o di pattern dai segnali.
+Per questo motivo è stata implementata una tecnica di \emph{shuffling} in cui
+sottoinsiemi dell'input vengono scambiati tra di loro secondo permutazioni
+casuali. Tale metodo è illustrato in Figura~\ref{fig:shuffling}
+\begin{figure}[!tp]
+  \centering
+  \includegraphics[width=0.70\textwidth]{./img/shuffling.eps}
+  \caption{Shuffling di sottoinsiemi applicato a una serie temporale.}% 
+  \label{fig:shuffling}%
+\end{figure}
 \subsection{Deattivazione Selettiva}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Addestramento del Modello}
