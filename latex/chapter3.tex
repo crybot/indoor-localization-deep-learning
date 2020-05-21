@@ -7,12 +7,29 @@ per il progetto di locallizazione indoor, inclusa la rete neurale, le librerie
 utilizzate, gli ambienti di sviluppo e gli strumenti che hanno coadiuvato il
 testing e la sperimentazione del prototipo realizzato.
 \section{TensorFlow}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Keras}
+TensorFlow è una libreria open source Python che fornisce metodi e costrutti per definire
+grafi computazionali e calcolarne automaticamente la derivata. Ciò consente di
+costruire reti neurali arbitrariamente complesse ed addestrarle tramite le
+implementazioni degli algoritmi di apprendimento fornite dalla libreria. La
+versione della libreria utilizzata è TensorFlow 2.2.1, la quale consente di
+definire funzionalmente modelli di machine learning, interfacciandosi con
+Keras, una API ad alto livello progettata per essere comprensibile e di facile
+utilizzo.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Google Colab}
+L'ambiente di sviluppo principalmente utilizzato durante il processo di
+prototipazione è stato Google Colab: una piattaforma cloud hosted progettata da
+Google per l'esecuzione di Notebook Python e pensata per lo sviluppo di modelli
+di machine learning. Google Colab mette a disposizione gratuitamente sistemi di
+elaborazione con acceleratori computazionali quali GPU e TPU\@.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Weights \& Biases}
+Per la gestione sistematica dei test, dei risultati sperimentali e per
+l'ottimizzazione degli iperparametri del modello, è stato utilizzato Weights \&
+Biases. Esso fornisce una suite di strumenti per il tracking degli esperimenti
+di machine learning grazie alla registrazione automatica delle metriche di
+errore durante la fase di addestramento, del salvataggio dei modelli e ai vari
+tool grafici accessibili dalla piattaforma web di Weights \& Biases.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Architettura della Rete Neurale}
 \begin{figure}[!htp]
@@ -92,7 +109,7 @@ rappresentati da una superficie rossa apposta accanto i blocchi convoluzionali.
   }%
   \caption{Singolo blocco convoluzionale: la parte chiara indica l'operazione
     di convoluzione, mentre l'ombreggiatura sulla destra illustra la funzione
-    di attivazione ReLU. \(K\) è il numero di filtri utilizzati e di
+    di attivazione ReLU\@. \(K\) è il numero di filtri utilizzati e di
     conseguenza equivale al numero di feature map prodotte, mentre \(N\) è la
     lunghezza della serie temporale. Il processo di Batch normalization è
     omesso dalla schematizzazione.}%
@@ -376,8 +393,5 @@ stabilizzare il modello con un filtro di Kalman, come descritto nel
 Paragrafo~\ref{sec:kalman}. Utilizzando un ensemble di cinque modelli è stato
 possibile ottenere i risultati illustrati in Tabella~\ref{tab:ensemble}.
 \input{./tabs/ensemble}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Compilazione e Deploy del Modello}
 
 \end{document}
