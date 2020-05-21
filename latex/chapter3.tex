@@ -281,15 +281,16 @@ magnitude warping.
   \begin{algorithmic}
     \Function{MagnitudeWarping}{$\bm v,\, \sigma^2,\, \mathit{MaxLength},\, \mathit{MaxPeaks}$}
       \State $\bm v' \gets \bm v$
-      \State $n \sim U(1,\, \mathit{MaxPeaks})$
-      \For {$\mathit{peak} \gets 0 \dotsc n$}
-        \State $\ell \sim U(1,\, \mathit{MaxLength})$
-        \State $p \sim U(0,\, length(\bm v) - \ell)$
-        \State $m \sim \mathcal{N}(1, \sigma^2)$
-        \For {$i \gets p \dotsc p + \ell $}
+      \State $sample\; n \sim \mathit{Uniform}(1,\, \mathit{MaxPeaks})$
+      \For {$\mathit{peak} = 0, \dotsc, n$}
+        \State $sample\; \ell \sim \mathit{Uniform}(1,\, \mathit{MaxLength})$
+        \State $sample\; p \sim \mathit{Uniform}(0,\, length(\bm v) - \ell)$
+        \State $sample\; m \sim \mathcal{N}(1, \sigma^2)$
+        \For {$i = p, \dotsc, p + \ell $}
         \State $\bm v'[i] \gets m \cdot \bm v'[i]$
         \EndFor
       \EndFor
+      \Return $\bm v'$
     \EndFunction
   \end{algorithmic}
   \caption{Descrizione algoritmica del funzionamento del magnitude warping}
@@ -318,10 +319,64 @@ casuali. Tale metodo è illustrato in Figura~\ref{fig:shuffling}
   \label{fig:shuffling}%
 \end{figure}
 \subsection{Deattivazione Selettiva}
+Per rendere il modello più robusto alla eventuale perdita di segnali di alcuni
+beacon, è stata introdotta una tecnica di data augmentation che prevede la
+conversione dei valori della serie temporale di un beacon in un
+\emph{placeholder} che indica la mancata ricezione di segnale. Nell'ambito di
+questo progetto, tale valore è $-200$.
+
+Questa strategia è simile a quella del dropout, ma al posto del valore nullo,
+l'input viene rimpiazzato con il placeholder scelto. A gestire la frequenza con
+cui un beacon viene disattivato all'interno del dataset è un iperparametro di
+tipo percentuale.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Addestramento del Modello}
+Il modello descritto è stato addestrato su un dataset di $279457$ elementi,
+ottenuti applicando le tecniche di data augmentation introdotte
+precedentemente. L'algoritmo utilizzato per l'addestramento è una variante del
+metodo del gradiente stocastico con momento, che prende il nome di \emph{Adam}.
+Questo ottimizzatore gestisce autonomamente l'iperparametro della rete che
+determina l'entità dell'aggiornamento dei parametri del modello: il cosiddetto
+\emph{learning rate}. A coadiuvare l'algoritmo è stato inserito un metodo,
+guidato dal dataset di validazione, che riduce esponenzialmente il learning
+rate ogni volta che la procedura di addestramento raggiunge uno stallo.
+
+Un ulteriore metodo di regolarizzazione introdotto è quello dell'\emph{Early %
+  Stopping}, il quale termina precocemente l'addestramento quando una
+determinata metrica sul dataset di validazione non migliora per un periodo di
+tempo predefinito. Quando ciò accade, la configurazione
+del modello che ha ottenuto i migliori risultati viene ripristinata.
+Empiricamente si è visto che il metodo dell'early stopping riduce l'errore
+commesso dal modello sul dataset di validazione, ma è stato anche mostrato come
+tale algoritmo agisca da regolarizzatore per la rete in un modo simile a quello
+della regolarizzazione L2\cite{bishop-regularization}.
+
+Infine, al termine della procedura di addestramento, il modello ottenuto viene
+valutato sul dataset di test e i risultati vengono salvati per essere in futuro
+analizzati e confrontati con altri modelli.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Ensembling}
+Al fine di ottenere un errore di generalizzazione minore e migliorare
+ulteriormente l'affidabilità del sistema di localizzazione indoor, sono stati
+addestrati indipendentemente, e con differenti configurazioni di
+iperperparamentri, vari modelli, i quali sono stati successivamente
+aggregati tramite il metodo dell'\emph{ensembling}. Tale tecnica consiste
+nell'unire le previsioni di modelli diversi per formarne una il cui errore sia
+statisticamente più basso, a patto che gli errori commessi dai singoli modelli
+siano sufficientemente non correlati\cite{goodfellow}. In un problema di regressione, ad esempio, per
+aggregare l'output di un insieme di modelli è possibile utilizzare la media aritmetica
+delle varie previsioni.
+
+Un ulteriore vantaggio dell'utilizzo di un ensemble di modelli, è la
+possibilità di ottenere un'indicazione sulla variabilità della previsione,
+calcolando la deviazione standard dell'output dei modelli. Ciò fornisce
+un'informazione sulla confidenza dell'ensemble relativamente alla previsione di
+un determinato output. Tale informazione può essere poi sfruttata al fine di
+stabilizzare il modello con un filtro di Kalman, come descritto nel
+Paragrafo~\ref{sec:kalman}. Utilizzando un ensemble di cinque modelli è stato
+possibile ottenere i risultati illustrati in Tabella~\ref{tab:ensemble}.
+\input{./tabs/ensemble}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Compilazione e Deploy del Modello}
 
