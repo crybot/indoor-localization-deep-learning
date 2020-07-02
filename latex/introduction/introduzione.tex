@@ -3,50 +3,59 @@
 %Problema
 \section{Localizzazione Indoor}
 Il problema della Localizzazione Indoor consiste nell'individuazione di un
-utente all'interno di uno spazio chiuso e in riferimento a un sistema di
+utente all'interno di uno spazio chiuso, in riferimento a un sistema di
 coordinate predefinito. Tale sistema di coordinate, relativo ad un determinato
 edificio, può essere poi espresso in termini georeferenziali conoscendo la
-precisa dislocazione geografica del locale in questione. \\
+precisa dislocazione geografica del locale in questione. 
+
 La localizzazione indoor apre le porte a diverse possibilità nel campo
-dell'esperienza utente all'interno di edifici pubblici, nel settore
-della gestione dei flussi di persone, della sicurezza e della contingentazione.
-Attraverso l'impiego di tale tecnologia è possibile coadiuvare la navigazione
-degli utenti all'interno di edifici complessi e migliorare l'esperienza
-individuale di persone affette da disabilità. Per ottenere questi risultati è
-però richiesto un certo grado di precisione, di affidabilità, di efficienza e
-di sicurezza nella gestione della privacy dei dati di localizzazione degli
-utenti. Inoltre la tecnologia scelta per risolvere il problema, per essere
-fruibile, deve avere come ulteriore requisito il basso impatto economico.
+dell'esperienza utente all'interno di edifici pubblici, nel settore della
+gestione dei flussi di persone, della sicurezza e della contingentazione. Tali
+problematiche si fanno ancora più rilevanti a fronte della recente epidemia di
+Covid-19 che ha colpito il pianeta. Attraverso l'impiego di tale tecnologia è
+possibile coadiuvare la navigazione degli utenti all'interno di edifici
+complessi, assicurare il rispetto delle norme di distanziamento sociale
+interpersonale e migliorare l'esperienza individuale di persone affette da
+disabilità. Per ottenere questi risultati è però richiesto un certo grado di
+precisione, di affidabilità, di efficienza e di sicurezza nella gestione della
+privacy dei dati di localizzazione degli utenti. Inoltre la tecnologia scelta
+per risolvere il problema, per essere fruibile, deve avere come ulteriore
+requisito il basso impatto economico.
 
 \section{Soluzioni Tecnologiche}
 %Letteratura
-Nel corso degli anni sono state implementati diversi sistemi di
-localizzazione indoor, che possiamo dividere in due macrocategorie: soluzioni
-ad-hoc e soluzioni che sfruttano tecnologie esistenti. Nel primo caso si
-fornisce all'utente l'attrezzatura necessaria ad essere localizzato, mentre nel
-secondo si utilizza un dispositivo mobile di proprietà dell'utilizzatore.
-Spesso tale dispositivo è uno smartphone. \\ I sistemi che implementano
-tecnologie sviluppate ad-hoc, sono spesso più efficienti, più precisi e
-flessibili. Tuttavia, il loro impiego rimane limitato a causa dell'alto costo
-di progettazione, installazione e di gestione. È poi richiesto che ad ogni
-utente che intenda essere localizzato sia assegnato un dispositivo che si
-interfacci col sistema impiegato. \\
+Nel corso degli anni sono state implementati diversi sistemi di localizzazione
+indoor, che possiamo dividere in due macrocategorie: soluzioni ad-hoc e
+soluzioni che sfruttano tecnologie esistenti. Nel primo caso si fornisce
+all'utente l'attrezzatura necessaria ad essere localizzato, mentre nel secondo
+si utilizza un dispositivo mobile di proprietà dell'utilizzatore.  Spesso tale
+dispositivo è uno smartphone. 
+
+I sistemi che implementano tecnologie sviluppate ad-hoc, sono spesso più
+efficienti, più precisi e flessibili. Tuttavia, il loro impiego rimane limitato
+a causa dell'alto costo di progettazione, installazione e di gestione. È poi
+richiesto che ad ogni utente che intenda essere localizzato sia assegnato un
+dispositivo che si interfacci col sistema impiegato.
+
 Per l'impiego su larga scala, un sistema di localizzazione indoor deve essere
 facilmente utilizzabile dalle masse e non deve richiedere particolari requisiti
-tecnologici.  \\
+tecnologici.
 
 {\large TODO: Inserire riferimenti bibliografici che mettano in comparazione le
   varie tecnologie utilizzate, ad-hoc e non, e in particolare mostrino i
   risultati dei sistemi che sfruttano il Bluetooth.}
 
 \section{Bluetooth Low Energy}
-La tecnologia \emph{Bluetooth} è talmente pervasiva che
-ogni smartphone in circolazione ne implementa il protocollo, mostrandosi
-particolarmente adeguata alla risoluzione del problema in esame. Nello
-specifico, \emph{Bluetooth Low Energy} (BLE) è un protocollo che riduce
-notevolmente il consumo energetico dei dispositivi che ne sfruttano le
-capacità. \\
-La soluzione riportata in questo documento prevede l'utilizzo di una serie di
+La tecnologia \emph{Bluetooth} è talmente pervasiva che ogni smartphone in
+circolazione ne implementa il protocollo, mostrandosi particolarmente adeguata
+alla risoluzione del problema in esame. Nello specifico, \emph{Bluetooth Low
+  Energy} (BLE) è un protocollo che riduce notevolmente il consumo energetico
+dei dispositivi che lo utilizzano. La tecnologia BLE viene utilizzata dalle
+moderne API di \emph{contact tracing} sviluppate da Apple e Google, nonchè
+dalla applicazione Immuni\cite{immuni} per il tracciamento dei contagi di
+Covid-19\cite{apple-google}.
+
+La soluzione riportata in questo elaborato prevede l'utilizzo di una serie di
 beacon BLE programmabili, ciascuno installato in un punto significativo
 dell'edificio e configurato per emettere un segnale broadcast con una frequenza
 di circa 50Hz. La potenza dei segnali viene quindi utilizzata per produrre,
@@ -56,19 +65,21 @@ viene reso possibile da una fase preliminare in cui viene mappata la superficie
 del locale raccogliendo i segnali ricevuti dai beacon in vari punti. Per ogni
 punto della superficie mappato si registra una serie temporale di segnali, dei
 quali si considera solo il valore \emph{RSSI}, ovvero la potenza del segnale
-nel punto in cui questo viene ricevuto. \\
+nel punto in cui questo viene ricevuto.
+
 Il modello utilizzato è di fatto completamente agnostico rispetto
 all'ubicazione dei beacon installati, fin quando questa sia unica e non mutata
-nel tempo. \\
+nel tempo.
+
 L'utilizzo di tale sistema assicura il completo anonimato dell'utente, il quale
 non necessita di condividere la propria posizione, essendo quest'ultima
 calcolata direttamente sul suo smartphone in funzione dei segnali che riceve.
 
 % Contenuto
-Questa tesi si pone l'obiettivo di descrivere nello specifico la rete neurale
-progettata per risolvere il problema, le tecniche utilizzate per alzare il
-grado di precisione del modello e le principali differenze rispetto a modelli
-già esistenti. \\
+Questo elaborato si pone l'obiettivo di descrivere nello specifico la rete
+neurale progettata per risolvere il problema, le tecniche utilizzate per alzare
+il grado di precisione del modello e le principali differenze rispetto a
+modelli già esistenti.
 
 {\large TODO: introdurre breve descrizione dei capitoli }
 
