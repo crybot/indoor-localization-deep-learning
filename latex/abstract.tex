@@ -1,36 +1,31 @@
 \documentclass{standalone} 
 \begin{document}
-% \section{Background}
-Il problema della Localizzazione Indoor si è rivelato di particolare interesse
-pratico negli ultimi anni. Questa tesi mostra come moderne tecniche di Deep
-Learning possano risultare determinanti nella corretta risoluzione di tale
-problema.
-\\
-% \section{Methods}
-L'approccio analizzato sfrutta una rete neurale convoluzionale (CNN) profonda:
-l'input del modello è caratterizzato da una serie temporale di segnali
-broadcast \emph{Bluetooth Low Energy} (BLE) emessi da un insieme di Beacon
-disposti all'interno dell'edificio adibito alla Localizzazione Indoor, mentre
-l'output è una coppia di coordinate relative alla posizione all'interno
-dell'edificio stesso. Sono state inoltre utilizzate varie tecniche di
-\emph{data augmentation} per produrre un dataset di grandi dimensioni sulla
+I sistemi di localizzazione indoor, ovvero i sistemi che permettono la
+localizzazione di dispositivi all’interno di un ambiente chiuso, dove non è
+possibile sfruttare la copertura del sistema GPS, sono stati oggetto di
+notevole interesse. Questo elaborato illustra una soluzione tecnologica al
+problema della localizzazione indoor basata sull’uso di strumenti di machine
+learning. La soluzione proposta sfrutta una rete neurale convoluzionale (CNN)
+profonda. I dati di input del modello costituiscono una serie temporale di
+segnali broadcast \emph{Bluetooth Low Energy} (BLE) emessi da un insieme di
+Beacon disposti all’interno dell’edificio oggetto della Localizzazione Indoor,
+mentre l’output è una coppia di coordinate relative alla posizione all’interno
+dell’edificio stesso. La soluzione inoltre utilizza alcune tecniche di
+\emph{data augmentation} per generare un dataset di grandi dimensioni sulla
 base dei campionamenti dei segnali effettuati in loco.
-\\
-% \section{Results}
-A seguito dell'addestramento, il modello utilizzato ha mostrato un errore medio
-assoluto (MAE) sul dataset di test pari a \emph{30cm}, esibendo una discreta
+
+A seguito dell’addestramento, il modello utilizzato ha mostrato un errore medio
+assoluto (MAE) sul dataset di test pari a \emph{30cm}, esibendo una buona
 affidabilità anche rispetto a variazioni significative dei segnali dovute al
-rumore ambientale. Un ensemble di modelli, ognuno addestrato con diversi
-iperparametri, ha permesso di ridurre l'errore medio fino a circa \emph{26cm}.
-\\
-Il modello prodotto risulta eseguibile in tempo reale su dispositivi
-mobile con ridotte capacità computazionali, rendendolo particolarmente adatto
-alla 
-% \section{Conclusion}
-cosiddetta navigazione \emph{``blue-dot``} all'interno di contesti Indoor.
-Tuttavia si evidenzia come la variazione dell'output del modello possa
-risultare in una navigazione poco fluida. Per arginare questo problema viene
-applicato un filtro di Kalman al modello e viene sfruttato il sensore inerziale
-dello smartphone per produrre un'euristica utile a individuare i movimenti
-dell'utente.  
+rumore ambientale. Per ridurre ulteriormente l’errore medio  è stato costruito
+un insieme di modelli, ognuno addestrato con diversi iperparametri. Questa
+tecnica ha permesso di ridurre l’errore medio fino a circa \emph{26cm}.
+
+Il modello prodotto risulta eseguibile in tempo reale su dispositivi mobile con
+ridotte capacità computazionali, rendendolo particolarmente adatto alla
+cosiddetta navigazione ``blue-dot'' all’interno di contesti Indoor. Tuttavia la
+variazione dell’output del modello ha originato una navigazione poco fluida.
+Per arginare questo problema è stato applicato un filtro di Kalman al modello e
+viene sfruttato il sensore inerziale dello smartphone per produrre un’euristica
+utile a individuare i movimenti dell’utente.
 \end{document}
