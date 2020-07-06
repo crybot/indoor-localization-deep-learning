@@ -63,7 +63,7 @@
 \captionsetup{margin=10pt,font={small},labelfont=bf} % caption styling
 
 
-\usepackage[backend=biber]{biblatex}
+\usepackage[backend=biber, sorting=none]{biblatex}
 \addbibresource{references.bib}
 
 % \definecolor{funcolor}{HTML}{ef8a62} %TODO: externalize styles
@@ -143,18 +143,7 @@
 \input{./latex/chapter4}
 
 \chapter{Conclusioni}
-\section{Risultati Sperimentali}
-\subsection{Metriche di Errore: MSE, MAE, MaxAE}
-
-\section{Lavori futuri}
-\subsection{Input a Lunghezza Variabile}
-\subsection{Reti Neurali Residuali}
-\subsection{Variational Autoencoder: Generazione di nuovi dati}
-\subsection{Transfer Learning}
-\subsection{Input Masking e Ricostruzione dei Segnali}
-\subsection{Transformers per Problemi di Regressione}
-\subsection{Simulatore BLE}
-\subsection{Posizionamento Magnetico}
+\input{./latex/chapter5}
 
 \appendix%
 \printbibliography%

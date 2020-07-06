@@ -1,0 +1,116 @@
+\begin{document}
+La navigazione indoor si è mostrata un problema particolarmente adatto alla
+risoluzione tramite tecniche di deep learning, anche se non esente da difetti.
+In particolare la difficoltà nella raccolta dati per l'addestramento del
+modello è l'ostacolo più grande in questo contesto e nel machine learning in
+generale. Tuttavia l'uso di tecniche di data augmentation ha mostrato come
+anche con una scarsa quantità iniziale di dati sia possibile generare un
+modello che stimi la posizione dell'utente all'interno di un edificio con
+precisione di circa 30cm.
+\section{Risultati Sperimentali}
+\large{TODO} %TODO
+\subsection{Metriche di Errore: RMSE, MAE, MaxAE}
+Le metriche utilizzate per valutare l'efficacia del modello sviluppato sono:
+\begin{itemize}
+  \item RMSE (Root Mean Squared Error): indica l'errore quadratico medio
+    commesso dal modello su un insiete di dati e sottomesso all'operazione di
+    radice quadrata. Tale metrica pone particolare peso sulla entità
+    dell'errore piuttosto che sul loro numero, per via dell'operazione di
+    elevazione al quadrato. L'adozione della radice permette di valutare la
+    metriche nell'unità di misura di riferimento; in questo caso il metro,
+    poichè le coordinate dell'output del modello sono espresse in metri. Un
+    basso valore di MSE può quindi comportare un alto numero di errori commessi
+    a fronte di una alta precisione.
+  \item MAE (Mean Absolute Error): indica l'errore assoluto medio commesso dal
+    modello ed è utilizzato per valutare l'efficacia del modello ponendo meno
+    attenzione sulla presenza di eventuali valori anomali. Come nel caso di
+    RMSE, anche questa metrica esprime una valutazione della precisione del
+    modello in metri.
+  \item MaxAE (Max Absolute Error): determina il massimo errore assoluto
+    commesso dal modello ed è utile per ottenere una stima superiore
+    della precisione del modello. Un alto valore di MaxAE correlato con un
+    basso valore di MAE indica una buona precisione media, ma con errori
+    significativi e sporadici. Questa metrica, poichè non standardizzata, non è
+    presente tra quelle di TensorFlow ed è stato necessario implementarla.
+\end{itemize}
+
+\section{Lavori futuri}
+Sulla base dei risultati sperimentali ottenuti e sulle difficoltà riscontrate
+durante la risoluzione del problema della locallizazione indoor, sono state
+individuate varie idee meritevoli di appronfondimento.
+\subsection{Input a Lunghezza Variabile}
+Nella attuale implementazione della rete neurale, le serie temporali dei
+segnali emessi dai beacon hanno dimensione fissa. Ciò significa che la
+dimensione del campionamento effettuata durante la fase di navigazione deve
+essere sempre la stessa, eventualmente aggiungendo valori fittizi alla serie
+temporale. Tuttavia il modello, grazie al livello di Pooling globale, permette
+di associare all'input una dimensione qualsiasi lungo l'asse temporale. Sarebbe
+quindi possibile addestrare il modello con input di lunghezza variabile e a
+tale scopo non sarebbe difficile arricchire il dataset con variazioni dei
+segnali originali modificandone la lunghezza. Non è da escludere che un simile
+approccio migliori ancora la precisione del modello, oltre a renderlo più
+flessibile in fase di utilizzo, non essendo più legato ad una dimensione
+costante per l'input dei segnali.
+\subsection{Reti Neurali Residuali}
+Le reti neurali residuali sono un particolare tipo di architettura,
+inizialmente ideato per le reti convoluzionali, che permette di ridurre
+notevolmente il problema della scomparsa del gradiente in modelli molto
+profondi\cite{resnet}. L'adozione di reti neurali residuali con un numero più
+elevato di livelli potrebbe consentire di migliorare la precisione del sistema
+di navigazione. Tuttavia l'incremento di profondità del modello andrebbe a
+discapito della performance in fase di addestramento e in fase di inferenza.
+Rimane quindi dubbia l'utilizzabilità di tali reti in contesti mobile.
+\subsection{Variational Autoencoder: Generazione di nuovi dati}
+I Variational Autoencoder (VAE) sono modelli di machine learning generativi.
+Essi vengono addestrati su un dataset per simulare la generazione di nuovi
+esempi, simili a quelli visti durante la procedura di addestramento\cite{vae}.
+Utilizzando un VAE è possibile arricchire ulteriormente il dataset di
+addestramento del modello proposto in questo elaborato, fornendo esempi nuovi e
+possibilmente migliori rispetto a quelli prodotti implementando manualmente
+tecniche di data augmentation.
+\subsection{Transfer Learning: Input Masking e Ricostruzione dei Segnali}
+Un possibile approccio alla risoluzione del problema della raccolta dei dati è
+quello che prende il nome di Transfer Learning. Addestrando prima un modello su
+una grande quantità di dati privi di target (il valore cioè che il modello
+dovrebbe inferire a partire dall'input) su un problema simile all'originale, è
+possibile sfruttare la configurazione dei parametri risultante per addestrare
+lo stesso modello su un nuovo problema, spesso più complesso, attraverso un
+nuovo dataset, stavolta comprendente l'output richiesto. Nel caso della
+localizzazione indoor, il problema di tipo non supervisionato potrebbe essere
+quello di ricostruire un segnale perturbato con del rumore, o alterato in
+qualche modo. Un approccio simile è utilizzato dai modelli di tipo
+Transformer\cite{attention}, come BERT\cite{bert} e il più recente
+GPT-3\cite{gpt3}, in cui l'input della rete viene mascherato nascondendone una
+parte e successivamente ricostruito. Se il modello così addestrato risulta
+essere in grado a ricostruire i segnali, è probabile che abbia individuato
+delle relazioni tra gli input dei diversi beacon. Ciò dovrebbe aiutare, nel
+contesto del problema originale, a costruire una rappresentazione significativa
+dell'input anche con una quantità relativamente piccola di dati e quindi
+risolvere il problema in modo più efficiente. La raccolta del primo dataset è
+effettuabile in modo molto economico navigando l'edificio in cui sono disposti
+i beacon e raccogliendo i segnali ricevuti.
+% \subsection{Transformers per Problemi di Regressione}
+\subsection{Simulatore BLE}
+L'utilizzo di un simulatore di propagazione dei segnali bluetooth all'interno
+di un edificio potrebbe eliminare completamente la necessità di raccogliere
+dati manualmente. L'implementazione di un tale simulatore dovrebbe prevedere
+la possibilità di configurare quest'ultimo impostando una planimetria di un
+locale e la disposizione dei beacon all'interno di esso. Poichè i segnali
+bluetooth emessi sono naturalmente soggetti a rumore ambientale, non dovrebbe
+essere necessario modellare la realtà con un elevato grado di precisione.
+L'introduzione nel simulatore di sorgenti di rumore casuale dovrebbe essere
+sufficiente a rappresentare con la giusta fedeltà il contesto del problema e,
+in questo senso, la resistenza al rumore e alle variazioni dell'input del
+modello dovrebbero garantire buoni risultati anche con dati sintetici.
+\subsection{Posizionamento Magnetico}
+La struttura di un edificio e i materiali in esso contenuti alterano il campo
+magnetico naturalmente emesso dalla Terra. Queste variazioni sono uniche e
+identificabili, rendendo possibile una tecnica di localizzazione indoor che
+prende il nome di posizionamento magnetico. Attraverso la mappatura di tutte le
+perturbazioni del campo magnetico causate dall'edificio stesso, è possibile
+implementare un sistema di navigazione con un discreto grado di
+precisione\cite{magnetic-positioning}. Il modello presentato in questo
+elaborato sfrutta già le informazioni ricavate dal sensore magnetico dello
+smartphone, come descritto nel Paragrafo~\ref{subsec:input}, ma il loro utilizzo
+può essere approfondito.
+\end{document}
