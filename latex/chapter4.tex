@@ -66,9 +66,7 @@ dello spazio. Tali valori vengono collezionati periodicamente e possono essere
 utilizzati per individuare la velocità dell'utente che si muove all'interno
 dell'edificio. Poichè l'accelerazione è la derivata della velocità, le
 componenti di quest'ultima possono essere ricavate dalla relazione:
-\[\langle v \rangle = \int_{t_0}^t{a(t) dt} \]
-dove con \( \langle v \rangle \) si indica la velocità media dell'utente
-durante l'intervallo di tempo \( \Delta t = t - t_0 \).
+\[v(t) = v_0 + \int_{t_0}^t{a(t) dt} \]
 
 Per calcolare numericamente il valore di tale integrale è stata utilizzata la
 regola del trapezio, la quale permette di approssimare il valore di un
@@ -76,9 +74,9 @@ integrale definito dividendone l'intervallo in \(n\) sottonsiemi disgiunti e
 calcolando l'area del trapezio contenuto tra l'asse delle ascisse e la funzione
 in ciascuno di essi. La somma di queste aree parziali rappresenta una
 approssimazione dell'integrale richiesto, la quale migliora al crescere di
-\(n\). Denotando con \(\bar{v}\) l'approssimazione dell'area dell'integrale
-dell'accelerazione ricavata dal sensore, si ha:
-\[ \bar{v} = \frac{t - t_0}{n} \sum_{i=0}^{n-1} {\frac{a(t_i) - a(t_{i+1})}{2}} \]
+\(n\). Denotando con \(\bar{v}(t)\) l'approssimazione dell'area dell'integrale
+dell'accelerazione ricavata dal sensore al tempo \(t\), si ha:
+\[ \bar{v}(t) = v_0 + \frac{t - t_0}{n} \sum_{i=0}^{n-1} {\frac{a(t_i) - a(t_{i+1})}{2}} \]
 
 La precisione dei sensori inerziali degli smartphone attuali è tuttavia
 piuttosto bassa ed è difficile ottenere una stima accurata della velocità
