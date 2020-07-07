@@ -1,0 +1,27 @@
+\begin{document}
+\chapter{Metriche di Errore}
+Le metriche utilizzate per valutare l'efficacia del modello sviluppato sono:
+\begin{itemize}
+  \item RMSE (Root Mean Squared Error): indica l'errore quadratico medio
+    commesso dal modello su un insiete di dati e sottomesso all'operazione di
+    radice quadrata. Tale metrica pone particolare peso sulla entità
+    dell'errore piuttosto che sul loro numero, per via dell'operazione di
+    elevazione al quadrato. L'adozione della radice permette di valutare la
+    metriche nell'unità di misura di riferimento; in questo caso il metro,
+    poichè le coordinate dell'output del modello sono espresse in metri. Un
+    basso valore di MSE può quindi comportare un alto numero di errori commessi
+    a fronte di una alta precisione.
+  \item MAE (Mean Absolute Error): indica l'errore assoluto medio commesso dal
+    modello ed è utilizzato per valutare l'efficacia del modello ponendo meno
+    attenzione sulla presenza di eventuali valori anomali. Come nel caso di
+    RMSE, anche questa metrica esprime una valutazione della precisione del
+    modello in metri.
+  \item MaxAE (Max Absolute Error): determina il massimo errore assoluto
+    commesso dal modello ed è utile per ottenere una stima superiore
+    della precisione del modello. Un alto valore di MaxAE correlato con un
+    basso valore di MAE indica una buona precisione media, ma con errori
+    significativi e sporadici. Questa metrica, poichè non standardizzata, non è
+    presente tra quelle di TensorFlow ed è stato necessario implementarla.
+\end{itemize}
+
+\end{document}

@@ -1,43 +1,34 @@
 \begin{document}
-La navigazione indoor si è mostrata un problema particolarmente adatto alla
-risoluzione tramite tecniche di deep learning, anche se non esente da difetti.
-In particolare la difficoltà nella raccolta dati per l'addestramento del
-modello è l'ostacolo più grande in questo contesto e nel machine learning in
-generale. Tuttavia l'uso di tecniche di data augmentation ha mostrato come
-anche con una scarsa quantità iniziale di dati sia possibile generare un
-modello che stimi la posizione dell'utente all'interno di un edificio con
-precisione di circa 30cm.
-\section{Risultati Sperimentali}
-\large{TODO} %TODO
-\subsection{Metriche di Errore: RMSE, MAE, MaxAE}
-Le metriche utilizzate per valutare l'efficacia del modello sviluppato sono:
-\begin{itemize}
-  \item RMSE (Root Mean Squared Error): indica l'errore quadratico medio
-    commesso dal modello su un insiete di dati e sottomesso all'operazione di
-    radice quadrata. Tale metrica pone particolare peso sulla entità
-    dell'errore piuttosto che sul loro numero, per via dell'operazione di
-    elevazione al quadrato. L'adozione della radice permette di valutare la
-    metriche nell'unità di misura di riferimento; in questo caso il metro,
-    poichè le coordinate dell'output del modello sono espresse in metri. Un
-    basso valore di MSE può quindi comportare un alto numero di errori commessi
-    a fronte di una alta precisione.
-  \item MAE (Mean Absolute Error): indica l'errore assoluto medio commesso dal
-    modello ed è utilizzato per valutare l'efficacia del modello ponendo meno
-    attenzione sulla presenza di eventuali valori anomali. Come nel caso di
-    RMSE, anche questa metrica esprime una valutazione della precisione del
-    modello in metri.
-  \item MaxAE (Max Absolute Error): determina il massimo errore assoluto
-    commesso dal modello ed è utile per ottenere una stima superiore
-    della precisione del modello. Un alto valore di MaxAE correlato con un
-    basso valore di MAE indica una buona precisione media, ma con errori
-    significativi e sporadici. Questa metrica, poichè non standardizzata, non è
-    presente tra quelle di TensorFlow ed è stato necessario implementarla.
-\end{itemize}
+La navigazione indoor si è rivelato un problema particolarmente adatto alla
+risoluzione tramite tecniche di deep learning, anche se queste ultime non si
+sono mostrate esenti da difetti. In particolare la difficoltà nella raccolta
+dati per l'addestramento del modello rmiane l'ostacolo più grande in questo
+contesto e nel machine learning in generale. Tuttavia l'uso di tecniche di data
+augmentation ha mostrato come anche con una quantità iniziale di dati
+relativamente scarsa sia possibile generare un modello che stimi la posizione
+dell'utente all'interno di un edificio con precisione di circa 30cm.
 
+Le fluttuazioni dell'output del modello durante la navigazione sono state
+parzialmente risolte utilizzando un filtro di Kalman, congiuntamente ai dati
+del sensore inerziale dello smartphone, ma ulteriori approfondimenti sono
+necessari allo scopo di valutare concretamente l'entità di questi
+miglioramenti. Infine, ulteriori approcci al problema della stabilizzazione
+possono essere esplorati, come discusso nei successivi paragrafi.
 \section{Lavori futuri}
 Sulla base dei risultati sperimentali ottenuti e sulle difficoltà riscontrate
 durante la risoluzione del problema della locallizazione indoor, sono state
 individuate varie idee meritevoli di appronfondimento.
+\subsection{Particle Filter}
+I Particle Filter sono una categoria di algoritmi Monte Carlo per
+l'approssimazione di distribuzioni di probabilità non gaussiane. L'utilizzo di
+questi metodi si rende utile nel momento in cui il modello è soggetto a rumore
+non gaussiano. È verosimile pensare che l'errore commesso dal modello descritto
+non presenti una distribuzione gaussiana. In questo contesto, l'utilizzo di un
+Particle Filter sarebbe da preferire rispetto ad un filtro di Kalman. In
+particolare per il problema della localizzazione indoor, sono stati descritti
+vari metodi di tipo Particle Filter che hanno mostrato buoni risultati nella
+correzione delle previsioni del sistema di navigazione\cite{particle-filter1,
+  particle-filter2}.
 \subsection{Input a Lunghezza Variabile}
 Nella attuale implementazione della rete neurale, le serie temporali dei
 segnali emessi dai beacon hanno dimensione fissa. Ciò significa che la
