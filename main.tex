@@ -12,6 +12,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{float} % aggiunge l'opzione H alle "floating figures"
 \usepackage{alphalph} % permette di generare lettere dato un indice numerico
+\usepackage{minted} % highlighting del codice
+\usepackage{xcolor} % importa colori predefiniti
+
 
 % \usepackage[strict]{changepage}
 % \usepackage{floatflt}
@@ -97,9 +100,6 @@
     \vspace{15mm}
     {\LARGE{\bf Localizzazione Indoor Basata su Beacon Bluetooth a Bassa Potenza
         Attraverso Tecniche di Deep Learning}}\\
-    % \vspace{3mm}
-    % {\LARGE{\bf Attraverso Tecniche di Deep Learning}}\\
-    {\large{\bf un progetto realizzato per Consorzio Metis e ASL Toscana}} \\
   \end{center}
 
   \vspace{20mm}
@@ -127,7 +127,7 @@
 % Dedica
 \clearpage
 \begin{dedication}
-    \thispagestyle{empty}
+  \thispagestyle{empty}
   A Snoopy
 \end{dedication}
 \clearpage
@@ -147,8 +147,11 @@
 \chapter{Applicazione Mobile}
 \input{./latex/chapter4}
 
+\chapter{Implementazione}
+\input{./latex/chapter6} %TODO: fix numbering
+
 \chapter{Conclusioni}
-\input{./latex/chapter5}
+\input{./latex/chapter5} %TODO: fix numbering
 
 \appendix%
 \input{./latex/appendixA.tex}

@@ -19,6 +19,7 @@ clean:
 	# clean all aux files (including pdf, dvi, etc.)
 	latexmk -C
 	rm -f main.run.xml main.bbl main-figure*
+	rm -rf _minted-main
 	# enter ./img/ and execute the Makefile with the target 'clean'
 	$(MAKE) -C img clean
 
