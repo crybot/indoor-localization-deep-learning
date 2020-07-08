@@ -1,37 +1,174 @@
+\newcommand{\inputsource}[2]{%
+	\inputminted[frame=single,
+  breaklines=true,fontsize=\footnotesize]{#1}{#2}%
+}
+
 \begin{document}
+% \usemintedstyle{xcode} % style highlighter
+Questo capitolo descrive il metodo di sperimentazione adottato per il progetto
+di localizzazione indoor ed espone l'implementazione delle principali
+componenti software originali sviluppate.
+
+\section{Dettagli Sperimentali}
+Il prototipo del software di navigazione è stato sviluppato per la sede
+dell'ASL Toscana Nord Ovest di Pisa. Nell'ambito di questa prima
+sperimentazione, il locale è stato allestito per gestire la localizzazione
+lungo un corridoio di circa 50 metri situato al primo piano dell'edificio. Il
+processo sperimentale utilizzato si può suddividere in quattro fasi:
+\begin{itemize}
+	\item Dislocamento dei beacon
+	\item Raccolta dei dati
+	\item Addestramento del modello
+	\item Test di navigazione
+\end{itemize}
+Ciascuno di questi punti è descritto nel dettaglio nei paragrafi successivi.
+\subsection{Dislocamento dei Beacon}
+Per la sperimentazione presso l'ASL sono stati predisposti 15 beacon Bluetooth
+programmabili. In particolare, sono stati adottati degli ESP32\footnote{Gli
+  ESP32 sono una famiglia di microcontrollori a basso consumo energetico con
+  modulo Wi-Fi e Bluetooth integrato. Il loro costo esiguo li rende
+  particolarmente adatti ad essere impiegati nel contesto della localizzazione
+  indoor.} e configurati per emettere un segnale
+BLE broadcast alla massima frequenza ammissibile dall'hardware e dallo standard
+(50Hz). Il codice sorgente, in linguaggio C, con cui sono stati programmati i
+microcontrollori è illustrato nel Listato~\ref{code:esp32}. A ciascun beacon è
+stato associato un identificatore univoco corrispondente agli ultimi tre
+ottetti del suo indirizzo MAC, scartando di fatto l'identificativo del
+produttore, insieme a un prefisso condiviso.
+
+I beacon, alimentati via presa USB da 5V, sono stati installati in 15 stanze
+diverse perimetrali al corridoio adibito alla sperimentazione, in modo da
+coprirne tutta la lunghezza. La disposizione dei beacon è stata pensata in modo
+da poter ricevere, in ciasun punto del corridoio, il segnale di almeno 8
+beacon. Ad eccezione di uno dei microcontrollori, il quale è stato collegato a
+una fotocopiatrice, i restanti beacon sono stati collegati ai PC presenti nei
+vari uffici. Per lo scopo di questa sperimentazione, si è reso sufficiente che
+i Computer fossero accesi soltanto durante la fase di campionamento e di
+testing del prototipo.
+
+\begin{listing}[H]
+	\inputsource{C}{listings/esp32.ino}
+	\caption{Codice sorgente ESP32}
+	\label{code:esp32}
+\end{listing}
+
+\subsection{Raccolta dei Dati}
+Prima di procedere all'acquisizione dei segnali è stato misurato
+preventivamente il corridoio e identificato mentro per metro i punti in cui
+effettuare il campionamento. È stata poi installata l'applicazione mobile su
+uno smartphone Android e si è proceduto a effettuare la raccolta dei dati
+muovendosi lungo il corridoio e soffermandosi su ogni locazione individuata
+precedentemente durante la fase di misurazione. Per ogni punto selezionato,
+sono stati rilevati i segnali dei beacon secondo diversi orientamenti
+dell'utente, registrando le variazioni della bussola dello smartphone.
+L'interfaccia dell'applicazione per la raccolta dei dati è mostrata in
+Appendice~\ref{app:gui}, mentre la componente sviluppata per la raccolta dei
+dati e il loro processamento è illustrata nel
+Listato~\ref{code:data-collector}. 
+
+Durante la fase di acquisizione, i segnali intercettati vengono convertiti in
+uno stream continuo, il quale viene poi trasformato raggruppando i dati,
+secondo la frequenza impostata, in porzioni di uguale dimensione. Tale
+trasformazione è mostrata nel Listato~\ref{code:chunk-collector} ed è
+necessaria per assicurare che il sistema raccolga i segnali ad intervalli
+regolari e che, per ogni intervallo, il numero di segnali raccolti sia lo
+stesso. Qualora la dimensione del campione raccolto sia inferiore rispetto al
+valore scelto, il trasformatore di stream si occupa anche di aggiungere o
+rimuovere dati da ciascuna porzione di segnali.
+
+\begin{listing}[htp]
+	\inputsource{dart}{listings/data_collector.dart}
+	\caption{DataCollector: avvia lo stream di acquisizione dei segnali.}
+  \label{code:data-collector}
+\end{listing}
+
+\begin{listing}[htp]
+	\inputsource{dart}{listings/chunk_collector.dart}
+	\caption{ChunkCollector: si occupa di processare lo stream di segnali in
+    ingresso.}
+  \label{code:chunk-collector}
+\end{listing}
+
+Il componente DataCollector avvia e processa lo stream trasformato,
+aggiundendovi l'ubicazione del punto del campionamento \((x, y)\) (in coordinate
+relative rispetto alla planimetria dell'edificio), i dati del sensore magnetico
+dello smartphone registrati nel momento dell'acquisizione dati, e una coppia di
+coordinate casuali \(x_{old}, \, y_{old}\) tali che 
+\( x_{old} \sim \mathcal{N}(\sigma^2, \, \mu_1 = x) \) e 
+\( y_{old} \sim \mathcal{N}(\sigma^2, \, \mu_2 = y) \). Tali coordinate
+rappresentano la presunta posizione precedente dell'utente, utilizzata dalla
+rete neurale come input ausiliario, come descritto nel
+Paragrafo~\ref{subsec:input}. L'utilizzo di variabili aleatorie gaussiane è
+giustificato dal fatto che, non conoscendo a priori il percorso che potrebbe
+seguire l'utente all'interno dell'edificio, l'ipotesi più probabile è che la
+posizione di quest'ultimo prima che raggiunga la coordinata \((x, y)\), sia
+nelle immediate vicinanze di tale ubicazione.
+
+\subsection{Addestramento del Modello}
+Una volta composto il dataset, il modello è stato addestrato secondo i metodi
+descritti dal Paragrago~\ref{sec:training} sfruttando inizialmente le risorse
+gratuite di calcolo, ma limitate, offerte da Google Colab. Per rendere la
+procedura di addestramento più rapida e flessibile, si è scelto poi di
+affittare GPU attraverso servizi di Cloud Computing a pagamento e di
+implementare una serie di script per gestire il deploy delle procedure di
+addestramento sull'hardware remote.
+
+L'addestramento della rete neurale ha impiegato mediamente 50 minuti per
+terminare utilizzando una GPU Nvidia RTX 2080 Ti, mentre le varie procedure di
+ottimizzazione degli iperparametri sono durate ciascuna tra le 15 e le 20 ore
+su hardware similari.
+\subsection{Test di Navigazione Indoor}
+Terminata la procedura di addestramento e prodotto un modello funzionante, la
+fase di testing prevedeva la valutazione dell'efficacia del sistema di
+navigazione provandolo direttamente all'interno dell'edificio adibito alla
+sperimentazione. Tuttavia la recente emergenza Covid-19 ha reso impossibile
+concludere i test del prototipo in loco, per ragioni di sicurezza sanitaria,
+all'interno dei locali dell'ASL\@. Sono risultati quindi determinanti nella
+valutazione dell'applicazione i precedenti test effettuati presso la sede del
+Consorzio Metis, seppur meno significativi e rigorosi per via delle molto
+inferiori dimensioni dello stabile.
+
 
 \section{Data Augmentation}
-
-\usemintedstyle{xcode}
-\begin{listing}[htp]
-	\inputminted[breaklines=true,fontsize=\footnotesize]{python}{listings/augmenter.py}
+\begin{listing}[H]
+  \inputsource{python}{listings/augmenter.py}
 	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
 		occupa di arricchire il dataset di input applicando le trasformazioni
 		definite nel Paragrafo~\ref{sec:augmentation}}
 \end{listing}
 
-\begin{listing}[htp]
-	\inputminted[breaklines=true,fontsize=\footnotesize]{python}{listings/magwarp.py}
+\begin{listing}[H]
+	\inputsource{python}{listings/magwarp.py}
 	\caption{Implementazione Magnitude Warping}
 \end{listing}
 
-\begin{listing}[htp]
-	\inputminted[breaklines=true,fontsize=\footnotesize]{python}{listings/shuffle.py}
+\begin{listing}[H]
+	\inputsource{python}{listings/shuffle.py}
 	\caption{Implementazione Shuffling}
 \end{listing}
 
-\begin{listing}[htp]
-	\inputminted[breaklines=true,fontsize=\footnotesize]{python}{listings/scale.py}
+\begin{listing}[H]
+	\inputsource{python}{listings/scale.py}
 	\caption{Implementazione Scaling}
 \end{listing}
 
-\begin{listing}[htp]
-	\inputminted[fontsize=\footnotesize]{python}{listings/replace.py}
+\begin{listing}[H]
+	\inputsource{python}{listings/replace.py}
 	\caption{Implementazione Deattivazione selettiva}
 \end{listing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Rete Neurale}
+\section{Rete Neurale}
+
+\begin{listing}[H]
+	\inputsource{python}{listings/conv_block.py}
+	\caption{Blocco convoluzionale usato per comporre la rete neurale.}
+\end{listing}
+
+\begin{listing}[H]
+	\inputsource{python}{listings/model.py}
+	\caption{Modello}
+\end{listing}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Applicazione Mobile}
 

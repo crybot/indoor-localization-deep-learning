@@ -3,7 +3,7 @@
 \documentclass[12pt]{report}
 
 \usepackage[italian]{babel} % conversione in italiano
-\usepackage{libertine}
+% \usepackage{libertine}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{pgfplots}
@@ -12,9 +12,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage{float} % aggiunge l'opzione H alle "floating figures"
 \usepackage{alphalph} % permette di generare lettere dato un indice numerico
-\usepackage{minted} % highlighting del codice
+\usepackage[chapter]{minted} % highlighting del codice
 \usepackage{xcolor} % importa colori predefiniti
 
+\renewcommand{\listingscaption}{Listato}
 
 % \usepackage[strict]{changepage}
 % \usepackage{floatflt}
@@ -147,7 +148,7 @@
 \chapter{Applicazione Mobile}
 \input{./latex/chapter4}
 
-\chapter{Implementazione}
+\chapter{Implementazione e Criteri di Sperimentazione}
 \input{./latex/chapter6} %TODO: fix numbering
 
 \chapter{Conclusioni}
