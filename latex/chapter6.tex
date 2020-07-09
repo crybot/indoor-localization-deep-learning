@@ -1,5 +1,5 @@
 \newcommand{\inputsource}[2]{%
-	\inputminted[frame=single,
+	\inputminted[frame=single, framesep=1pt,
   breaklines=true,fontsize=\footnotesize]{#1}{#2}%
 }
 
@@ -7,7 +7,11 @@
 % \usemintedstyle{xcode} % style highlighter
 Questo capitolo descrive il metodo di sperimentazione adottato per il progetto
 di localizzazione indoor ed espone l'implementazione delle principali
-componenti software originali sviluppate.
+componenti software sviluppate. Nonostante l'interfaccia grafica
+dell'applicazione mobile sia anche essa stata sviluppata in modo originale, per
+non appesantire la trattazione si è scelto di non mostrarne l'implementazione,
+ma si rimanda al Capitolo~\ref{cap:gui} e all'Appendice~\ref{app:gui} per
+maggiori dettagli riguardanti le funzionalità e l'effettivo aspetto grafico.
 
 \section{Dettagli Sperimentali}
 Il prototipo del software di navigazione è stato sviluppato per la sede
@@ -128,50 +132,88 @@ valutazione dell'applicazione i precedenti test effettuati presso la sede del
 Consorzio Metis, seppur meno significativi e rigorosi per via delle molto
 inferiori dimensioni dello stabile.
 
-
 \section{Data Augmentation}
-TODO: descrizione dell'implementazione delle tecniche di data augmentation. Una
-descrizione è già fornita nel Paragrafo~\ref{sec:augmentation}.
-\begin{listing}[htp]
+Di seguito sono mostrate le implementazioni Python delle tecniche di data
+augmentation presentate nel Paragrafo~\ref{sec:augmentation}. Tali metodi sono
+stati incapsulati in una classe TimeseriesDataAugmenter, la quale è servita a
+rendere il codice più leggibile e funzionale. L'implementazione di tale classe
+è mostrata nel Listato~\ref{code:augmenter}, nel quale sono state omesse le
+implementazioni dei singoli metodi per semplicità di trattazione. Il costrutto
+\mintinline{python}{TimeseriesDataAugmenter} permette di trasformare il dataset
+di input applicando internamente i metodi di data augmentation descritti in
+precedenza e le cui implementazioni sono fornite in questo Paragrafo.
+
+\begin{listing}[p]
   \inputsource{python}{listings/augmenter.py}
 	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
 		occupa di arricchire il dataset di input applicando le trasformazioni
 		definite nel Paragrafo~\ref{sec:augmentation}}
+  \label{code:augmenter}
 \end{listing}
 
-\begin{listing}[htp]
-	\inputsource{python}{listings/magwarp.py}
-	\caption{Implementazione Magnitude Warping}
+\begin{listing}[p]
+  \inputsource{python}{listings/jitter.py}
+	\caption{Implementazione Jittering: applica del rumore additivo gaussiano a
+    media nulla a tutti i segnali del dataset}
+  \label{code:jitter}
 \end{listing}
 
-\begin{listing}[htp]
-	\inputsource{python}{listings/shuffle.py}
-	\caption{Implementazione Shuffling}
-\end{listing}
-
-\begin{listing}[htp]
+\begin{listing}[p]
 	\inputsource{python}{listings/scale.py}
-	\caption{Implementazione Scaling}
+	\caption{Implementazione Scaling: permette di applicare del rumore
+    moltiplicativo gaussiano di media unitaria a tutti gli input del dataset.}
+  \label{code:scaling}
 \end{listing}
 
-\begin{listing}[htp]
+\begin{listing}[p]
+	\inputsource{python}{listings/shuffle.py}
+  \caption{Implementazione Shuffling: consente di riorganizzare i segnali del
+    dataset in modo che la nuova configurazione segua la permutazione passata
+    in input. Ciascuna serie temporale del dataset viene divisa in un numero di
+    sottoinsiemi mutualmente esclusivi pari alla lunghezza dell'array di
+    permutazione specificato. Tali sottogruppi vengono poi poi riorganizzati
+    come specificato.}
+\end{listing}
+
+
+\begin{listing}[p]
+	\inputsource{python}{listings/magwarp.py}
+	\caption{Implementazione Magnitude Warping: si rimanda al
+    Paragrafo~\ref{subsec:warping} per maggiori dettagli.}
+\end{listing}
+
+\begin{listing}[p]
 	\inputsource{python}{listings/replace.py}
-	\caption{Implementazione Deattivazione selettiva}
+  \caption{Implementazione Deattivazione selettiva: tutti gli elementi di
+    ciascuna serie temporale vengono rimpiazzati, con propabilità \(p\), dal
+    placeholder fornito in input.}
 \end{listing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rete Neurale}
-TODO: descrizione dell'implementazione della rete neurale.
-
+Il modello presentato nel Capitolo~\ref{cap:architecture} è stato implementato
+e addestrato in Python utilizzando la libreria TensorFlow 2.0 e le API
+funzionali di Keras. Il Listato~\ref{code:nn} mostra la definizione della rete
+neurale, la quale viene costruita attraverso composizioni successive di singoli
+blocchi convoluzionali. 
+Questi ultimi sono definiti dal
+Listato~\ref{code:block} e rappresentano un grafo di computazione in cui viene
+applicata all'input l'operazione di convoluzione unidimensionale ed,
+eventualmente, la funzione di attivazione nonlineare, la normalizzazione
+tramite Batch Normalization, il Dropout gaussiano e l'operazione di pooling. Si
+riferisca alla Figura~\ref{fig:cnnblock} per una sua rappresentazione grafica.
 \begin{listing}[htp]
 	\inputsource{python}{listings/conv_block.py}
 	\caption{Blocco convoluzionale usato per comporre la rete neurale.}
+  \label{code:block}
 \end{listing}
-
 \begin{listing}[htp]
 	\inputsource{python}{listings/model.py}
   \caption{Costruzione del modello con le API di Keras}
+  \label{code:nn}
 \end{listing}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Applicazione Mobile}
 
