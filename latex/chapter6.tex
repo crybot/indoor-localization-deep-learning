@@ -46,7 +46,7 @@ vari uffici. Per lo scopo di questa sperimentazione, si è reso sufficiente che
 i Computer fossero accesi soltanto durante la fase di campionamento e di
 testing del prototipo.
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{C}{listings/esp32.ino}
 	\caption{Codice sorgente ESP32}
 	\label{code:esp32}
@@ -62,9 +62,9 @@ precedentemente durante la fase di misurazione. Per ogni punto selezionato,
 sono stati rilevati i segnali dei beacon secondo diversi orientamenti
 dell'utente, registrando le variazioni della bussola dello smartphone.
 L'interfaccia dell'applicazione per la raccolta dei dati è mostrata in
-Appendice~\ref{app:gui}, mentre la componente sviluppata per la raccolta dei
-dati e il loro processamento è illustrata nel
-Listato~\ref{code:data-collector}. 
+Appendice~\ref{app:gui}, mentre la componente dell'applicazione sviluppata per
+la raccolta dei dati e il loro processamento è illustrata nel
+Listato~\ref{code:data-collector}, in codice Dart.
 
 Durante la fase di acquisizione, i segnali intercettati vengono convertiti in
 uno stream continuo, il quale viene poi trasformato raggruppando i dati,
@@ -72,19 +72,19 @@ secondo la frequenza impostata, in porzioni di uguale dimensione. Tale
 trasformazione è mostrata nel Listato~\ref{code:chunk-collector} ed è
 necessaria per assicurare che il sistema raccolga i segnali ad intervalli
 regolari e che, per ogni intervallo, il numero di segnali raccolti sia lo
-stesso. Qualora la dimensione del campione raccolto sia inferiore rispetto al
-valore scelto, il trasformatore di stream si occupa anche di aggiungere o
-rimuovere dati da ciascuna porzione di segnali.
+stesso. Qualora la dimensione del campione raccolto sia inferiore al valore
+scelto, il trasformatore di stream si occupa anche di aggiungere o rimuovere
+dati da ciascuna porzione di segnali.
 
 \begin{listing}[htp]
 	\inputsource{dart}{listings/data_collector.dart}
-	\caption{DataCollector: avvia lo stream di acquisizione dei segnali.}
+	\caption{DataCollector (Dart): avvia lo stream di acquisizione dei segnali.}
   \label{code:data-collector}
 \end{listing}
 
 \begin{listing}[htp]
 	\inputsource{dart}{listings/chunk_collector.dart}
-	\caption{ChunkCollector: si occupa di processare lo stream di segnali in
+	\caption{ChunkCollector (Dart): si occupa di processare lo stream di segnali in
     ingresso.}
   \label{code:chunk-collector}
 \end{listing}
@@ -100,9 +100,9 @@ rappresentano la presunta posizione precedente dell'utente, utilizzata dalla
 rete neurale come input ausiliario, come descritto nel
 Paragrafo~\ref{subsec:input}. L'utilizzo di variabili aleatorie gaussiane è
 giustificato dal fatto che, non conoscendo a priori il percorso che potrebbe
-seguire l'utente all'interno dell'edificio, l'ipotesi più probabile è che la
-posizione di quest'ultimo prima che raggiunga la coordinata \((x, y)\), sia
-nelle immediate vicinanze di tale ubicazione.
+seguire l'utente all'interno dell'edificio, la posizione di quest'ultimo prima
+che raggiunga la coordinata \((x, y)\) è probabile che sia nelle immediate
+vicinanze di tale ubicazione.
 
 \subsection{Addestramento del Modello}
 Una volta composto il dataset, il modello è stato addestrato secondo i metodi
@@ -130,44 +130,47 @@ inferiori dimensioni dello stabile.
 
 
 \section{Data Augmentation}
-\begin{listing}[H]
+TODO: descrizione dell'implementazione delle tecniche di data augmentation. Una
+descrizione è già fornita nel Paragrafo~\ref{sec:augmentation}.
+\begin{listing}[htp]
   \inputsource{python}{listings/augmenter.py}
 	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
 		occupa di arricchire il dataset di input applicando le trasformazioni
 		definite nel Paragrafo~\ref{sec:augmentation}}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/magwarp.py}
 	\caption{Implementazione Magnitude Warping}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/shuffle.py}
 	\caption{Implementazione Shuffling}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/scale.py}
 	\caption{Implementazione Scaling}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/replace.py}
 	\caption{Implementazione Deattivazione selettiva}
 \end{listing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rete Neurale}
+TODO: descrizione dell'implementazione della rete neurale.
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/conv_block.py}
 	\caption{Blocco convoluzionale usato per comporre la rete neurale.}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/model.py}
-	\caption{Modello}
+  \caption{Costruzione del modello con le API di Keras}
 \end{listing}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Applicazione Mobile}
