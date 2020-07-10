@@ -71,12 +71,6 @@ L'utilizzo di tale sistema assicura il completo anonimato dell'utente, il quale
 non necessita di condividere la propria posizione, essendo quest'ultima
 calcolata direttamente sul suo smartphone in funzione dei segnali che riceve.
 
-% Contenuto
-Questo elaborato si pone l'obiettivo di descrivere nello specifico la rete
-neurale progettata per risolvere il problema, le tecniche utilizzate per alzare
-il grado di precisione del modello e le principali differenze rispetto a
-modelli già esistenti.
-
 \section{Sperimentazione e Collaborazioni}
 Il progetto esposto in questo elaborato è stato realizzato per conto del
 Consorzio Metis e la sperimentazione è stata eseguita presso i locali dell'ASL
@@ -84,6 +78,37 @@ Toscana Nord Ovest di Pisa. Il lavoro è stato svolto in autonomia, ma sia il
 Consorzio Metis che l'ASL hanno predisposto i propri ambienti per
 l'installazione dei Beacon Bluetooth e la raccolta dei dati.
 
-% \section{Installazione dei Beacon e Acquisizione dei Dati}
+\section{Software Implementato}
+% Contenuto
+Al fine di risolvere il problema esposto, sono state implementate varie
+componenti software. Per la raccolta dei segnali e la composizione del dataset
+in fase di mappatura dell'ambiente è stata sviluppata una applicazione mobile
+multi piattaforma. Tale applicazione consente di registrare i segnali ricevuti
+dai beacon Bluetooth all'interno di un locale e di organizzarli in un dataset
+ordinato, utilizzabile in seguito per l'addestramento di un modello di machine
+learning. Oltre a ciò, l'applicazione è stata dotata di un visualizzatore di
+planimetrie e sono state sviluppate le componenti software necessarie a
+mostrare la navigazione in tempo reale dell'utente all'interno dell'edificio.
+Tra queste vi è il sistema che gestisce la localizzazione dell'individuo
+sfruttando l'output prodotto da una rete neurale artificiale. L'architettura
+di quest'ultima è stata ideata in funzione delle esigenze del problema e
+costituisce il principale contributo di questo elaborato. La sua
+implementazione, del tutto originale, è mostrata nei successivi capitoli e
+sfrutta la libreria TensorFlow.
+
+Oltre a quanto esposto, è stato sviluppato tutto il software necessario al
+preprocessamento dei dati di input al modello, comprese tutte le tecniche di
+data augmentation presentate nel seguito, alla raccolta delle metriche di
+errore, alla procedura di addestramento e di test della rete neurale generata,
+alla stabilizzazione del modello prodotto e all'interfaccia grafica
+dell'applicazione mobile.
+
+Infine, i beacon Bluetooth utilizzati durante la sperimentazione sono stati
+programmati in linguaccio C e l'implementazione del loro firmware è fornita
+all'interno dell'elaborato.
+
+% Questo elaborato si pone l'obiettivo di descrivere nello specifico la rete
+% neurale progettata per risolvere il problema esposto e le tecniche utilizzate
+% per aumentare il grado di precisione del modello. 
 
 \end{document}

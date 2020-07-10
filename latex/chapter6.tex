@@ -1,220 +1,107 @@
-\newcommand{\inputsource}[2]{%
-	\inputminted[frame=single, framesep=1pt,
-  breaklines=true,fontsize=\footnotesize]{#1}{#2}%
-}
-
 \begin{document}
-% \usemintedstyle{xcode} % style highlighter
-Questo capitolo descrive il metodo di sperimentazione adottato per il progetto
-di localizzazione indoor ed espone l'implementazione delle principali
-componenti software sviluppate. Nonostante l'interfaccia grafica
-dell'applicazione mobile sia anche essa stata sviluppata in modo originale, per
-non appesantire la trattazione si è scelto di non mostrarne l'implementazione,
-ma si rimanda al Capitolo~\ref{cap:gui} e all'Appendice~\ref{app:gui} per
-maggiori dettagli riguardanti le funzionalità e l'effettivo aspetto grafico.
+La navigazione indoor si è rivelato un problema particolarmente adatto alla
+risoluzione tramite tecniche di deep learning, anche se queste ultime non si
+sono mostrate esenti da difetti. In particolare la difficoltà nella raccolta
+dati per l'addestramento del modello rmiane l'ostacolo più grande in questo
+contesto e nel machine learning in generale. Tuttavia l'uso di tecniche di data
+augmentation ha mostrato come anche con una quantità iniziale di dati
+relativamente scarsa sia possibile generare un modello che stimi la posizione
+dell'utente all'interno di un edificio con precisione di circa 30cm.
 
-\section{Dettagli Sperimentali}
-Il prototipo del software di navigazione è stato sviluppato per la sede
-dell'ASL Toscana Nord Ovest di Pisa. Nell'ambito di questa prima
-sperimentazione, il locale è stato allestito per gestire la localizzazione
-lungo un corridoio di circa 50 metri situato al primo piano dell'edificio. Il
-processo sperimentale utilizzato si può suddividere in quattro fasi:
-\begin{itemize}
-	\item Dislocamento dei beacon
-	\item Raccolta dei dati
-	\item Addestramento del modello
-	\item Test di navigazione
-\end{itemize}
-Ciascuno di questi punti è descritto nel dettaglio nei paragrafi successivi.
-\subsection{Dislocamento dei Beacon}
-Per la sperimentazione presso l'ASL sono stati predisposti 15 beacon Bluetooth
-programmabili. In particolare, sono stati adottati degli ESP32\footnote{Gli
-  ESP32 sono una famiglia di microcontrollori a basso consumo energetico con
-  modulo Wi-Fi e Bluetooth integrato. Il loro costo esiguo li rende
-  particolarmente adatti ad essere impiegati nel contesto della localizzazione
-  indoor.} e configurati per emettere un segnale
-BLE broadcast alla massima frequenza ammissibile dall'hardware e dallo standard
-(50Hz). Il codice sorgente, in linguaggio C, con cui sono stati programmati i
-microcontrollori è illustrato nel Listato~\ref{code:esp32}. A ciascun beacon è
-stato associato un identificatore univoco corrispondente agli ultimi tre
-ottetti del suo indirizzo MAC, scartando di fatto l'identificativo del
-produttore, insieme a un prefisso condiviso.
-
-I beacon, alimentati via presa USB da 5V, sono stati installati in 15 stanze
-diverse perimetrali al corridoio adibito alla sperimentazione, in modo da
-coprirne tutta la lunghezza. La disposizione dei beacon è stata pensata in modo
-da poter ricevere, in ciasun punto del corridoio, il segnale di almeno 8
-beacon. Ad eccezione di uno dei microcontrollori, il quale è stato collegato a
-una fotocopiatrice, i restanti beacon sono stati collegati ai PC presenti nei
-vari uffici. Per lo scopo di questa sperimentazione, si è reso sufficiente che
-i Computer fossero accesi soltanto durante la fase di campionamento e di
-testing del prototipo.
-
-\begin{listing}[htp]
-	\inputsource{C}{listings/esp32.ino}
-	\caption{Codice sorgente ESP32}
-	\label{code:esp32}
-\end{listing}
-
-\subsection{Raccolta dei Dati}
-Prima di procedere all'acquisizione dei segnali è stato misurato
-preventivamente il corridoio e identificato mentro per metro i punti in cui
-effettuare il campionamento. È stata poi installata l'applicazione mobile su
-uno smartphone Android e si è proceduto a effettuare la raccolta dei dati
-muovendosi lungo il corridoio e soffermandosi su ogni locazione individuata
-precedentemente durante la fase di misurazione. Per ogni punto selezionato,
-sono stati rilevati i segnali dei beacon secondo diversi orientamenti
-dell'utente, registrando le variazioni della bussola dello smartphone.
-L'interfaccia dell'applicazione per la raccolta dei dati è mostrata in
-Appendice~\ref{app:gui}, mentre la componente dell'applicazione sviluppata per
-la raccolta dei dati e il loro processamento è illustrata nel
-Listato~\ref{code:data-collector}, in codice Dart.
-
-Durante la fase di acquisizione, i segnali intercettati vengono convertiti in
-uno stream continuo, il quale viene poi trasformato raggruppando i dati,
-secondo la frequenza impostata, in porzioni di uguale dimensione. Tale
-trasformazione è mostrata nel Listato~\ref{code:chunk-collector} ed è
-necessaria per assicurare che il sistema raccolga i segnali ad intervalli
-regolari e che, per ogni intervallo, il numero di segnali raccolti sia lo
-stesso. Qualora la dimensione del campione raccolto sia inferiore al valore
-scelto, il trasformatore di stream si occupa anche di aggiungere o rimuovere
-dati da ciascuna porzione di segnali.
-
-\begin{listing}[htp]
-	\inputsource{dart}{listings/data_collector.dart}
-	\caption{DataCollector (Dart): avvia lo stream di acquisizione dei segnali.}
-  \label{code:data-collector}
-\end{listing}
-
-\begin{listing}[htp]
-	\inputsource{dart}{listings/chunk_collector.dart}
-	\caption{ChunkCollector (Dart): si occupa di processare lo stream di segnali in
-    ingresso.}
-  \label{code:chunk-collector}
-\end{listing}
-
-Il componente DataCollector avvia e processa lo stream trasformato,
-aggiundendovi l'ubicazione del punto del campionamento \((x, y)\) (in coordinate
-relative rispetto alla planimetria dell'edificio), i dati del sensore magnetico
-dello smartphone registrati nel momento dell'acquisizione dati, e una coppia di
-coordinate casuali \(x_{old}, \, y_{old}\) tali che 
-\( x_{old} \sim \mathcal{N}(\sigma^2, \, \mu_1 = x) \) e 
-\( y_{old} \sim \mathcal{N}(\sigma^2, \, \mu_2 = y) \). Tali coordinate
-rappresentano la presunta posizione precedente dell'utente, utilizzata dalla
-rete neurale come input ausiliario, come descritto nel
-Paragrafo~\ref{subsec:input}. L'utilizzo di variabili aleatorie gaussiane è
-giustificato dal fatto che, non conoscendo a priori il percorso che potrebbe
-seguire l'utente all'interno dell'edificio, la posizione di quest'ultimo prima
-che raggiunga la coordinata \((x, y)\) è probabile che sia nelle immediate
-vicinanze di tale ubicazione.
-
-\subsection{Addestramento del Modello}
-Una volta composto il dataset, il modello è stato addestrato secondo i metodi
-descritti dal Paragrago~\ref{sec:training} sfruttando inizialmente le risorse
-gratuite di calcolo, ma limitate, offerte da Google Colab. Per rendere la
-procedura di addestramento più rapida e flessibile, si è scelto poi di
-affittare GPU attraverso servizi di Cloud Computing a pagamento e di
-implementare una serie di script per gestire il deploy delle procedure di
-addestramento sull'hardware remote.
-
-L'addestramento della rete neurale ha impiegato mediamente 50 minuti per
-terminare utilizzando una GPU Nvidia RTX 2080 Ti, mentre le varie procedure di
-ottimizzazione degli iperparametri sono durate ciascuna tra le 15 e le 20 ore
-su hardware similari.
-\subsection{Test di Navigazione Indoor}
-Terminata la procedura di addestramento e prodotto un modello funzionante, la
-fase di testing prevedeva la valutazione dell'efficacia del sistema di
-navigazione provandolo direttamente all'interno dell'edificio adibito alla
-sperimentazione. Tuttavia la recente emergenza Covid-19 ha reso impossibile
-concludere i test del prototipo in loco, per ragioni di sicurezza sanitaria,
-all'interno dei locali dell'ASL\@. Sono risultati quindi determinanti nella
-valutazione dell'applicazione i precedenti test effettuati presso la sede del
-Consorzio Metis, seppur meno significativi e rigorosi per via delle molto
-inferiori dimensioni dello stabile.
-
-\section{Data Augmentation}
-Di seguito sono mostrate le implementazioni Python delle tecniche di data
-augmentation presentate nel Paragrafo~\ref{sec:augmentation}. Tali metodi sono
-stati incapsulati in una classe TimeseriesDataAugmenter, la quale è servita a
-rendere il codice più leggibile e funzionale. L'implementazione di tale classe
-è mostrata nel Listato~\ref{code:augmenter}, nel quale sono state omesse le
-implementazioni dei singoli metodi per semplicità di trattazione. Il costrutto
-\mintinline{python}{TimeseriesDataAugmenter} permette di trasformare il dataset
-di input applicando internamente i metodi di data augmentation descritti in
-precedenza e le cui implementazioni sono fornite in questo Paragrafo.
-
-\begin{listing}[p]
-  \inputsource{python}{listings/augmenter.py}
-	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
-		occupa di arricchire il dataset di input applicando le trasformazioni
-		definite nel Paragrafo~\ref{sec:augmentation}}
-  \label{code:augmenter}
-\end{listing}
-
-\begin{listing}[p]
-  \inputsource{python}{listings/jitter.py}
-	\caption{Implementazione Jittering: applica del rumore additivo gaussiano a
-    media nulla a tutti i segnali del dataset}
-  \label{code:jitter}
-\end{listing}
-
-\begin{listing}[p]
-	\inputsource{python}{listings/scale.py}
-	\caption{Implementazione Scaling: permette di applicare del rumore
-    moltiplicativo gaussiano di media unitaria a tutti gli input del dataset.}
-  \label{code:scaling}
-\end{listing}
-
-\begin{listing}[p]
-	\inputsource{python}{listings/shuffle.py}
-  \caption{Implementazione Shuffling: consente di riorganizzare i segnali del
-    dataset in modo che la nuova configurazione segua la permutazione passata
-    in input. Ciascuna serie temporale del dataset viene divisa in un numero di
-    sottoinsiemi mutualmente esclusivi pari alla lunghezza dell'array di
-    permutazione specificato. Tali sottogruppi vengono poi poi riorganizzati
-    come specificato.}
-\end{listing}
-
-
-\begin{listing}[p]
-	\inputsource{python}{listings/magwarp.py}
-	\caption{Implementazione Magnitude Warping: si rimanda al
-    Paragrafo~\ref{subsec:warping} per maggiori dettagli.}
-\end{listing}
-
-\begin{listing}[p]
-	\inputsource{python}{listings/replace.py}
-  \caption{Implementazione Deattivazione selettiva: tutti gli elementi di
-    ciascuna serie temporale vengono rimpiazzati, con propabilità \(p\), dal
-    placeholder fornito in input.}
-\end{listing}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Rete Neurale}
-Il modello presentato nel Capitolo~\ref{cap:architecture} è stato implementato
-e addestrato in Python utilizzando la libreria TensorFlow 2.0 e le API
-funzionali di Keras. Il Listato~\ref{code:nn} mostra la definizione della rete
-neurale, la quale viene costruita attraverso composizioni successive di singoli
-blocchi convoluzionali. 
-Questi ultimi sono definiti dal
-Listato~\ref{code:block} e rappresentano un grafo di computazione in cui viene
-applicata all'input l'operazione di convoluzione unidimensionale ed,
-eventualmente, la funzione di attivazione nonlineare, la normalizzazione
-tramite Batch Normalization, il Dropout gaussiano e l'operazione di pooling. Si
-riferisca alla Figura~\ref{fig:cnnblock} per una sua rappresentazione grafica.
-\begin{listing}[htp]
-	\inputsource{python}{listings/conv_block.py}
-	\caption{Blocco convoluzionale usato per comporre la rete neurale.}
-  \label{code:block}
-\end{listing}
-\begin{listing}[htp]
-	\inputsource{python}{listings/model.py}
-  \caption{Costruzione del modello con le API di Keras}
-  \label{code:nn}
-\end{listing}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Applicazione Mobile}
-
+Le fluttuazioni dell'output del modello durante la navigazione sono state
+parzialmente risolte utilizzando un filtro di Kalman, congiuntamente ai dati
+del sensore inerziale dello smartphone, ma ulteriori approfondimenti sono
+necessari allo scopo di valutare concretamente l'entità di questi
+miglioramenti. Infine, ulteriori approcci al problema della stabilizzazione
+possono essere esplorati, come discusso nei successivi paragrafi.
+\section{Lavori futuri}
+Sulla base dei risultati sperimentali ottenuti e sulle difficoltà riscontrate
+durante la risoluzione del problema della locallizazione indoor, sono state
+individuate varie idee meritevoli di appronfondimento.
+\subsection{Particle Filter}
+I Particle Filter sono una categoria di algoritmi Monte Carlo per
+l'approssimazione di distribuzioni di probabilità non gaussiane. L'utilizzo di
+questi metodi si rende utile nel momento in cui il modello è soggetto a rumore
+non gaussiano. È verosimile pensare che l'errore commesso dal modello descritto
+non presenti una distribuzione gaussiana. In questo contesto, l'utilizzo di un
+Particle Filter sarebbe da preferire rispetto ad un filtro di Kalman. In
+particolare per il problema della localizzazione indoor, sono stati descritti
+vari metodi di tipo Particle Filter che hanno mostrato buoni risultati nella
+correzione delle previsioni del sistema di navigazione\cite{particle-filter1,
+  particle-filter2}.
+\subsection{Input a Lunghezza Variabile}
+Nella attuale implementazione della rete neurale, le serie temporali dei
+segnali emessi dai beacon hanno dimensione fissa. Ciò significa che la
+dimensione del campionamento effettuata durante la fase di navigazione deve
+essere sempre la stessa, eventualmente aggiungendo valori fittizi alla serie
+temporale. Tuttavia il modello, grazie al livello di Pooling globale, permette
+di associare all'input una dimensione qualsiasi lungo l'asse temporale. Sarebbe
+quindi possibile addestrare il modello con input di lunghezza variabile e a
+tale scopo non sarebbe difficile arricchire il dataset con variazioni dei
+segnali originali modificandone la lunghezza. Non è da escludere che un simile
+approccio migliori ancora la precisione del modello, oltre a renderlo più
+flessibile in fase di utilizzo, non essendo più legato ad una dimensione
+costante per l'input dei segnali.
+\subsection{Reti Neurali Residuali}
+Le reti neurali residuali sono un particolare tipo di architettura,
+inizialmente ideato per le reti convoluzionali, che permette di ridurre
+notevolmente il problema della scomparsa del gradiente in modelli molto
+profondi\cite{resnet}. L'adozione di reti neurali residuali con un numero più
+elevato di livelli potrebbe consentire di migliorare la precisione del sistema
+di navigazione. Tuttavia l'incremento di profondità del modello andrebbe a
+discapito della performance in fase di addestramento e in fase di inferenza.
+Rimane quindi dubbia l'utilizzabilità di tali reti in contesti mobile.
+\subsection{Variational Autoencoder: Generazione di nuovi dati}
+I Variational Autoencoder (VAE) sono modelli di machine learning generativi.
+Essi vengono addestrati su un dataset per simulare la generazione di nuovi
+esempi, simili a quelli visti durante la procedura di addestramento\cite{vae}.
+Utilizzando un VAE è possibile arricchire ulteriormente il dataset di
+addestramento del modello proposto in questo elaborato, fornendo esempi nuovi e
+possibilmente migliori rispetto a quelli prodotti implementando manualmente
+tecniche di data augmentation.
+\subsection{Transfer Learning: Input Masking e Ricostruzione dei Segnali}
+Un possibile approccio alla risoluzione del problema della raccolta dei dati è
+quello che prende il nome di Transfer Learning. Addestrando prima un modello su
+una grande quantità di dati privi di target (il valore cioè che il modello
+dovrebbe inferire a partire dall'input) su un problema simile all'originale, è
+possibile sfruttare la configurazione dei parametri risultante per addestrare
+lo stesso modello su un nuovo problema, spesso più complesso, attraverso un
+nuovo dataset, stavolta comprendente l'output richiesto. Nel caso della
+localizzazione indoor, il problema di tipo non supervisionato potrebbe essere
+quello di ricostruire un segnale perturbato con del rumore, o alterato in
+qualche modo. Un approccio simile è utilizzato dai modelli di tipo
+Transformer\cite{attention}, come BERT\cite{bert} e il più recente
+GPT-3\cite{gpt3}, in cui l'input della rete viene mascherato nascondendone una
+parte e successivamente ricostruito. Se il modello così addestrato risulta
+essere in grado a ricostruire i segnali, è probabile che abbia individuato
+delle relazioni tra gli input dei diversi beacon. Ciò dovrebbe aiutare, nel
+contesto del problema originale, a costruire una rappresentazione significativa
+dell'input anche con una quantità relativamente piccola di dati e quindi
+risolvere il problema in modo più efficiente. La raccolta del primo dataset è
+effettuabile in modo molto economico navigando l'edificio in cui sono disposti
+i beacon e raccogliendo i segnali ricevuti.
+% \subsection{Transformers per Problemi di Regressione}
+\subsection{Simulatore BLE}
+L'utilizzo di un simulatore di propagazione dei segnali bluetooth all'interno
+di un edificio potrebbe eliminare completamente la necessità di raccogliere
+dati manualmente. L'implementazione di un tale simulatore dovrebbe prevedere
+la possibilità di configurare quest'ultimo impostando una planimetria di un
+locale e la disposizione dei beacon all'interno di esso. Poichè i segnali
+bluetooth emessi sono naturalmente soggetti a rumore ambientale, non dovrebbe
+essere necessario modellare la realtà con un elevato grado di precisione.
+L'introduzione nel simulatore di sorgenti di rumore casuale dovrebbe essere
+sufficiente a rappresentare con la giusta fedeltà il contesto del problema e,
+in questo senso, la resistenza al rumore e alle variazioni dell'input del
+modello dovrebbero garantire buoni risultati anche con dati sintetici.
+\subsection{Posizionamento Magnetico}
+La struttura di un edificio e i materiali in esso contenuti alterano il campo
+magnetico naturalmente emesso dalla Terra. Queste variazioni sono uniche e
+identificabili, rendendo possibile una tecnica di localizzazione indoor che
+prende il nome di posizionamento magnetico. Attraverso la mappatura di tutte le
+perturbazioni del campo magnetico causate dall'edificio stesso, è possibile
+implementare un sistema di navigazione con un discreto grado di
+precisione\cite{magnetic-positioning}. Il modello presentato in questo
+elaborato sfrutta già le informazioni ricavate dal sensore magnetico dello
+smartphone, come descritto nel Paragrafo~\ref{subsec:input}, ma il loro utilizzo
+può essere approfondito.
 \end{document}
