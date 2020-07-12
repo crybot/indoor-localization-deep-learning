@@ -12,8 +12,8 @@ grafi computazionali e calcolarne automaticamente la derivata. Ciò consente di
 costruire reti neurali arbitrariamente complesse ed addestrarle tramite le
 implementazioni degli algoritmi di apprendimento fornite dalla libreria. La
 versione della libreria utilizzata è TensorFlow 2.2.1, la quale consente di
-definire funzionalmente modelli di machine learning, interfacciandosi con
-Keras, una API ad alto livello progettata per essere comprensibile e di facile
+definire funzionalmente modelli di machine learning interfacciandosi con Keras,
+una API ad alto livello progettata per essere comprensibile e di facile
 utilizzo.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Google Colab}
@@ -28,7 +28,7 @@ Per la gestione sistematica dei test, dei risultati sperimentali e per
 l'ottimizzazione degli iperparametri del modello, è stato utilizzato Weights \&
 Biases. Esso fornisce una suite di strumenti per il tracking degli esperimenti
 di machine learning grazie alla registrazione automatica delle metriche di
-errore durante la fase di addestramento, del salvataggio dei modelli e ai vari
+errore durante la fase di addestramento, al salvataggio dei modelli e ai vari
 tool grafici accessibili dalla piattaforma web di Weights \& Biases.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Architettura della Rete Neurale}
@@ -44,7 +44,7 @@ tool grafici accessibili dalla piattaforma web di Weights \& Biases.
 \end{figure}
 La rete neurale sviluppata per il problema di localizzazione indoor è
 illustrata schematicamente in Figura~\ref{fig:crynet}. Essa consiste in una
-serie di blocchi convoluzionali seguiti da alcuni livelli di neuroni
+serie di blocchi convoluzionali (CNN), seguiti da alcuni livelli di neuroni
 completamente connessi. Il modello sfrutta, oltre ai segnali RSSI emessi dai
 beacon, anche due input ausiliari che non sono processati dalla sezione
 convoluzionale della rete.
@@ -64,41 +64,40 @@ sempre costante e risulta essere $920\times1$.
 A completare l'input del modello sono il valore emesso dal sensore magnetico
 dello smartphone e l'ultima posizione nota dell'utente all'interno
 dell'edificio, indicati rispettivamente con \(\alpha\) e \( \yold \). Il
-valore della bussola è utile per determinare l'orientamento della persona nello
-spazio, rendendo la rete neurale capace di considerare le variazioni dei
-segnali BLE dovuti all'assorbimento da parte del corpo dell'utilizzatore dello
-smartphone. Il secondo input ausiliario è invece utilizzato per correggere
-eventuali scostamenti rilevanti dell'output della CNN rispetto alla posizione
-precedente dell'utente. Ci si aspetterebbe infatti che tale posizione non
-variasse di molto in un lasso di tempo breve.
+valore della bussola è utile al modello per determinare l'orientamento della
+persona nello spazio, rendendo la rete neurale capace di considerare le
+variazioni dei segnali BLE dovuti all'assorbimento da parte del corpo
+dell'utilizzatore dello smartphone. Il secondo input ausiliario è invece
+utilizzato per correggere eventuali fluttuazioni dell'output della CNN.
+È ragionevole aspettarsi infatti che la posizione prodotta dal modello non si
+discosti molto da quella precedentemente calcolata, nell'ipotesi che
+l'intervallo di tempo trascorso tra i due calcoli sia breve.
 
 L'ultima posizione nota dell'utente viene pesata da un coefficiente, anche esso
 input del modello, che in Figura~\ref{fig:crynet} è indicato con la lettera
 greca \(\mu\). Tale valore, cui possiamo riferirci con il termine
 \emph{coefficiente di memoria residua}, è compreso tra zero e uno, e determina
 il peso che si vuole dare all'ipotesi di continuità della posizione dell'utente
-nel tempo.  \(\mu = 0\) indica l'assenza di tale assunzione, con la conseguente
-massima riduzione della correzione dell'output della CNN da parte dei livelli
-successivi, mentre \(\mu = 1 \) associa il massimo peso su tale ipotesi. Il
-coefficiente di memoria residua è esso stesso input del livello successivo
-della rete, il quale riceve anche i valori dell'output ausiliario e di 
-\(\mu \cdot \yold\).
+nel tempo. \(\mu = 0\) indica l'assenza di tale assunzione, con la conseguente
+correzione minima dell'output della CNN da parte dei livelli successivi, mentre
+\(\mu = 1 \) associa il massimo peso a tale ipotesi. Il coefficiente di memoria
+residua è esso stesso input del livello successivo della rete, il quale riceve
+anche il valore \(\mu \cdot \yold\).
 
-Il valore della bussola è input del primo livello completamente connesso,
+Infine, il valore della bussola è input del primo livello completamente connesso,
 insieme all'output della CNN\@.
 \subsection{Blocco Convoluzionale}
 La prima parte del modello è una semplice rete neurale convoluzionale
-unidimensionale. Sebbene sia composto da due dimensioni, quella temporale e
-quella dei beacon, quest'ultima può essere interpretata come l'insieme dei
-canali della prima, come nel caso dei canali \emph{r}, \emph{g}, \emph{b} di
-un'immagine a colori. Ciò permette di applicare l'operazione di convoluzione
-soltanto lungo l'asse temporale.
-La CNN proposta è composta da otto blocchi convoluzionali consecutivi così
-strutturati:
+unidimensionale. Sebbene l'input sia composto da due dimensioni, quella
+temporale e quella dei beacon, quest'ultima può essere interpretata come
+l'insieme dei canali della prima, come nel caso dei canali \emph{r}, \emph{g},
+\emph{b} di un'immagine a colori. Ciò permette di applicare l'operazione di
+convoluzione soltanto lungo l'asse temporale.  La CNN proposta è composta da
+otto blocchi convoluzionali consecutivi così strutturati:
 \begin{itemize}
     \item Operazione di convoluzione sull'output del livello precedente
     \item Funzione di attivazione ReLU sull'output della convoluzione
-    \item Livello di batch normalization
+    \item Livello di Batch Normalization\cite{batchnorm}
 \end{itemize}
 Un esempio di blocco convoluzionale è illustrato in Figura~\ref{fig:cnnblock},
 mentre in Figura~\ref{fig:crynet} sono mostrati anche i livelli di pooling,
@@ -111,14 +110,14 @@ rappresentati da una superficie rossa apposta accanto i blocchi convoluzionali.
     di convoluzione, mentre l'ombreggiatura sulla destra illustra la funzione
     di attivazione ReLU\@. \(K\) è il numero di filtri utilizzati e di
     conseguenza equivale al numero di feature map prodotte, mentre \(N\) è la
-    lunghezza della serie temporale. Il processo di Batch normalization è
+    lunghezza della serie temporale. Il processo di Batch Normalization è
     omesso dalla schematizzazione.}%
   \label{fig:cnnblock}%
 \end{figure}
 
 L'output del secondo, terzo e quarto blocco convoluzionale sono sottoposti
-ciascuno all'applicazione di un particolare metodo di dropout chiamato
-\emph{dropout gaussiano}. Esso consiste nell'applicare del rumore
+ciascuno all'applicazione di un particolare tipo di Dropout\cite{dropout}
+chiamato \emph{Dropout Gaussiano}. Esso consiste nell'applicare del rumore
 moltiplicativo, con distribuzione gaussiana di media unitaria, all'output del
 blocco convoluzionale. Lo scopo è quello di simulare una corruzione casuale dei
 dati di addestramento del modello, con l'obiettivo di regolarizzare
@@ -126,42 +125,44 @@ quest'ultimo. Applicare il rumore all'output dei livelli intermedi della rete,
 piuttosto che al dataset iniziale, consente di manipolare più profondamente la
 rappresentazione dei dati imparata dal modello, rendendolo conseguentemente più
 robusto rispetto alle variazioni dei segnali di
-input\cite{noise-hidden-layers}. Gli effetti dell'utilizzo del dropout
-gaussiano sono illustrati in Tabella~\ref{tab:nogaussdrop}.
+input\cite{noise-hidden-layers}. Gli effetti dell'utilizzo del Dropout
+Gaussiano sono illustrati in Tabella~\ref{tab:nogaussdrop}. Si riferisca
+all'Appendince~\ref{app:metrics} per una panoramica sulle metriche di errore
+utilizzate.
 \input{./tabs/nogaussdrop}
 
 L'output dell'ultimo blocco convoluzionale è infine seguito da un livello di
-pooling globale e dall'applicazione del dropout.
+pooling globale e dall'applicazione del Dropout.
 \subsection{Uso della Bussola e Output Ausiliario}
-L'utilizzo dei valori forniti dal sensore magnetico dello smartphone sono
-giustificati dal voler mitigare il cosiddetto effetto del \emph{body
+L'utilizzo dei valori forniti dal sensore magnetico dello smartphone trovano
+giustificazione nel voler mitigare il cosiddetto effetto di \emph{body
   shadowing}.  Tale fenomeno si verifica quando un segnale wireless si propaga
 in un ambiente e collide contro un corpo umano. Tale collisione provoca un
-decadimento del segnale, il quale arriva disturbato al punto di ricezione. Ciò
-influisce sulla precisione dei sistemi di localizzazione indoor basati sui
-valori RSSI dei segnali wireless in modo considerevole, poichè è sufficiente che
-l'utente volti le spalle a un sottoinsieme dei beacon attivi per introdurre
-rumore all'interno del sistema. Utilizzando il valore emesso dalla bussola
-dello smartphone, è possibile rendere il modello consapevole dell'orientamento
-dell'utente e attenuare il rumore introdotto dal \emph{body shadowing}. I
-risultati ottenuti dall'utilizzo di questo input sono illustrati in
+decadimento del segnale, il quale arriva disturbato al punto di ricezione
+finale. Ciò influisce sulla precisione dei sistemi di localizzazione indoor
+basati sui valori RSSI in modo considerevole, poichè è sufficiente che l'utente
+volti le spalle a un sottoinsieme dei beacon attivi per introdurre rumore
+all'interno del sistema. Utilizzando il valore emesso dalla bussola dello
+smartphone, è possibile rendere il modello consapevole dell'orientamento
+dell'utente e attenuare il rumore introdotto dal body shadowing. I risultati
+ottenuti dall'utilizzo di questo input sono illustrati in
 Tabella~\ref{tab:nocompass}, la quale mette in relazione il modello finale con
 uno che non considera l'input della bussola.
 \input{./tabs/nocompass}
 
 L'input corrispondente al sensore magnetico è un valore scalare \(\alpha \in
-  \mathbb{R}, \) con \(0 \leq \alpha \leq 360\), in cui il valore \(0\) indica
-il nord. Tale dato è fornito, come mostrato in Figura~\ref{fig:crynet}, al
-primo livello completamente connesso della rete, insieme all'output della
-CNN\@.  Questo livello produce un vettore di 64 elementi, il quale diventa
-input del secondo livello completamente connesso del modello. L'output di
-quest'ultimo livello, indicato in figura come \(\yhatone\), è una coppia
-di coordinate reali che indica la posizione dell'utente all'interno
-dell'edificio.  Tale previsione è soltanto parziale, in quanto non tiene conto
-dell'ultima posizione nota dell'utente, ma risulta utile per guidare
-l'addestramento del modello verso una soluzione meno dipendente da tale input.
-A questo scopo \(\yhatone\) è interpretrato dal modello come output
-ausiliario.
+  \mathbb{R}, \) con \(0 \leq \alpha \leq 360\), in cui il valore \(0\)
+rappresenta il nord. Tale dato è fornito, come mostrato in
+Figura~\ref{fig:crynet}, al primo livello completamente connesso della rete,
+insieme all'output della CNN\@.  Questo livello produce un vettore di 64
+elementi, il quale diventa input del secondo livello completamente connesso del
+modello. L'output di quest'ultimo livello, indicato in figura come
+\(\yhatone\), è una coppia di coordinate reali che indica la posizione
+dell'utente all'interno dell'edificio.  Tale previsione è soltanto parziale, in
+quanto non tiene conto dell'ultima posizione nota dell'utente, ma risulta utile
+per guidare l'addestramento del modello verso una soluzione meno dipendente da
+tale input.  A questo scopo \(\yhatone\) è interpretrato dal modello come
+output ausiliario.
 
 A ogni output ausiliario è associata una funzione di costo, il cui valore va
 poi integrato additivamente con quello della funzione di costo dell'output
@@ -177,7 +178,7 @@ assegna ai coefficienti i valori \( c_1 = \frac{1}{2}, c_2 = 1 \). Si noti che
 tali valori sono completamente arbitrari e rappresentano due iperparametri del
 modello.
 
-Se l'output \(\yhatone\) non pesasse direttamente nella funzione di costo
+Se l'output \(\yhatone\) non avesse direttamente peso nella funzione di costo
 del modello (cioè se fosse \(c_1 = 0\)), l'output della rete sarebbe troppo
 condizionato dal valore dell'input ausiliario \(\yold\). Poichè in fase di
 raccolta dei dati, la posizione precedente dell'utente non è nota, si assume
@@ -188,7 +189,7 @@ persona mentre cammina (per esempio \( \sigma = 1 \)). Ciò implica che, qualora
 fosse \(\displaystyle \sum_i\| {\yold}_i - \bm y_i \|^2_2 < \sum_i \|
   {{}\yhattwo}_{i} - \bm y_i\|^2_2 \), cioè se la distanza media tra l'ultima
 posizione nota e l'effettiva posizione dell'utente durante il campionamento dei
-segnali, fosse minore della precisione media ottenibile dal modello, i
+segnali fosse minore della precisione media ottenibile dal modello, i
 parametri della rete convergerebbero verso dei valori che tenderebbero a
 ignorare l'input dei beacon. L'utilizzo della sola posizione precedente
 dell'utente per esprimere l'output del modello, garantirebbe infatti un errore
@@ -205,11 +206,10 @@ in cui l'output ausiliario non ha peso all'interno della funzione di costo
 
 
 \subsection{Output del Modello}
-L'output del modello, indicato in Figura~\ref{fig:crynet} come \(\yhattwo\),
-consiste in una coppia di coordinate reali che indica la posizione prevista
-dell'utente all'interno dell'edificio, dopo essere stata opportunamente
-corretta in base alle conoscenze relative alla precedente locazione
-dell'utilizzatore.
+L'output del modello, specificato in Figura~\ref{fig:crynet} come \(\yhattwo\),
+consiste in una coppia di coordinate reali indicanti la posizione prevista
+dell'utente all'interno dell'edificio, dopo essere state opportunamente
+corrette in base alla precedente locazione dell'utilizzatore.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Dataset Augmentation e Preprocessing}\label{sec:augmentation}
 Poichè il processo di raccolta dei dati è particolarmente dispendioso, sono
@@ -265,7 +265,7 @@ La tecnica del ridimensionamento consiste nell'applicare del rumore
 moltiplicativo costante al segnale di ingresso, mantenendone quindi intatta la
 struttura, ma modificandone l'ampiezza. L'utilizzo dello \emph{scaling} è
 giustificato dall'assunzione che, per lo scopo della localizzazione indoor,
-l'informazione contenuta in una serie temporale di segnali è invariante
+l'informazione contenuta in una serie temporale di segnali sia invariante
 rispetto a piccole variazioni dell'ampiezza dei segnali, poichè queste
 potrebbero essere causate da fenomeni esterni non osservati.
 
@@ -336,35 +336,37 @@ casuali. Tale metodo è illustrato in Figura~\ref{fig:shuffling}
   \label{fig:shuffling}%
 \end{figure}
 \subsection{Deattivazione Selettiva}
-Per rendere il modello più robusto alla eventuale perdita di segnali di alcuni
+Per rendere il modello più robusto all'eventuale perdita di segnali di alcuni
 beacon, è stata introdotta una tecnica di data augmentation che prevede la
 conversione dei valori della serie temporale di un beacon in valori soglia
-indicano la mancata ricezione di segnale. A rappresentare il placeholder con il
-quale rimpiazzare gli effettivi valori RSSI dei beacon, nell'ambito di questo
-progetto, è stato scelto il valore $-200$db.
+indicanti la mancata ricezione di segnale. A rappresentare il placeholder con
+il quale rimpiazzare gli effettivi valori RSSI dei beacon, nell'ambito di
+questo progetto, è stato scelto il valore $-200$db.
 
-Questa strategia è simile a quella del dropout, ma, al posto del valore nullo,
+Questa strategia è simile a quella del Dropout, ma, al posto del valore nullo,
 l'input viene rimpiazzato casualmente con il placeholder scelto. A gestire la
 frequenza con cui un beacon viene disattivato all'interno del dataset è un
-iperparametro di tipo percentuale.
+iperparametro di tipo percentuale. Si riferisca al
+Paragrafo~\ref{sec:augmentation-impl} per i dettagli implementativi.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Addestramento del Modello}\label{sec:training}
 Il modello descritto è stato addestrato su un dataset di $279457$ elementi,
-ottenuti applicando le tecniche di data augmentation introdotte
-precedentemente. L'algoritmo utilizzato per l'addestramento è una variante del
+ottenuti, a fronte di una collezione di dati iniziale di dimensione pari a
+circa 7000, applicando le tecniche di data augmentation introdotte
+precedentemente.  L'algoritmo utilizzato per l'addestramento è una variante del
 metodo del gradiente stocastico con momento, che prende il nome di \emph{Adam}.
-Questo ottimizzatore gestisce autonomamente l'iperparametro della rete che
-determina l'entità dell'aggiornamento dei parametri del modello: il cosiddetto
-\emph{learning rate}. A coadiuvare l'algoritmo è stato inserito un metodo,
+Questo ottimizzatore gestisce autonomamente il \emph{learning rate},
+l'iperparametro della rete che determina l'entità dell'aggiornamento dei
+parametri del modello. A coadiuvare l'algoritmo è stato adottato un metodo,
 guidato dal dataset di validazione, che riduce esponenzialmente il learning
 rate ogni volta che la procedura di addestramento raggiunge uno stallo.
 
 Un ulteriore metodo di regolarizzazione introdotto è quello dell'\emph{Early %
-  Stopping}, il quale termina precocemente l'addestramento quando una
-determinata metrica sul dataset di validazione non migliora per un periodo di
-tempo predefinito. Quando ciò accade, la configurazione
-del modello che ha ottenuto i migliori risultati viene ripristinata.
-Empiricamente si è visto che il metodo dell'early stopping riduce l'errore
+  Stopping}, il quale termina precocemente l'addestramento qualora una
+determinata metrica sul dataset di validazione non migliorasse per un certo
+numero di iterazioni consecutive; nel qual caso, la configurazione del
+modello che ha ottenuto i migliori risultati verrebbe ripristinata.
+Empiricamente si è osservato che il metodo dell'early stopping riduce l'errore
 commesso dal modello sul dataset di validazione, ma è stato anche mostrato come
 tale algoritmo agisca da regolarizzatore per la rete in un modo simile a quello
 della regolarizzazione L2\cite{bishop-regularization}.
@@ -379,7 +381,7 @@ ulteriormente l'affidabilità del sistema di localizzazione indoor, sono stati
 addestrati indipendentemente, e con differenti configurazioni di
 iperperparamentri, vari modelli, i quali sono stati successivamente aggregati
 tramite il metodo dell'\emph{ensembling}. Tale tecnica consiste nell'unire le
-previsioni di modelli diversi per formarne una il cui errore sia
+previsioni di modelli diversi al fine di formarne una il cui errore sia
 statisticamente più basso, a patto che gli errori commessi dai singoli modelli
 siano sufficientemente non correlati\cite{goodfellow}. In un problema di
 regressione, ad esempio, per aggregare l'output di un insieme di modelli è

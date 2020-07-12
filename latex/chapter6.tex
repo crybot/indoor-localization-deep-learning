@@ -1,47 +1,51 @@
 \begin{document}
-La navigazione indoor si è rivelato un problema particolarmente adatto alla
-risoluzione tramite tecniche di deep learning, anche se queste ultime non si
-sono mostrate esenti da difetti. In particolare la difficoltà nella raccolta
-dati per l'addestramento del modello rmiane l'ostacolo più grande in questo
-contesto e nel machine learning in generale. Tuttavia l'uso di tecniche di data
-augmentation ha mostrato come anche con una quantità iniziale di dati
-relativamente scarsa sia possibile generare un modello che stimi la posizione
-dell'utente all'interno di un edificio con precisione di circa 30cm.
+La navigazione indoor si è rivelata un problema particolarmente adatto alla
+risoluzione tramite tecniche di deep learning, anche se non esente da
+criticità. In particolare la difficoltà nella raccolta dati per l'addestramento
+del modello rimane l'ostacolo più grande in questo contesto e nel machine
+learning in generale. Tuttavia l'uso di tecniche di data augmentation ha
+mostrato come anche con una quantità iniziale di dati relativamente scarsa, sia
+possibile generare un modello che stimi la posizione dell'utente con una
+precisione media di circa 30cm sul dataset di test.
 
-Le fluttuazioni dell'output del modello durante la navigazione sono state
-parzialmente risolte utilizzando un filtro di Kalman, congiuntamente ai dati
-del sensore inerziale dello smartphone, ma ulteriori approfondimenti sono
-necessari allo scopo di valutare concretamente l'entità di questi
-miglioramenti. Infine, ulteriori approcci al problema della stabilizzazione
-possono essere esplorati, come discusso nei successivi paragrafi.
+La recente emergenza sanitaria causata dalla diffusione globale del nuovo
+Coronavirus non ha permesso di sperimentare il prototipo sviluppato presso i
+locali dell'ASL Toscana Nord Ovest, come invece inizialmente preventivato.
+Tuttavia, test pregressi effettuati all'interno della sede del Consorzio Metis
+hanno consentito di analizzare in breve l'efficacia della soluzione prodotta
+sotto il profilo della navigazione. In particolare, con l'adozione di un filtro
+di Kalman, congiuntamente al sensore inerziale dello smartphone, si sono viste
+ridotte le fluttuazioni dell'output del modello durante il suo utilizzo.
+Tuttavia ulteriori approfondimenti sono necessari allo scopo di valutare
+concretamente l'entità di questi miglioramenti. Inoltre, ulteriori approcci al
+problema della stabilizzazione possono essere esplorati, come discusso nei
+successivi paragrafi.
 \section{Lavori futuri}
 Sulla base dei risultati sperimentali ottenuti e sulle difficoltà riscontrate
 durante la risoluzione del problema della locallizazione indoor, sono state
 individuate varie idee meritevoli di appronfondimento.
 \subsection{Particle Filter}
 I Particle Filter sono una categoria di algoritmi Monte Carlo per
-l'approssimazione di distribuzioni di probabilità non gaussiane. L'utilizzo di
-questi metodi si rende utile nel momento in cui il modello è soggetto a rumore
-non gaussiano. È verosimile pensare che l'errore commesso dal modello descritto
-non presenti una distribuzione gaussiana. In questo contesto, l'utilizzo di un
-Particle Filter sarebbe da preferire rispetto ad un filtro di Kalman. In
-particolare per il problema della localizzazione indoor, sono stati descritti
-vari metodi di tipo Particle Filter che hanno mostrato buoni risultati nella
-correzione delle previsioni del sistema di navigazione\cite{particle-filter1,
-  particle-filter2}.
+l'approssimazione di distribuzioni di probabilità non gaussiane. È verosimile
+pensare che l'errore commesso dal modello descritto non presenti una
+distribuzione gaussiana. In questo contesto, l'utilizzo di un Particle Filter
+sarebbe da preferire rispetto ad un filtro di Kalman. In particolare per il
+problema della localizzazione indoor, sono stati descritti vari metodi di
+questo tipo che hanno mostrato buoni risultati nella correzione delle
+previsioni del sistema di navigazione\cite{particle-filter1, particle-filter2}.
 \subsection{Input a Lunghezza Variabile}
 Nella attuale implementazione della rete neurale, le serie temporali dei
 segnali emessi dai beacon hanno dimensione fissa. Ciò significa che la
 dimensione del campionamento effettuata durante la fase di navigazione deve
-essere sempre la stessa, eventualmente aggiungendo valori fittizi alla serie
-temporale. Tuttavia il modello, grazie al livello di Pooling globale, permette
-di associare all'input una dimensione qualsiasi lungo l'asse temporale. Sarebbe
-quindi possibile addestrare il modello con input di lunghezza variabile e a
-tale scopo non sarebbe difficile arricchire il dataset con variazioni dei
-segnali originali modificandone la lunghezza. Non è da escludere che un simile
-approccio migliori ancora la precisione del modello, oltre a renderlo più
-flessibile in fase di utilizzo, non essendo più legato ad una dimensione
-costante per l'input dei segnali.
+essere mantenuta sempre la stessa, eventualmente aggiungendo valori fittizi
+alla serie temporale. Tuttavia il modello, grazie al livello di Pooling
+globale, permette di associare all'input una dimensione qualsiasi lungo l'asse
+del tempo. Sarebbe quindi possibile addestrare il modello con input di
+lunghezza variabile e a tale scopo non sarebbe difficile arricchire il dataset
+con variazioni dei segnali originali modificandone la lunghezza. Non è da
+escludere che un simile approccio migliori ancora la precisione del modello,
+oltre a renderlo più flessibile in fase di utilizzo, non essendo più legato a
+una dimensione costante per l'input dei segnali.
 \subsection{Reti Neurali Residuali}
 Le reti neurali residuali sono un particolare tipo di architettura,
 inizialmente ideato per le reti convoluzionali, che permette di ridurre
@@ -53,11 +57,12 @@ discapito della performance in fase di addestramento e in fase di inferenza.
 Rimane quindi dubbia l'utilizzabilità di tali reti in contesti mobile.
 \subsection{Variational Autoencoder: Generazione di nuovi dati}
 I Variational Autoencoder (VAE) sono modelli di machine learning generativi.
-Essi vengono addestrati su un dataset per simulare la generazione di nuovi
-esempi, simili a quelli visti durante la procedura di addestramento\cite{vae}.
-Utilizzando un VAE è possibile arricchire ulteriormente il dataset di
-addestramento del modello proposto in questo elaborato, fornendo esempi nuovi e
-possibilmente migliori rispetto a quelli prodotti implementando manualmente
+Essi vengono addestrati su un dataset allo scopo di simulare la generazione di
+nuovi esempi, simili a quelli visti durante la procedura di
+addestramento\cite{vae}.  Utilizzando un VAE è possibile arricchire
+ulteriormente il dataset di addestramento del modello proposto in questo
+elaborato, fornendo esempi nuovi e possibilmente migliori rispetto a quelli
+prodotti implementando manualmente
 tecniche di data augmentation.
 \subsection{Transfer Learning: Input Masking e Ricostruzione dei Segnali}
 Un possibile approccio alla risoluzione del problema della raccolta dei dati è
@@ -68,12 +73,12 @@ possibile sfruttare la configurazione dei parametri risultante per addestrare
 lo stesso modello su un nuovo problema, spesso più complesso, attraverso un
 nuovo dataset, stavolta comprendente l'output richiesto. Nel caso della
 localizzazione indoor, il problema di tipo non supervisionato potrebbe essere
-quello di ricostruire un segnale perturbato con del rumore, o alterato in
+quello di ricostruire un segnale perturbato con del rumore o alterato in
 qualche modo. Un approccio simile è utilizzato dai modelli di tipo
 Transformer\cite{attention}, come BERT\cite{bert} e il più recente
 GPT-3\cite{gpt3}, in cui l'input della rete viene mascherato nascondendone una
 parte e successivamente ricostruito. Se il modello così addestrato risulta
-essere in grado a ricostruire i segnali, è probabile che abbia individuato
+essere in grado di ricostruire i segnali, è probabile che abbia individuato
 delle relazioni tra gli input dei diversi beacon. Ciò dovrebbe aiutare, nel
 contesto del problema originale, a costruire una rappresentazione significativa
 dell'input anche con una quantità relativamente piccola di dati e quindi
@@ -85,7 +90,7 @@ i beacon e raccogliendo i segnali ricevuti.
 L'utilizzo di un simulatore di propagazione dei segnali bluetooth all'interno
 di un edificio potrebbe eliminare completamente la necessità di raccogliere
 dati manualmente. L'implementazione di un tale simulatore dovrebbe prevedere
-la possibilità di configurare quest'ultimo impostando una planimetria di un
+la possibilità di configurare quest'ultimo impostando la planimetria di un
 locale e la disposizione dei beacon all'interno di esso. Poichè i segnali
 bluetooth emessi sono naturalmente soggetti a rumore ambientale, non dovrebbe
 essere necessario modellare la realtà con un elevato grado di precisione.

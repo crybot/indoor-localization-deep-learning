@@ -1,13 +1,13 @@
 \begin{document}
-In questo capitolo saranno introdotti i concetti fondamentali alla base delle
+In questo capitolo sono introdotti i concetti fondamentali alla base delle
 moderne tecniche di Deep Learning e le strutture matematiche necessarie alla
 loro comprensione.
 
 \section{Machine Learning}
 Il \emph{Machine Learning}, o apprendimento automatico, è un insieme di
-tecniche e algoritmi che consente a dei programmi di ``imparare'' a svolgere
-un determinato compito sulla base di esperienze pregresse, senza bisogno da
-parte del programmatore di specificare come eseguire tali mansioni. 
+tecniche e algoritmi che consente di scrivere programmi capaci di ``imparare''
+a svolgere un determinato compito sulla base di esperienze pregresse, senza
+bisogno da parte del programmatore di specificare come eseguire tali mansioni. 
 \subsection{Regressione Lineare}
 Un classico esempio di algoritmo di machine learning è quello della regressione
 lineare. Scopo dell'algoritmo è predire l'output di una determinata funzione.
@@ -16,27 +16,25 @@ $\hat{y} = \bm \theta^\intercal \bm x$. Il vettore $\bm \theta$ introduce i
 parametri del modello, mentre $\hat{y}$ ne rappresenta l'output, che è una
 funzione lineare di $\bm x$. Siano quindi $ \bm x_1, \bm x_2, \dotsc, \bm x_m $
 dei vettori in $\mathbb{R}^n$ e  $ y_1, y_2, \dotsc, y_m $ i corrispettivi
-valori della funzione $f(\bm x_i)$ che stiamo cercando di approssimare.
-
-Perchè la funzione $\hat{y}(\bm x)$ approssimi $f(\bm x)$ è necessario che i
-parametri $\bm \theta$ del modello si adattino in modo da minimizzare la differenza
-tra l'output prodotto dal modello e la cosiddetta \emph{ground truth}: $y =
-f(\bm x)$. A questo scopo si definisce una metrica di errore propria del
-processo di apprendimento: l'errore quadratico medio (MSE dall'inglese) 
+valori della funzione $f(\bm x_i)$ che stiamo cercando di approssimare. Perchè
+la funzione $\hat{y}(\bm x)$ approssimi $f(\bm x)$ è necessario che i parametri
+$\bm \theta$ del modello si adattino in modo da minimizzare la differenza tra
+l'output prodotto dal modello e la cosiddetta \emph{ground truth}: $y = f(\bm
+x)$. A questo scopo si definisce una metrica di errore propria del processo di
+apprendimento: l'errore quadratico medio (MSE dall'inglese) 
 \begin{equation} \label{eq:mse}
   MSE = \frac{1}{m} \sum_{i=1}^m{{(\hat{y} - y_i)}^2} 
 \end{equation}
 
-Per minimizzare l'errore sul nostro dataset di test è sufficiente porre a zero
-la derivata, rispetto a $\bm \theta$, della nostra funzione di costo. Nel caso
+Per minimizzare l'errore commesso sul dataset di test è sufficiente porre a
+zero la derivata, rispetto a $\bm \theta$, della funzione di costo. Nel caso
 della regressione lineare è possibile risolvere l'equazione risultante
-ottenendo un sistema di equazioni che prende il nome di 
-\emph{normal equations}.
-Esistono tuttavia metodi numerici iterativi che si basano sulle informazioni
-fornite dal gradiente della funzione di costo che permettono di aggiornare i
-parametri del modello cercando di ridurne l'errore, anche nel caso di modelli
-non lineari. L'algoritmo su cui si basano molti dei moderni metodi di
-apprendimento del Deep Learning è il \emph{gradient descent} o metodo del
+ottenendo un sistema di equazioni che prende il nome di \emph{normal
+  equations}. Esistono tuttavia metodi numerici iterativi che si basano sulle
+informazioni fornite dal gradiente della funzione di costo e che permettono di
+aggiornare i parametri del modello cercando di ridurne l'errore, anche nel caso
+di modelli non lineari. L'algoritmo su cui si basano molti dei moderni metodi
+di apprendimento del Deep Learning è il \emph{gradient descent} o metodo del
 gradiente.
 
 Il metodo del gradiente aggiorna i parametri $\bm \theta$ del modello secondo
@@ -47,15 +45,15 @@ la seguente regola:
 dove $J(\bm \theta)$ rappresenta la funzione di costo associata al modello,
 mentre $\eta$ è un coefficiente chiamato \emph{learning rate}.
 %Intuizione gradient descent
-Un'interpretazione dell'algoritmo è data dalle informazioni sulla monotonia
+Un'interpretazione dell'algoritmo è fornita dalle informazioni sulla monotonia
 ottenute dal gradiente della funzione di costo: per $\eta$ abbastanza piccolo
 risulta $J(\bm \theta') \leq J(\bm \theta)$ poichè il gradiente negativo di $J$
 determina la direzione di massima decrescita della funzione\cite{goodfellow}.
 Ne consegue che applicando ricorsivamente la regola di aggiornamento del metodo
-del gradiente, la nostra funzione $\hat{y}$ tenderà ad avvicinarsi alla
-funzione originale $y$, minimizzando la funzione di costo.
-Possiamo intepretare il coefficiente $\eta$ come la velocità con cui seguire la
-pendenza della funzione di errore.
+del gradiente, la funzione $\hat{y}$ tenderà ad avvicinarsi alla funzione
+originale $y$, minimizzando la funzione di costo.  Possiamo intepretare il
+coefficiente $\eta$ come la velocità con cui seguire la pendenza della funzione
+di errore.
 
 %Gradient descent con MSE e modello lineare
 Nel caso di un modello di regressione lineare che usa l'MSE come funzione di
@@ -91,8 +89,8 @@ Il \emph{Perceptron} è il modello che ha posto le basi per le moderne reti
 neurali artificiali e il deep learning. Esso prende spunto dalla neurologia,
 cercando di imitare il comportamento dei neuroni del cervello umano, con ovvie
 limitazioni e senza presunzione di volerne fornire una simulazione accurata del
-funzionamento. Una schematizzazione del modello è descritta in Figura%
-~\ref{fig:perceptron}
+funzionamento. Una schematizzazione del modello è fornita in
+Figura~\ref{fig:perceptron}
 \begin{figure}[H]
   \includetikz{0.9}{./img/perceptron}
   \caption{Schematizzazione del Perceptron}%
@@ -100,7 +98,7 @@ funzionamento. Una schematizzazione del modello è descritta in Figura%
 \end{figure}
 
 Il perceptron è molto simile al modello di regressione lineare descritto
-precedentemente, ma si distingue per un fattore fondamentale: la non linearità.
+precedentemente, ma si distingue per un fattore fondamentale: la nonlinearità.
 L'output del perceptron è infatti definito come:
 \[\hat{y}(\bm x) = g(\bm \theta^\intercal \bm x)\]
 dove $g$ è una funzione \emph{sigmoidea}, cioè una funzione che ha un andamento
@@ -122,15 +120,15 @@ sviluppata un'estensione del modello che prende il nome di \emph{Multi Layer
 \section{Multi Layer Perceptron}
 Il Multi Layer Percepton (MLP) è uno dei modelli più emblematici del Deep
 Learning. Esso si basa sui concetti descritti finora ed è la naturale
-estensione del perceptron. L'MLP risolve infatti il principale problema del
-modello su cui è fondato, essendo in grado di approssimare qualsiasi tipo di
-funzione continua con precisione arbitraria, sotto l'assunzione che la
-funzione di attivazione sia non polinomiale\cite{universal-approximator}.
+estensione del perceptron. L'MLP risolve infatti il problema principale del
+modello da cui deriva, essendo in grado di approssimare qualsiasi tipo di
+funzione continua con precisione arbitraria, sotto l'assunzione che la funzione
+di attivazione utilizzata sia non polinomiale\cite{universal-approximator}.
 
-L'MLP è un modello di machine learning che fa parte della categoria delle reti
-neurali, in quanto è composto da un insieme di neuroni artificiali
-(perceptron) disposti su più livelli e interconnessi tra di loro. Una
-schematizzazione del modello è fornita in Figura~\ref{fig:mlp}.
+L'MLP è un modello di machine learning facente parte della categoria delle reti
+neurali, in quanto è composto da un insieme di neuroni artificiali (perceptron)
+disposti su più livelli e interconnessi tra di loro. Una schematizzazione del
+modello è fornita in Figura~\ref{fig:mlp}.
 \begin{figure}[H]
   \includetikz{0.9}{./img/mlp}
   \caption{Schematizzazione del Multi Layer Perceptron: in Figura è mostrata
@@ -159,10 +157,10 @@ Sia $\bm \Theta^\ell$ la matrice dei pesi delle connessioni tra il livello
 $\ell-1$ e quello successivo, definita in modo che $ \Theta^\ell_{ij} $
 rappresenti il coefficiente relativo alla connessione tra il neurone $i$-esimo
 del livello $\ell$ e il neurone $j$-esimo del livello $\ell-1$. Questa
-configurazione della matrice dei coefficienti, nonostante sia poco intuitiva,
-permette di esprimere l'insieme di valori uscenti da un generico livello $\ell$
-sotto forma di prodotto: $ \bm h^\ell = \bm \Theta^\ell \bm h^{\ell-1}$. Se
-$L$ è il numero di livelli intermedi della rete neurale, risulta:
+configurazione della matrice dei coefficienti permette di esprimere l'insieme
+di valori uscenti da un generico livello $\ell$ sotto forma di prodotto: $ \bm
+h^\ell = \bm \Theta^\ell \bm h^{\ell-1}$. Se $L$ è il numero di livelli
+intermedi della rete neurale, risulta:
 \begin{align*}
   o(\bm x) &= \bm \Theta^{L+1} \bm h^L \\
   &= \bm \Theta^{L+1} g( \bm \Theta^L \bm h^{L-1}) \\
@@ -177,21 +175,21 @@ Per utilizzare il metodo del gradiente con una rete neurale Feed Forward, è
 necessario calcolare la derivata della funzione di costo del modello. Tuttavia
 nell'MLP essa dipende sia dai parametri del livello immediatamente precedente
 che da tutti i parametri dei livelli più bassi, per ricorsione. Si può pensare
-al BackPropagation come un modo per propagare all'indietro le informazioni
+al BackPropagation come a un modo per propagare all'indietro le informazioni
 relative all'errore commesso dai nodi di output rispetto ai target del dataset
 di addestramento.
 
 L'algoritmo calcola il gradiente della funzione di costo in modo automatico
 applicando ricorsivamente lungo il grafo di computazione di $J(\bm \Theta)$ la
-``regola della catena'', ovvero la regola di derivazione per le funzioni
-composte: $ (f \circ g)' = (f' \circ g)\cdot g' $. Esso sfrutta la tecnica
-della programmazione dinamica per evitare di ricalcolare più volte la derivata
-di branch comuni dell'albero di computazione, rendendolo di fatto un metodo
-molto efficiente.
+regola di derivazione per le funzioni composte: $ (f \circ g)' = (f' \circ
+g)\cdot g' $. Esso sfrutta la tecnica della memoizzazione, proria della
+programmazione dinamica, per evitare di ricalcolare più volte la derivata di
+branch comuni dell'albero di computazione, rendendolo di fatto un metodo molto
+efficiente.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Attivazione: ReLU}
-Come descritto, la funzione di attivazione conferisce al modello la
+Come descritto, la funzione di attivazione conferisce al modello la sua
 nonlinearità. Ciò è fondamentale perchè l'MLP riesca ad approssimare funzioni
 continue arbitrarie. Se non ci fosse alcuna funzione di attivazione o se questa
 fosse lineare rispetto ai parametri del modello, l'output della rete si
@@ -200,15 +198,15 @@ equivalente a un semplice modello di regressione lineare.
 
 Con l'avvento delle reti neurali profonde e di nuove architetture più
 complesse, l'utilizzo delle funzioni di attivazioni logistiche è andato
-calando. Una delle cause è il cosiddetto ``vanishing gradient'', un problema
-che insorge nel calcolare numericamente il gradiente della funzione di costo di
-una rete neurale con molti livelli. In questo caso l'uso della funzione
-sigmoidea è in generale sconsigliato poichè il suo valore ``satura'' a causa
-dei suoi asintoti e questo rende la sua derivata prossima a zero. Il metodo del
-gradiente risulta quindi poco efficace nell'aggiornare i parametri del modello.
-Per questo motivo è stata introdotta la funzione ReLU (dall'inglese
-\emph{rectified linear unit}) definita nel modo seguente: 
-$g(x) = \max\{0, x\}$. L'operazione di rettificazione è mostrata in Figura~%
+calando. Una delle cause è il cosiddetto fenomeno del ``vanishing gradient'',
+un problema che insorge nel calcolare numericamente il gradiente della funzione
+di costo di una rete neurale con molti livelli. In questo caso l'uso della
+funzione sigmoidea è in generale sconsigliato poichè il suo valore ``satura'' a
+causa dei suoi asintoti e questo rende la sua derivata prossima a zero. Il
+metodo del gradiente risulta quindi poco efficace nell'aggiornare i parametri
+del modello.  Per questo motivo è stata introdotta la funzione ReLU
+(dall'inglese \emph{rectified linear unit}) definita nel modo seguente: $g(x) =
+\max\{0, x\}$. L'operazione di rettificazione è mostrata in Figura~%
 \ref{fig:relu}.
 \begin{figure}[H]
   \includetikz{0.9}{./img/relu}
@@ -238,16 +236,16 @@ mentre, nel caso discreto, è invece definita nel seguente modo:
 (f * g)(t) = \sum_{x = -\infty}^\infty{f(x)k(t - x)}
 \]
 Poichè in una rete neurale le funzioni $f$ e $g$ sono rappresentate
-generalmente da tensori, l'operazione può essere limitata ai soli elementi di
-tali insiemi di valori, con l'assunzione che le due funzioni siano nulle
-ovunque tranne nei punti in cui sono definiti i tensori. Nel caso di input
+generalmente da tensori, l'operazione si può limitare ai soli elementi di tali
+insiemi di valori, con l'assunzione che le due funzioni siano nulle ovunque
+tranne nei punti in cui sono definiti i tensori. Nel caso di input
 bidimensionali, come è quello delle immagini, si ha quindi:
 \begin{align*}
 (X * K)(i,j) &= \sum_m{\sum_n{X(m,n) K(i - m, j - n)}} \\
              &= \sum_m{\sum_n{X(i - m, j - n) K(m, n)}}
 \end{align*}
 in cui $X$ rappresenta l'input dell'operazione, mentre $K$ è chiamato
-\emph{kernel}, o filtro e costituisce i parametri adattivi della CNN\@. Nella
+\emph{kernel}, o filtro, e costituisce i parametri adattivi della CNN\@. Nella
 pratica è tuttavia più comune utilizzare l'operazione di
 \emph{cross-correlation}, definita come
 \[ (K * X)(i, j) \sum_m{\sum_n{X(i + m, j + n) K(m, n)}} \]
@@ -270,7 +268,7 @@ Figura~\ref{fig:conv}.
 \subsection{Pooling}
 L'output della convoluzione è chiamato \emph{feature map} e generalmente ne
 vengono calcolate svariate decine per ogni livello, ognuna attraverso
-l'applicazione di un filtro diverso sullo stesso input. Il numero di feature
+l'applicazione, sullo stesso input, di un filtro diverso. Il numero di feature
 map aumenta generalmente con il crescere della profondità della rete. Questo
 accade per far fronte alla riduzione dimensionale causata dai livelli di
 \emph{pooling}. Questi ultimi hanno lo scopo di rendere il modello parzialmente

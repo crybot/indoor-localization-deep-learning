@@ -32,16 +32,15 @@ programmabili. In particolare, sono stati adottati degli ESP32\footnote{Gli
   ESP32 sono una famiglia di microcontrollori a basso consumo energetico con
   modulo Wi-Fi e Bluetooth integrato. Il loro costo esiguo li rende
   particolarmente adatti ad essere impiegati nel contesto della localizzazione
-  indoor.} e configurati per emettere un segnale
+  indoor.} configurati per emettere un segnale
 BLE broadcast alla massima frequenza ammissibile dall'hardware e dallo standard
 (50Hz). Il codice sorgente, in linguaggio C, con cui sono stati programmati i
 microcontrollori è illustrato nel Listato~\ref{code:esp32}. A ciascun beacon è
 stato associato un identificatore univoco corrispondente agli ultimi tre
-ottetti del suo indirizzo MAC, scartando di fatto l'identificativo del
-produttore, insieme a un prefisso condiviso.
+ottetti del suo indirizzo MAC, apposto a un prefisso comune.
 
 I beacon, alimentati via presa USB da 5V, sono stati installati in 15 stanze
-diverse perimetrali al corridoio adibito alla sperimentazione, in modo da
+diverse, perimetrali al corridoio adibito alla sperimentazione, in modo da
 coprirne tutta la lunghezza. La disposizione dei beacon è stata pensata in modo
 da poter ricevere, in ciasun punto del corridoio, il segnale di almeno 8
 beacon. Ad eccezione di uno dei microcontrollori, il quale è stato collegato a
@@ -57,11 +56,11 @@ testing del prototipo.
 \end{listing}
 
 \subsection{Raccolta dei Dati}
-Prima di procedere all'acquisizione dei segnali è stato misurato
-preventivamente il corridoio e identificato mentro per metro i punti in cui
+Prima di procedere all'acquisizione dei segnali, è stato misurato
+preventivamente il corridoio e identificati mentro per metro i punti in cui
 effettuare il campionamento. È stata poi installata l'applicazione mobile su
 uno smartphone Android e si è proceduto a effettuare la raccolta dei dati
-muovendosi lungo il corridoio e soffermandosi su ogni locazione individuata
+muovendosi lungo il corridoio, soffermandosi su ogni locazione individuata
 precedentemente durante la fase di misurazione. Per ogni punto selezionato,
 sono stati rilevati i segnali dei beacon secondo diversi orientamenti
 dell'utente, registrando le variazioni della bussola dello smartphone.
@@ -69,31 +68,30 @@ L'interfaccia dell'applicazione per la raccolta dei dati è mostrata in
 Appendice~\ref{app:gui}, mentre la componente dell'applicazione sviluppata per
 la raccolta dei dati e il loro processamento è illustrata nel
 Listato~\ref{code:data-collector}, in codice Dart.
-
-Durante la fase di acquisizione, i segnali intercettati vengono convertiti in
-uno stream continuo, il quale viene poi trasformato raggruppando i dati,
-secondo la frequenza impostata, in porzioni di uguale dimensione. Tale
-trasformazione è mostrata nel Listato~\ref{code:chunk-collector} ed è
-necessaria per assicurare che il sistema raccolga i segnali ad intervalli
-regolari e che, per ogni intervallo, il numero di segnali raccolti sia lo
-stesso. Qualora la dimensione del campione raccolto sia inferiore al valore
-scelto, il trasformatore di stream si occupa anche di aggiungere o rimuovere
-dati da ciascuna porzione di segnali.
-
-\begin{listing}[htp]
+\begin{listing}[H]
 	\inputsource{dart}{listings/data_collector.dart}
 	\caption{DataCollector (Dart): avvia lo stream di acquisizione dei segnali.}
   \label{code:data-collector}
 \end{listing}
 
-\begin{listing}[htp]
+Durante la fase di acquisizione, i segnali intercettati vengono convertiti in
+uno stream continuo di dati, i quali vengono poi raggruppati, secondo la
+frequenza impostata, in porzioni di uguale dimensione. Tale trasformazione è
+mostrata nel Listato~\ref{code:chunk-collector} ed è necessaria ad assicurare
+che il sistema raccolga i segnali ad intervalli regolari e che, per ogni
+intervallo, il numero di segnali raccolti sia lo stesso. Il trasformatore di
+stream si occupa anche di aggiungere o rimuovere dati da ciascuna porzione di
+segnali, qualora la dimensione del campione raccolto fosse inferiore al valore
+scelto.
+
+\begin{listing}[H]
 	\inputsource{dart}{listings/chunk_collector.dart}
 	\caption{ChunkCollector (Dart): si occupa di processare lo stream di segnali in
     ingresso.}
   \label{code:chunk-collector}
 \end{listing}
 
-Il componente DataCollector avvia e processa lo stream trasformato,
+Il componente \mintinline{Dart}{DataCollector} avvia e processa lo stream trasformato,
 aggiundendovi l'ubicazione del punto del campionamento \((x, y)\) (in coordinate
 relative rispetto alla planimetria dell'edificio), i dati del sensore magnetico
 dello smartphone registrati nel momento dell'acquisizione dati, e una coppia di
@@ -101,21 +99,22 @@ coordinate casuali \(x_{old}, \, y_{old}\) tali che
 \( x_{old} \sim \mathcal{N}(\sigma^2, \, \mu_1 = x) \) e 
 \( y_{old} \sim \mathcal{N}(\sigma^2, \, \mu_2 = y) \). Tali coordinate
 rappresentano la presunta posizione precedente dell'utente, utilizzata dalla
-rete neurale come input ausiliario, come descritto nel
-Paragrafo~\ref{subsec:input}. L'utilizzo di variabili aleatorie gaussiane è
-giustificato dal fatto che, non conoscendo a priori il percorso che potrebbe
-seguire l'utente all'interno dell'edificio, la posizione di quest'ultimo prima
-che raggiunga la coordinata \((x, y)\) è probabile che sia nelle immediate
-vicinanze di tale ubicazione.
-
+rete neurale come input ausiliario. L'utilizzo di variabili aleatorie gaussiane
+centrate nel punto di campionamento codifica l'ipotesi di continuità della
+traiettoria effettuata dall'utente, rappresentando così a priori
+l'indeterminatezza di quest'ultima.
 \subsection{Addestramento del Modello}
 Una volta composto il dataset, il modello è stato addestrato secondo i metodi
-descritti dal Paragrago~\ref{sec:training} sfruttando inizialmente le risorse
+descritti dal Paragrago~\ref{sec:training}, sfruttando inizialmente le risorse
 gratuite di calcolo, ma limitate, offerte da Google Colab. Per rendere la
-procedura di addestramento più rapida e flessibile, si è scelto poi di
-affittare GPU attraverso servizi di Cloud Computing a pagamento e di
-implementare una serie di script per gestire il deploy delle procedure di
-addestramento sull'hardware remote.
+procedura di addestramento più rapida e flessibile, si è scelto successivamente
+di affittare tempo macchina GPU\footnote{Graphics Processing Unit: Acceleratore
+  grafico utilizzato per effettuare calcoli su insiemi di pixel in modo
+  efficiente. Il loro utilizzo nel campo del Deep Learning deriva dalla loro
+  architettura che le rende particolarmente adatte al calcolo matriciale.}
+attraverso servizi di Cloud Computing a pagamento e di implementare una serie
+di script per gestire il deploy della procedura di addestramento sull'hardware
+remoto.
 
 L'addestramento della rete neurale ha impiegato mediamente 50 minuti per
 terminare utilizzando una GPU Nvidia RTX 2080 Ti, mentre le varie procedure di
@@ -126,24 +125,21 @@ Terminata la procedura di addestramento e prodotto un modello funzionante, la
 fase di testing prevedeva la valutazione dell'efficacia del sistema di
 navigazione provandolo direttamente all'interno dell'edificio adibito alla
 sperimentazione. Tuttavia la recente emergenza Covid-19 ha reso impossibile
-concludere i test del prototipo in loco, per ragioni di sicurezza sanitaria,
+concludere i test del prototipo, per ragioni di sicurezza sanitaria,
 all'interno dei locali dell'ASL\@. Sono risultati quindi determinanti nella
 valutazione dell'applicazione i precedenti test effettuati presso la sede del
-Consorzio Metis, seppur meno significativi e rigorosi per via delle molto
-inferiori dimensioni dello stabile.
+Consorzio Metis, seppur meno significativi e rigorosi per via delle dimensioni 
+dello stabile molto inferiori.
 
-\section{Data Augmentation}
+\section{Data Augmentation}\label{sec:augmentation-impl}
 Di seguito sono mostrate le implementazioni Python delle tecniche di data
 augmentation presentate nel Paragrafo~\ref{sec:augmentation}. Tali metodi sono
-stati incapsulati in una classe TimeseriesDataAugmenter, la quale è servita a
-rendere il codice più leggibile e funzionale. L'implementazione di tale classe
-è mostrata nel Listato~\ref{code:augmenter}, nel quale sono state omesse le
-implementazioni dei singoli metodi per semplicità di trattazione. Il costrutto
-\mintinline{python}{TimeseriesDataAugmenter} permette di trasformare il dataset
-di input applicando internamente i metodi di data augmentation descritti in
-precedenza e le cui implementazioni sono fornite in questo Paragrafo.
-
-\begin{listing}[p]
+stati incapsulati nella classe \mintinline{python}{TimeseriesDataAugmenter}, la
+quale è servita a rendere il codice più leggibile e funzionale.
+L'implementazione di tale classe è mostrata nel Listato~\ref{code:augmenter},
+nel quale sono state omesse le implementazioni dei singoli metodi per
+semplicità di trattazione. 
+\begin{listing}[H]
   \inputsource{python}{listings/augmenter.py}
 	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
 		occupa di arricchire il dataset di input applicando le trasformazioni
@@ -151,38 +147,38 @@ precedenza e le cui implementazioni sono fornite in questo Paragrafo.
   \label{code:augmenter}
 \end{listing}
 
-\begin{listing}[p]
+\begin{listing}[H]
   \inputsource{python}{listings/jitter.py}
 	\caption{Implementazione Jittering: applica del rumore additivo gaussiano a
     media nulla a tutti i segnali del dataset}
   \label{code:jitter}
 \end{listing}
 
-\begin{listing}[p]
+\begin{listing}[H]
 	\inputsource{python}{listings/scale.py}
 	\caption{Implementazione Scaling: permette di applicare del rumore
     moltiplicativo gaussiano di media unitaria a tutti gli input del dataset.}
   \label{code:scaling}
 \end{listing}
 
-\begin{listing}[p]
+\begin{listing}[H]
 	\inputsource{python}{listings/shuffle.py}
   \caption{Implementazione Shuffling: consente di riorganizzare i segnali del
     dataset in modo che la nuova configurazione segua la permutazione passata
     in input. Ciascuna serie temporale del dataset viene divisa in un numero di
     sottoinsiemi mutualmente esclusivi pari alla lunghezza dell'array di
-    permutazione specificato. Tali sottogruppi vengono poi poi riorganizzati
+    permutazione specificato. Tali sottogruppi vengono poi riorganizzati
     come specificato.}
 \end{listing}
 
 
-\begin{listing}[p]
+\begin{listing}[H]
 	\inputsource{python}{listings/magwarp.py}
 	\caption{Implementazione Magnitude Warping: si rimanda al
     Paragrafo~\ref{subsec:warping} per maggiori dettagli.}
 \end{listing}
 
-\begin{listing}[p]
+\begin{listing}[H]
 	\inputsource{python}{listings/replace.py}
   \caption{Implementazione Deattivazione selettiva: tutti gli elementi di
     ciascuna serie temporale vengono rimpiazzati, con propabilità \(p\), dal
@@ -192,7 +188,7 @@ precedenza e le cui implementazioni sono fornite in questo Paragrafo.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rete Neurale}
 Il modello presentato nel Capitolo~\ref{cap:architecture} è stato implementato
-e addestrato in Python utilizzando la libreria TensorFlow 2.0 e le API
+e addestrato in Python utilizzando la libreria TensorFlow 2.2.1 e le API
 funzionali di Keras. Il Listato~\ref{code:nn} mostra la definizione della rete
 neurale, la quale viene costruita attraverso composizioni successive di singoli
 blocchi convoluzionali. 
@@ -200,7 +196,7 @@ Questi ultimi sono definiti dal
 Listato~\ref{code:block} e rappresentano un grafo di computazione in cui viene
 applicata all'input l'operazione di convoluzione unidimensionale ed,
 eventualmente, la funzione di attivazione nonlineare, la normalizzazione
-tramite Batch Normalization, il Dropout gaussiano e l'operazione di pooling. Si
+tramite Batch Normalization, il Dropout Gaussiano e l'operazione di pooling. Si
 riferisca alla Figura~\ref{fig:cnnblock} per una sua rappresentazione grafica.
 \begin{listing}[htp]
 	\inputsource{python}{listings/conv_block.py}
