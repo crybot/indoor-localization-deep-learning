@@ -15,6 +15,7 @@
 \usepackage[chapter]{minted} % highlighting del codice
 \usepackage{xcolor} % importa colori predefiniti
 \usepackage{afterpage}
+\usepackage{emptypage}
 
 \renewcommand{\listingscaption}{Listato}
 
@@ -83,7 +84,7 @@
 \newcommand\blankpage{%
   \null%
   \thispagestyle{empty}%
-  \addtocounter{page}{-1}%
+  % \addtocounter{page}{-1}%
   \newpage
 }
 
@@ -92,6 +93,8 @@
       {\par\end{em}\end{center}\end{quotation}}
 
 \subimport{./layers/}{init}
+
+\pagenumbering{roman} % Resetta i numeri di pagina
 
 \begin{document}
 % \selectcolormodel{cmyk}
@@ -147,10 +150,12 @@
 
 \blankpage
 
-\pagenumbering{arabic} % Resetta i numeri di pagina
+% \pagenumbering{arabic} % Resetta i numeri di pagina
 \tableofcontents
 
+
 \chapter{Introduzione}
+\pagenumbering{arabic} % Resetta i numeri di pagina
 \input{./latex/introduction/introduzione}
 
 \chapter{Deep Learning}
