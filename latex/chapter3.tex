@@ -32,10 +32,10 @@ errore durante la fase di addestramento, al salvataggio dei modelli e ai vari
 tool grafici accessibili dalla piattaforma web di Weights \& Biases.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Architettura della Rete Neurale}
-\begin{figure}[!htp]
+\begin{figure}[htp]
   % \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{./img/architettura.pdf}}%
   \makebox[\textwidth][c]{%
-    \includetikz{0.75}{./img/architettura}%
+    \includetikz{0.70}{./img/architettura}%
   }%
   % \includegraphics[width=1.3\textwidth]{./img/architettura.pdf}
   % \includetikz{0.8}{./img/architettura.tex}
@@ -102,7 +102,7 @@ otto blocchi convoluzionali consecutivi così strutturati:
 Un esempio di blocco convoluzionale è illustrato in Figura~\ref{fig:cnnblock},
 mentre in Figura~\ref{fig:crynet} sono mostrati anche i livelli di pooling,
 rappresentati da una superficie rossa apposta accanto i blocchi convoluzionali.
-\begin{figure}
+\begin{figure}[htp]
   \makebox[\textwidth][c]{%
     \includetikz{0.75}{./img/cnnblock}%
   }%
@@ -252,8 +252,8 @@ iniziale si ottiene \(D' = \{\bm x_1 + \bm z_1, \dotsc, \bm x_m + \bm z_m\}\).
 Il dataset finale consiste nell'unione dei due insiemi \( D \cup D'\).
 
 Un esempio illustrativo del jittering è mostrato in Figura~\ref{fig:jitter}.
-\begin{figure}[!htp]
-  \centering\includegraphics[width=0.7\textwidth]{./img/jittering.eps}
+\begin{figure}[htp]
+  \centering\includegraphics[width=0.6\textwidth]{./img/jittering.eps}
   \caption{Jittering applicato ai segnali emessi da un beacon in un intervallo
     di tempo limitato. L'asse \(x\) descrive il tempo, mentre l'asse \(y\)
     indica la potenza del segnale ricevuto, in dB, al momento \(t\).}% 
@@ -276,8 +276,8 @@ dataset a cui è applicato il ridimensionamento è quindi definito come:
 \[ \bm x' = c \bm x \] 
 Un esempio di scaling applicato ai segnali emessi da un beacon è illustrato in
 Figura~\ref{fig:scaling}.
-\begin{figure}[!htp]
-  \centering\includegraphics[width=0.7\textwidth]{./img/scaling.eps}
+\begin{figure}[htp]
+  \centering\includegraphics[width=0.6\textwidth]{./img/scaling.eps}
   \caption{Illustrazione grafica del ridimensionamento di un segnale.}% 
   \label{fig:scaling}%
 \end{figure}
@@ -314,10 +314,10 @@ magnitude warping.
   \label{alg:warping}
 \end{algorithm}
 
-\begin{figure}[!tp]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.60\textwidth]{./img/warping.eps}
-  \includegraphics[width=0.60\textwidth]{./img/warping2.eps}
+  \includegraphics[width=0.55\textwidth]{./img/warping.eps}
+  \includegraphics[width=0.55\textwidth]{./img/warping2.eps}
   \caption{Esempi grafici di magnitude warping applicato a un segnale.}% 
   \label{fig:warping}%
 \end{figure}
@@ -329,9 +329,9 @@ dovrebbe avere peso nell'estrazione di informazioni o di pattern dai segnali.
 Per questo motivo è stata implementata una tecnica di \emph{shuffling} in cui
 sottoinsiemi dell'input vengono scambiati tra di loro secondo permutazioni
 casuali. Tale metodo è illustrato in Figura~\ref{fig:shuffling}
-\begin{figure}[!tp]
+\begin{figure}[htp]
   \centering
-  \includegraphics[width=0.70\textwidth]{./img/shuffling.eps}
+  \includegraphics[width=0.60\textwidth]{./img/shuffling.eps}
   \caption{Shuffling di sottoinsiemi applicato a una serie temporale.}% 
   \label{fig:shuffling}%
 \end{figure}

@@ -90,13 +90,7 @@ neurali artificiali e il deep learning. Esso prende spunto dalla neurologia,
 cercando di imitare il comportamento dei neuroni del cervello umano, con ovvie
 limitazioni e senza presunzione di volerne fornire una simulazione accurata del
 funzionamento. Una schematizzazione del modello è fornita in
-Figura~\ref{fig:perceptron}
-\begin{figure}[H]
-  \includetikz{0.9}{./img/perceptron}
-  \caption{Schematizzazione del Perceptron}%
-  \label{fig:perceptron}
-\end{figure}
-
+Figura~\ref{fig:perceptron}.
 Il perceptron è molto simile al modello di regressione lineare descritto
 precedentemente, ma si distingue per un fattore fondamentale: la nonlinearità.
 L'output del perceptron è infatti definito come:
@@ -104,7 +98,13 @@ L'output del perceptron è infatti definito come:
 dove $g$ è una funzione \emph{sigmoidea}, cioè una funzione che ha un andamento
 a ``S'', con due asintoti orizzontali come in Figura~\ref{fig:sigmoid}: di
 solito è utilizzata la funzione logistica $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$.
-\begin{figure}[H]
+\begin{figure}[htp]
+  \includetikz{0.9}{./img/perceptron}
+  \caption{Schematizzazione del Perceptron}%
+  \label{fig:perceptron}
+\end{figure}
+
+\begin{figure}[htp]
   \includetikz{0.8}{./img/sigmoid}
   \caption{Funzione sigmoidea $\displaystyle g(x) = \frac{1}{1 + e^{-x}}$ }%
   \label{fig:sigmoid}
@@ -129,7 +129,7 @@ L'MLP è un modello di machine learning facente parte della categoria delle reti
 neurali, in quanto è composto da un insieme di neuroni artificiali (perceptron)
 disposti su più livelli e interconnessi tra di loro. Una schematizzazione del
 modello è fornita in Figura~\ref{fig:mlp}.
-\begin{figure}[H]
+\begin{figure}[htp]
   \includetikz{0.9}{./img/mlp}
   \caption{Schematizzazione del Multi Layer Perceptron: in Figura è mostrata
     una rete neurale con $n$ valori di input, un singolo hidden layer con $m$
@@ -208,7 +208,7 @@ del modello.  Per questo motivo è stata introdotta la funzione ReLU
 (dall'inglese \emph{rectified linear unit}) definita nel modo seguente: $g(x) =
 \max\{0, x\}$. L'operazione di rettificazione è mostrata in Figura~%
 \ref{fig:relu}.
-\begin{figure}[H]
+\begin{figure}[htp]
   \includetikz{0.9}{./img/relu}
   \caption{La funzione di attivazione ReLU}%
   \label{fig:relu}
@@ -253,7 +253,7 @@ Tale operazione equivale a spostare il filtro $K$ lungo le due dimensioni
 dell'input $X$, eseguendo una moltiplicazione elemento per elemento tra i due
 tensori e sommandone i risultati. Un esempio è illustrato in
 Figura~\ref{fig:conv}.
-\begin{figure}[!htp]
+\begin{figure}[htp]
   \includetikz{1.0}{./img/conv}
   \caption{%
     Spostamento di un filtro $3\times3$ lungo una matrice di dimensioni
@@ -277,7 +277,7 @@ applicando un'operazione di sottocampionamento (\emph{subsampling}) a
 sottoinsiemi, disgiunti o no, dell'input del livello. Tale operazione può prevedere la
 selezione del massimo degli elementi del sottoinsieme, oppure della loro media
 aritmetica. L'operazione di pooling è illustrata in Figura~\ref{fig:pooling}.
-\begin{figure}[!htp]
+\begin{figure}[htp]
   \includetikz{1.0}{./img/pooling}
   \caption{%
     Schematizzazione di un semplice blocco convoluzionale a cui è applicata
