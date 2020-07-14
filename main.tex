@@ -1,6 +1,6 @@
 % !TeX spellcheck = it_IT
 %Carattere dimensione 12
-\documentclass[12pt]{report}
+\documentclass[12pt, twoside, openright]{report}
 
 \usepackage[italian]{babel} % conversione in italiano
 % \usepackage{libertine}
@@ -14,6 +14,7 @@
 \usepackage{alphalph} % permette di generare lettere dato un indice numerico
 \usepackage[chapter]{minted} % highlighting del codice
 \usepackage{xcolor} % importa colori predefiniti
+\usepackage{afterpage}
 
 \renewcommand{\listingscaption}{Listato}
 
@@ -79,6 +80,13 @@
   \scalebox{#1}{\input{#2}}%
 }
 
+\newcommand\blankpage{%
+  \null%
+  \thispagestyle{empty}%
+  \addtocounter{page}{-1}%
+  \newpage
+}
+
 \newenvironment{dedication}
 {\vspace*{50ex}\begin{quotation}\begin{center}\begin{em}}
       {\par\end{em}\end{center}\end{quotation}}
@@ -121,9 +129,13 @@
 
 \end{titlepage}
 
+\blankpage
+
 \begin{abstract}
   \input{./latex/abstract}
 \end{abstract}
+
+\blankpage
 
 % Dedica
 \clearpage
@@ -132,8 +144,10 @@
   A Snoopy
 \end{dedication}
 \clearpage
-\pagenumbering{arabic}
 
+\blankpage
+
+\pagenumbering{arabic} % Resetta i numeri di pagina
 \tableofcontents
 
 \chapter{Introduzione}

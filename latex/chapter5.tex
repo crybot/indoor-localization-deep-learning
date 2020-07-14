@@ -132,6 +132,13 @@ Consorzio Metis, seppur meno significativi e rigorosi per via delle dimensioni
 dello stabile molto inferiori.
 
 \section{Data Augmentation}\label{sec:augmentation-impl}
+\begin{listing}[htp]
+  \inputsource{python}{listings/augmenter.py}
+	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
+		occupa di arricchire il dataset di input applicando le trasformazioni
+		definite nel Paragrafo~\ref{sec:augmentation}}
+  \label{code:augmenter}
+\end{listing}
 Di seguito sono mostrate le implementazioni Python delle tecniche di data
 augmentation presentate nel Paragrafo~\ref{sec:augmentation}. Tali metodi sono
 stati incapsulati nella classe \mintinline{python}{TimeseriesDataAugmenter}, la
@@ -139,29 +146,22 @@ quale è servita a rendere il codice più leggibile e funzionale.
 L'implementazione di tale classe è mostrata nel Listato~\ref{code:augmenter},
 nel quale sono state omesse le implementazioni dei singoli metodi per
 semplicità di trattazione. 
-\begin{listing}[H]
-  \inputsource{python}{listings/augmenter.py}
-	\caption{Interfaccia della classe TimeseriesDataAugmenter. La classe si
-		occupa di arricchire il dataset di input applicando le trasformazioni
-		definite nel Paragrafo~\ref{sec:augmentation}}
-  \label{code:augmenter}
-\end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
   \inputsource{python}{listings/jitter.py}
 	\caption{Implementazione Jittering: applica del rumore additivo gaussiano a
     media nulla a tutti i segnali del dataset}
   \label{code:jitter}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/scale.py}
 	\caption{Implementazione Scaling: permette di applicare del rumore
     moltiplicativo gaussiano di media unitaria a tutti gli input del dataset.}
   \label{code:scaling}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/shuffle.py}
   \caption{Implementazione Shuffling: consente di riorganizzare i segnali del
     dataset in modo che la nuova configurazione segua la permutazione passata
@@ -172,13 +172,13 @@ semplicità di trattazione.
 \end{listing}
 
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/magwarp.py}
 	\caption{Implementazione Magnitude Warping: si rimanda al
     Paragrafo~\ref{subsec:warping} per maggiori dettagli.}
 \end{listing}
 
-\begin{listing}[H]
+\begin{listing}[htp]
 	\inputsource{python}{listings/replace.py}
   \caption{Implementazione Deattivazione selettiva: tutti gli elementi di
     ciascuna serie temporale vengono rimpiazzati, con propabilità \(p\), dal
